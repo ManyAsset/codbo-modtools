@@ -1,0 +1,22 @@
+{
+	stateMap "sw4_default";
+
+	vertexShader 3.0 "pimp_shader_sw4_3d_interrogation_animated_paper_25de5eee.hlsl"
+	{
+	}
+
+	pixelShader 3.0 "pimp_shader_sw4_3d_interrogation_animated_paper_25de5eee.hlsl" 
+	{
+		DiffuseMap = material.DiffuseMap;
+	}
+
+	vertex.position = code.position;
+	vertex.texcoord[0] = code.texcoord[0];
+
+	declTypes
+	{
+		packed
+		world
+	}
+}
+

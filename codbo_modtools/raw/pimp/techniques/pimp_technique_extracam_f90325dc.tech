@@ -1,0 +1,19 @@
+{
+	stateMap "default";
+
+	vertexShader 3.0 "pimp_shader_extracam_c8a57b44.hlsl"
+	{
+		uvScroll = material.uvScroll;
+	}
+
+	pixelShader 3.0 "pimp_shader_extracam_1c49a01.hlsl" 
+	{
+		colorMapSampler = material.colorMap;
+	}
+
+	vertex.position = code.position;
+	vertex.color[0] = code.color;
+	vertex.texcoord[0] = code.texcoord[0];
+
+}
+

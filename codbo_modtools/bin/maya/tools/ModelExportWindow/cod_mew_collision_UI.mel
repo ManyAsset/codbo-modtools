@@ -1,0 +1,239 @@
+{
+   global string $GAME_COLLMAP_DIR;
+
+   // This proc will handle refreshing the window
+   // The $sel argument is the index of the selected export in the list
+   // We need this because we will clear the export list, re-read the IWGlobalNode
+   // Then reselect the index in the list
+   global proc COD_MEW_CollisionUpdateWindow(int $sel) {
+      // Clear the list
+      textScrollList -e -ra MEWcollisionExports_lst;
+      // Clear the text field which represents the name of the selected export
+      textField -e -tx "" MEWcollisionEntryName_txt;
+
+      // First, check that the IWGlobalNode has a collmapcount attribute
+      if (`attributeQuery -node IWGlobalNode -ex CollmapCount` == 1) {
+         for ($i=1; $i<=`getAttr "IWGlobalNode.CollmapCount"`; $i++) {
+            // Repopulate the list by reading the attributes on the IWGlobalNode
+            string $exportFile = `getAttr ("IWGlobalNode.CollmapFileName"+$i)`;
+            string $shortName = substitute($GAME_COLLMAP_DIR, $exportFile, "" );
+
+            if ($shortName != "") {
+               textScrollList -e -a $shortName MEWcollisionExports_lst;
+            } else {
+               textScrollList -e -a "< New Entry - Enter Collmap Name >" MEWcollisionExports_lst;
+            }
+         }
+         if ($sel != 0) {
+            // Reselect the old selection
+            textScrollList -e -sii $sel MEWcollisionExports_lst;
+         }
+      }
+      // Refresh the selected entry text field
+      COD_MEW_CollisionUpdateSelected;
+   }
+
+   // When the user changes the name of the selected export with the text field entry, this
+   // proc is called to change the export path on the IWGlobalNode
+   global proc COD_MEW_CollisionUpdateCurrentEntry() {
+      // Get the name that is in the text field
+      string $newEntryValue = `textField -q -tx MEWcollisionEntryName_txt`;
+      // Get the index of the export we are modifying
+      int $selIndex[] = `textScrollList -q -sii MEWcollisionExports_lst`;
+
+      // Make sure only one entry is selected
+      if (size($selIndex) == 1) {
+         if (`objExists IWGlobalNode`) {
+            // Set the export file name based on the user's input into the text field
+            setAttr -type "string" ("IWGlobalNode.CollmapFileName"+$selIndex[0]) ($GAME_COLLMAP_DIR+$newEntryValue);
+
+            // Refresh the window
+            COD_MEW_CollisionUpdateWindow $selIndex[0];
+         }
+      }
+   }
+
+   // When user changes the selected entry we update the export name and node list
+   global proc COD_MEW_CollisionUpdateSelected() {
+      string $selName[] = `textScrollList -q -si MEWcollisionExports_lst`;
+      int $selIndex[] = `textScrollList -q -sii MEWcollisionExports_lst`;
+
+      // If only one item in the list is selected, then we can enable the text field
+      // and add/remove node buttons
+      if (size($selName) == 1) {
+         textField -e -tx $selName[0] MEWcollisionEntryName_txt;
+
+         textField -e -en true MEWcollisionEntryName_txt;
+         button -e -en true MEWcollisionAddNodes_btn;
+         button -e -en true MEWcollisionRemoveNodes_btn;
+
+         // Update the node lister
+         COD_MEW_CollisionUpdateNodeLister $selIndex[0];
+      // If nothing or more than one are selected, then we need to disable the text field
+      // and add/remove node buttons
+      } else {
+         textField -e -tx "" MEWcollisionEntryName_txt;
+         textField -e -en false MEWcollisionEntryName_txt;
+         button -e -en false MEWcollisionAddNodes_btn;
+         button -e -en false MEWcollisionRemoveNodes_btn;
+
+         // Clear the node lister by passing the update proc an argument of -1
+         COD_MEW_CollisionUpdateNodeLister -1;
+      }
+   }
+
+   // This proc will refresh the list of export nodes in the lister
+   global proc COD_MEW_CollisionUpdateNodeLister(int $index) {
+      // Start by clearing the list
+      textScrollList -e -ra MEWcollisionNodes_lst;
+
+      // If the index argument passed to this proc is -1, then we leave the list empty
+      if ($index != -1) {
+         // Get the nodes string from the IWGlobalNode attribute
+         string $nodeStr = `getAttr ("IWGlobalNode.CollmapExportNodes"+$index)`;
+         string $nodes[];
+         // Put the nodes in array form
+         tokenize $nodeStr " " $nodes;
+
+         for ($n in $nodes) {
+            // Add each node to the list
+            textScrollList -e -a $n MEWcollisionNodes_lst;
+         }
+      }
+   }
+
+   global proc COD_MEW_CollisionDeleteSelected() {
+      // Get the selected items in the list
+      int $selExports[] = `textScrollList -q -sii MEWcollisionExports_lst`;
+      // Unlock the IWGlobalNode
+      lockNode -lock off IWGlobalNode;
+
+      // One at a time, delete the selected entries
+      // We iterate backward so the indices don't change on us
+      for ($i=(size($selExports)-1); $i>=0; $i--) {
+         // Call the proc to perform the deletion which happens on the IWGlobalNode
+         COD_MEW_CollisionDeleteEntry $selExports[$i];
+      }
+
+      // Update the window
+      COD_MEW_CollisionUpdateWindow 0;
+      // Relock the IWGlobalNode
+      lockNode -lock on IWGlobalNode;
+   }
+
+   // Create the UI elements for the Collision Exporter tab
+   // This proc is only called when the Model Export Window is created
+   global proc COD_MEW_CollisionExportLayouts() {
+      // Collision Map Export layouts
+      formLayout -nd 100 -p MEWmainTabs_tlyt MEWcollisionMapMain_frm;
+         formLayout -nd 100 -p MEWcollisionMapMain_frm MEWcollisionMapExports_frm;
+            text -l "Collision Map Exports" MEWcollisionExports_lb;
+            // This list will be the export names
+            textScrollList -ams 1 -h 100 MEWcollisionExports_lst;
+            text -l "Export Nodes" MEWcollisionNodes_lb;
+            // This list will be the selected export's node list
+            textScrollList -ams 1 -h 100 MEWcollisionNodes_lst;
+
+         formLayout -nd 100 -p MEWcollisionMapMain_frm MEWcollisionMapEntry_frm;
+            separator MEWcollisionEntry_sep;
+            // This will be where the user enters the name of the selected collmap export
+            text -l "Modify Selected Entry" MEWcollisionEntry_lb;
+
+            textField -en false MEWcollisionEntryName_txt;
+            button -l "Add Nodes" -en false -w 85 MEWcollisionAddNodes_btn;
+            button -l "Revove Nodes" -en false -w 85 MEWcollisionRemoveNodes_btn;
+
+            separator MEWcollisionEntry_sep2;
+            button -l "Add New Collmap" MEWcollisionAddNew_btn;
+            button -l "Delete Selected Collmap" MEWcollisionDelete_btn;
+            button -l "Export Selected" MEWcollisionExportSel_btn;
+            button -l "Export All" MEWcollisionExportAll_btn;
+
+      formLayout -e
+         -af MEWcollisionMapExports_frm "top" 20
+         -af MEWcollisionMapExports_frm "right" 20
+         -af MEWcollisionMapExports_frm "left" 20
+         -ac MEWcollisionMapExports_frm "bottom" 10 MEWcollisionMapEntry_frm
+
+         -af MEWcollisionMapEntry_frm "right" 0
+         -af MEWcollisionMapEntry_frm "left" 0
+         -af MEWcollisionMapEntry_frm "bottom" 0
+      MEWcollisionMapMain_frm;
+
+      formLayout -e
+         -af MEWcollisionExports_lb "top" 10
+         -af MEWcollisionExports_lb "left" 20
+
+         -ac MEWcollisionExports_lst "top" 0 MEWcollisionExports_lb
+         -ap MEWcollisionExports_lst "right" 20 65
+         -af MEWcollisionExports_lst "left" 20
+         -af MEWcollisionExports_lst "bottom" 20
+
+         -af MEWcollisionNodes_lb "top" 10
+         -ac MEWcollisionNodes_lb "left" 40 MEWcollisionExports_lst
+
+         -ac MEWcollisionNodes_lst "top" 0 MEWcollisionNodes_lb
+         -af MEWcollisionNodes_lst "right" 20
+         -ac MEWcollisionNodes_lst "left" 40 MEWcollisionExports_lst
+         -af MEWcollisionNodes_lst "bottom" 20
+      MEWcollisionMapExports_frm;
+
+      formLayout -e
+         -af MEWcollisionEntry_sep "right" 0
+         -af MEWcollisionEntry_sep "left" 0
+
+         -ac MEWcollisionEntry_lb "top" 0 MEWcollisionEntry_sep
+         -af MEWcollisionEntry_lb "left" 0
+
+         -ac MEWcollisionRemoveNodes_btn "top" 20 MEWcollisionEntry_lb
+         -af MEWcollisionRemoveNodes_btn "right" 20
+
+         -ac MEWcollisionAddNodes_btn "top" 20 MEWcollisionEntry_lb
+         -ac MEWcollisionAddNodes_btn "right" 10 MEWcollisionRemoveNodes_btn
+
+         -ac MEWcollisionEntryName_txt "top" 20 MEWcollisionEntry_lb
+         -ac MEWcollisionEntryName_txt "right" 20 MEWcollisionAddNodes_btn
+         -af MEWcollisionEntryName_txt "left" 20
+
+         -ac MEWcollisionEntry_sep2 "top" 30 MEWcollisionEntryName_txt
+         -af MEWcollisionEntry_sep2 "right" 0
+         -af MEWcollisionEntry_sep2 "left" 0
+
+         -ac MEWcollisionAddNew_btn "top" 10 MEWcollisionEntry_sep2
+         -ap MEWcollisionAddNew_btn "right" 10 25
+         -af MEWcollisionAddNew_btn "left" 20
+         -af MEWcollisionAddNew_btn "bottom" 10
+
+         -ac MEWcollisionDelete_btn "top" 10 MEWcollisionEntry_sep2
+         -ac MEWcollisionDelete_btn "right" 10 MEWcollisionExportSel_btn
+         -ac MEWcollisionDelete_btn "left" 10 MEWcollisionAddNew_btn
+         -af MEWcollisionDelete_btn "bottom" 10
+
+         -ac MEWcollisionExportSel_btn "top" 10 MEWcollisionEntry_sep2
+         -ac MEWcollisionExportSel_btn "right" 10 MEWcollisionExportAll_btn
+         -ap MEWcollisionExportSel_btn "left" 5 50
+         -af MEWcollisionExportSel_btn "bottom" 10
+
+         -ac MEWcollisionExportAll_btn "top" 10 MEWcollisionEntry_sep2
+         -af MEWcollisionExportAll_btn "right" 20
+         -ap MEWcollisionExportAll_btn "left" 5 75
+         -af MEWcollisionExportAll_btn "bottom" 10
+      MEWcollisionMapEntry_frm;
+
+      button -e -c ("COD_MEW_CollisionAddModel") MEWcollisionAddNew_btn;
+      button -e -c ("COD_MEW_CollisionDeleteSelected") MEWcollisionDelete_btn;
+      button -e -c ("COD_MEW_CollisionAddNodesToLister") MEWcollisionAddNodes_btn;
+      button -e -c ("COD_MEW_CollisionRemoveNodesFromLister") MEWcollisionRemoveNodes_btn;
+
+      button -e -c ("COD_MEW_CollisionStartTheExport 1") MEWcollisionExportSel_btn;
+      button -e -c ("COD_MEW_CollisionStartTheExport 0") MEWcollisionExportAll_btn;
+
+      textScrollList -e -sc ("COD_MEW_CollisionUpdateSelected") MEWcollisionExports_lst;
+      textScrollList -e -sc ("COD_MEW_CollisionSelectSceneNode") MEWcollisionNodes_lst;
+
+      textScrollList -e -dcc ("COD_MEW_CollisionSelectExportNodes") MEWcollisionExports_lst;
+      textScrollList -e -dkc ("COD_MEW_CollisionRemoveNodesFromLister") MEWcollisionNodes_lst;
+
+      textField -e -cc ("COD_MEW_CollisionUpdateCurrentEntry") MEWcollisionEntryName_txt;
+   }
+}

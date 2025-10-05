@@ -1,0 +1,28 @@
+{
+	stateMap "sw4_default";
+
+	vertexShader 3.0 "pimp_shader_sw4_3d_jumbotron_a1bc2e77.hlsl"
+	{
+	}
+
+	pixelShader 3.0 "pimp_shader_sw4_3d_jumbotron_12ec516d.hlsl" 
+	{
+		Intensity          = material.Intensity;
+  FPS                = material.FPS;
+  Grid               = material.Grid;
+  Diffuse_MapSampler = material.Diffuse_MapSampler;
+  Overlay_Offset     = material.Overlay_Offset;
+  Overlay_Scale      = material.Overlay_Scale;
+  Overlay_Map        = material.Overlay_Map;
+	}
+
+	vertex.position = code.position;
+	vertex.texcoord[0] = code.texcoord[0];
+
+	declTypes
+	{
+		packed
+		world
+	}
+}
+

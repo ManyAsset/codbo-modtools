@@ -1,0 +1,80 @@
+#define USE_DISTANCE_FIELD_MASK			("$distanceFieldMask$" == "1")
+
+sort(23);
+
+//#include "sort.template"
+#include "clamp.template"
+//#include "cullface.template"
+tessSize( @tessSize@ );
+#include "textureAtlas.template"
+
+hasEditorMaterial( @hasEditorMaterial@ );
+
+#include "refblend.template"
+#include "statebits.template"
+
+allocLightmap( 0 );
+forModel( "@materialType@" == "cod7model emissive" );
+forWorld( "@materialType@" == "cod7world emissive" );
+
+//refBlend( "Opaque" );
+//alphaTest( Always );
+//blendFunc( Disable, One, Zero );
+//separateAlphaBlendFunc( Disable, One, Zero );
+//colorWrite( Enable, Enable, Enable, Disable );
+//depthTest( LessEqual );
+//depthWrite( Enable );
+
+//#include "polygonoffset.template"
+//#include "stencil.template"
+
+
+//-----------------------------------------------------------------------------------------------------------------------------
+// set required techset
+//-----------------------------------------------------------------------------------------------------------------------------
+
+#if USE_DISTANCE_FIELD_MASK
+	#define	DISTANCE_FIELD_MASK_SUFFIX "_sdf"
+#else
+	#define	DISTANCE_FIELD_MASK_SUFFIX ""
+#endif
+
+techniqueSet( "cod7emissive" + DISTANCE_FIELD_MASK_SUFFIX);
+
+//-----------------------------------------------------------------------------------------------------------------------------
+// textures
+//-----------------------------------------------------------------------------------------------------------------------------
+#if TARGET_PLATFORM == "xenon"
+	#define NORMAL_MAP_FORMAT	"DXN"
+#else
+	#define NORMAL_MAP_FORMAT	"DXT5"
+#endif
+
+// colorMap00	= diffuse
+// colorMap01	= optional signed distance field mask  
+
+textureTable
+{
+	//---------------------------------------------------------------------------------------------------------------------
+	// required textures all valid?
+	//---------------------------------------------------------------------------------------------------------------------
+	#if "$colorMap00$" == ""
+		#error "cod7emissive color map is not defined"
+	#endif		
+
+	"emissiveMap" = map( "@texTile00@", "@filterColor00@", "$colorMap00$", @nopicmipColor00@ ) "@textureFormat00@" : "colorMap";
+
+	#if USE_DISTANCE_FIELD_MASK	
+		#if "$colorMap01$" == ""
+			#error "cod7emissive distance field map is not defined"
+		#else
+			"distanceFieldMask" = map( "@texTile01@", "@filterColor01@", "$colorMap01$", @nopicmipColor01@ ) "@textureFormat01@" : "colorMap";
+		#endif			
+	#endif
+
+}
+
+constantTable
+{
+}
+refImage( "$colorMap00$" );

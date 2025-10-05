@@ -1,0 +1,24 @@
+#include "commonsetup.template"
+
+#include "objective_colors.template"
+
+techniqueSet( "objective" );
+
+textureTable
+{
+	#if "$colorMap$" != ""
+		"colorMap" = streamable map( "@tileColor@", "@filterColor@", "$colorMap$", @nopicmipColor@ ) "@formatColor@" : "colorMap";
+	#endif
+}
+
+
+constantTable
+{
+	OBJ_COLORS_CONSTANTS
+}
+
+#if "$colorMap$" != ""
+	refImage( "$colorMap$" );
+#else
+	refImage( "$white" );
+#endif

@@ -1,0 +1,24 @@
+{
+	stateMap "default";
+
+	vertexShader 3.0 "pimp_shader_lprobe_6e4195a1.hlsl"
+	{
+	}
+
+	pixelShader 3.0 "pimp_shader_lprobe_7aab51ca.hlsl" 
+	{
+		colorMapSampler = material.colorMap;
+		subLayerMultiplySampler = material.subLayerMultiplyTexture;
+		subLayerBaseSampler = material.subLayerBaseTexture;
+		uvSubLayerMultiplyScroll = material.subLayerMultiplyScroll;
+		uvSubLayerBaseScroll = material.subLayerBaseScroll;
+		dynamicFoliageSunDiffuseMinMax = material.dynamicFoliageSunDiffuseMinMax;
+	}
+
+	vertex.position = code.position;
+	vertex.normal = code.normal;
+	vertex.texcoord[0] = code.texcoord[0];
+	vertex.texcoord[3] = code.texcoord[1];
+
+}
+

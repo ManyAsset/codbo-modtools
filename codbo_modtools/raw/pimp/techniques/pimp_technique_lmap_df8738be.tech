@@ -1,0 +1,22 @@
+{
+	stateMap "default";
+
+	vertexShader 3.0 "pimp_shader_lmap_56730e5c.hlsl"
+	{
+	}
+
+	pixelShader 3.0 "pimp_shader_lmap_c2f4e1f8.hlsl" 
+	{
+		colorMapSampler = material.colorMap;
+		subLayerMultiplySampler = material.subLayerMultiplyTexture;
+		subLayerBaseSampler = material.subLayerBaseTexture;
+		uvSubLayerMultiplyScroll = material.subLayerMultiplyScroll;
+		uvSubLayerBaseScroll = material.subLayerBaseScroll;
+	}
+
+	vertex.position = code.position;
+	vertex.normal = code.normal;
+	vertex.texcoord[0] = code.texcoord[0];
+
+}
+

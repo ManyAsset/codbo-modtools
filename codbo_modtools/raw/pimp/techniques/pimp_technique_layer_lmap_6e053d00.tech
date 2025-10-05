@@ -1,0 +1,24 @@
+{
+	stateMap "blend";
+
+	vertexShader 3.0 "pimp_shader_layer_lmap_15181b4d.hlsl"
+	{
+	}
+
+	pixelShader 3.0 "pimp_shader_layer_lmap_314d8e3a.hlsl" 
+	{
+		colorMapSampler = material.colorMap;
+		normalMapSampler = material.normalMap;
+		colorMapSampler1 = material.colorMap1;
+		normalMapSampler1 = material.normalMap1;
+	}
+
+	vertex.position = code.position;
+	vertex.normal = code.normal;
+	vertex.color[0] = code.color;
+	vertex.texcoord[0] = code.texcoord[0];
+	vertex.texcoord[3] = code.texcoord[1];
+	vertex.texcoord[5] = code.normalTransform[0];
+
+}
+

@@ -1,0 +1,40 @@
+{
+	stateMap "sw4_default";
+
+	vertexShader 3.0 "pimp_shader_sw4_3d_charring_4b9b208.hlsl"
+	{
+	}
+
+	pixelShader 3.0 "pimp_shader_sw4_3d_charring_4b9b208.hlsl" 
+	{
+		CharredBumpHeight = material.CharredBumpHeight;
+  RevealSpeed       = material.RevealSpeed;
+  CharredNormalMap  = material.CharredNormalMap;
+  BaseBumpHeight    = material.BaseBumpHeight;
+  BaseNormalMap     = material.BaseNormalMap;
+  BurntMap          = material.BurntMap;
+  DiffuseMap        = material.DiffuseMap;
+  MaskScale         = material.MaskScale;
+  Mask              = material.Mask;
+  Ember_Direction   = material.Ember_Direction;
+  Ember_Scale       = material.Ember_Scale;
+  EmberBrightness   = material.EmberBrightness;
+  FireMap           = material.FireMap;
+  EmberMap          = material.EmberMap;
+  SpecularMap       = material.SpecularMap;
+  Reflection_Amount = material.Reflection_Amount;
+  RevealScale       = material.RevealScale;
+	}
+
+	vertex.position = code.position;
+	vertex.normal      = code.normal;
+  vertex.texcoord[2] = code.tangent;
+  vertex.texcoord[0] = code.texcoord[0];
+
+	declTypes
+	{
+		packed
+		world
+	}
+}
+

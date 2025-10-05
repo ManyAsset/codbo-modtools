@@ -1,0 +1,181 @@
+#name "xanim"
+#dll "all" "xanim"
+#target_dir "xanim/"
+#file_ext "*"
+#version 25
+
+string filename
+string model
+int 0 0 1 looping
+enum {"delta", "relative", "absolute", "mp_torso", "mp_legs", "mp_fullbody", "additive"} type
+int 1 0 1 useBones
+string node
+float .05 0.000 180 angleError
+float .025 0.000 1000 translationError
+int 0 0 1 leftHandGripIK
+int 0 0 1 streamable
+float 2.0 0.0 1000.0 primedLength
+
+string boneStabilizers
+
+int 0 0 1 useNtExportFile
+
+vcontainer
+{
+	//////////////////
+	// Source Files //
+	//////////////////
+	vcontainer
+	{
+		fileedit(filename)
+		[
+			exec
+			{
+				label("Anim File:")
+				reldir("xanim_export/")
+				tooltip("The animation used in conjunction with the model specified below (.XANIM_EXPORT)")
+			}		
+		]
+		
+		fileedit(model)
+		[
+			exec
+			{
+				label("Model File:")
+				reldir("model_export/")
+				tooltip("The 'base-pose' model used for the animation. All bone positions/rotations are relative to this (.XMODEL_EXPORT)")
+			}		
+		]
+	}
+	[
+		exec
+		{
+			groupBox("Source Files")
+		}
+	]
+
+	//////////////
+	// Settings //
+	//////////////
+	vcontainer
+	{
+		checkbox(useNtExportFile)
+		[
+			exec
+			{
+				label("Use .NT_EXPORT")
+				tooltip("Use externally created .NT_EXPORT (Note-Tracker) files")
+			}
+		]
+
+		checkbox(looping)
+		[
+			exec
+			{
+				label("Looping")
+				tooltip("Enables the animation to continously loop")
+			}
+		]
+
+		checkbox(useBones)
+		[
+			exec
+			{
+				label("Use Bones")
+				tooltip("??? Not needed for viewmodels, but is needed for practically everything else")
+			}
+		]
+
+		scrollbox(type)
+		[
+			exec
+			{
+				label("Type")
+				tooltip("'delta' - use for AI anims, 'absolute' - puts everything where it is relative to (0, 0, 0) in the Maya file, 'relative' - puts everything where it is relative to the parent node in the hierarchy")
+			}
+		]
+
+		edit(node)
+		[
+			exec
+			{
+				label("Node")
+				tooltip("Specifies the name of an object exported from the Maya file that will act as a reference point for the anim. Used to get scripted animations in the right place. The anim has to be 'delta' and must be played as a scripted animation.")
+			}
+		]
+
+		//floatedit(angleError, .05, 1)
+		//[
+		//	exec
+		//	{
+		//		label("Angle Error")
+		//		tooltip("Used for Compression, default value works well")
+		//	}
+		//]
+
+		//floatedit(translationError, .025, .1)
+		//[
+		//	exec
+		//	{
+		//		label("Translation Error")
+		//		tooltip("Used for Compression, default value works well")
+		//	}
+		//]
+		
+		checkbox(leftHandGripIK)
+		[
+			exec
+			{
+				label("Use Left Hand Grip IK")
+				labelwidth(180)
+				tooltip("Enable this to use varied grip offsets as defined in weapon gdt")
+			}
+		]
+
+		checkbox(streamable)
+		[
+			exec
+			{
+				label("Streamable")
+				tooltip("Stream this anim from disk at run-time")
+			}
+		]
+
+		floatedit(primedLength, 0.1, 0.1)
+		[
+			exec
+			{
+				label("Primed Length")
+				tooltip("If streamable, the number of seconds of animation data stored in the fastfile")
+			}
+		]
+	}
+	[
+		exec
+		{
+			groupBox("Settings")
+		}
+	]
+
+	/////////////////
+	// MP Specific //
+	/////////////////
+	vcontainer
+	{
+		multiedit(boneStabilizers)
+		[
+			exec
+			{
+				label("Bone Stabilizers")
+				width(640)
+				height(80)
+			}
+		]
+	}
+	[
+		exec
+		{
+			groupBox("MP Specific")
+		}
+	]
+}

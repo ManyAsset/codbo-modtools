@@ -1,0 +1,58 @@
+
+#if ( ( "@blendFunc@"== "Replace" ) && ( "@alphaTest@" == "Always" ) )
+	techniqueSet( "@SW4_MaterialType@" ); 
+#else
+	techniqueSet( "@SW4_MaterialType@_transparent" ); 
+#endif
+
+// -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -
+	
+#include "commonsetup.template" 
+
+// -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -
+	
+#define SPEC_MAP_FORMAT 	 	  "DXT1"
+      	
+#if TARGET_PLATFORM == "xenon"
+            #define NORMAL_MAP_FORMAT     "DXN"
+	    #else
+	        #define NORMAL_MAP_FORMAT     "DXT5"
+	    #endif
+
+
+// -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -
+	
+textureTable
+{
+	"CharredNormalMap" = streamable normalMap( "tile both", "mip standard (2x bilinear)", "$colorMap01$", 0 ) NORMAL_MAP_FORMAT : "normalMap";
+	"BaseNormalMap" = streamable normalMap( "tile both", "mip standard (2x bilinear)", "$colorMap00$", 0 ) NORMAL_MAP_FORMAT : "normalMap";
+	"SpecularMap" = streamable map( "tile both", "mip standard (2x bilinear)", "$colorMap07$", 0 ) SPEC_MAP_FORMAT : "specularMap";
+	"DiffuseMap" = streamable map( "tile both", "mip standard (2x bilinear)", "$colorMap02$", 0 ) "<auto compression>" : "colorMap";
+	"EmberMap" =  map( "tile both", "mip standard (2x bilinear)", "$colorMap06$", 0 ) "<auto compression>" : "colorMap";
+	"FireMap" = streamable map( "tile both", "mip (1x bilinear)", "$colorMap08$", 0 ) "<auto compression>" : "colorMap";
+	"Mask" = streamable map( "tile both", "mip standard (2x bilinear)", "$colorMap04$", 0 ) "<auto compression>" : "colorMap";
+	"RadiantDiffuse" = map( "tile both", "mip (1x bilinear)", "sw4\textures\sw4.tga", 1 ) "Uncompressed" : "colorMap";
+}
+
+// -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -
+	
+constantTable
+{
+	"CharredBumpHeight" = float1( @cg01_x@ );
+	"BaseBumpHeight" = float1( @cg00_x@ );
+	"Reflection_Amount" = float1( @cg03_x@ );
+	"Ember_Direction" = float2( @cg05_x@, @cg05_y@ );
+	"Ember_Scale" = float1( @cg04_x@ );
+	"EmberBrightness" = float1( @cg13_x@ );
+	"MaskScale" = float1( @cg14_x@ );
+	"RevealScale" = float1( @cg16_x@ );
+	"RevealSpeed" = float1( @cg28_x@ );
+}
+	
+// -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -
+	
+allocReflectionProbe();
+
+// -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -
+	
+refImage( "$colorMap01$" );

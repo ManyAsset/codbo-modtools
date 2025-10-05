@@ -1,0 +1,23 @@
+#if "@blendFunc@" == "Blend" || ("@blendFunc@" == "Replace" && "@alphaTest@" != "Always")
+techniqueSet( "sw_cod7_chainlink" ); 
+#else
+techniqueSet( "sw_cod7_chainlink_noalpha" ); 
+#endif
+
+#include "commonsetup.template" 
+
+cgfxTextureTableRefImage
+{
+	"Normal_MapSampler" = streamable normalMap( "tile both", "mip (1x trilinear)", "texture_assets\shaderworks\fence_chainlink_n.tga", 0 ) "<auto compression>" : "normalMap"; 
+	"Diffuse_MapSampler" = streamable map( "tile both", "mip most expensive (4x trilinear)", "texture_assets\shaderworks\fence_chainlink_c.tga", 0 ) "<auto compression>" : "colorMap"; 
+}
+
+cgfxConstantTable
+{
+	"EnvBlurLevel" = float4( 0, 0, 0, 0 );
+	"Master_Scale" = float4( 4, 4, 1, 1 );
+	"Normal_Amt" = float4( 0.5, 0, 0, 0 );
+	"Roughness" = float4( 1, 0, 0, 0 );
+}
+allocReflectionProbe();
+

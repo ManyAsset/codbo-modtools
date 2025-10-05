@@ -1,0 +1,23 @@
+{
+	stateMap "build_shadowmap_depth_noalpha";
+
+	vertexShader 3.0 "pimp_shader_sw4_3d_burning_embers_afa21c30.hlsl"
+	{
+		Seed_Value  = material.Seed_Value;
+  Flicker_Max = material.Flicker_Max;
+  Flicker_Min = material.Flicker_Min;
+	}
+
+	pixelShader 3.0 "pimp_shader_null_494c2039.hlsl" 
+	{
+	}
+
+	vertex.position = code.position;
+
+	declTypes
+	{
+		packed
+		world
+	}
+}
+

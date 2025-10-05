@@ -1,0 +1,54 @@
+
+#if ( ( "@blendFunc@"== "Replace" ) && ( "@alphaTest@" == "Always" ) )
+	techniqueSet( "@SW4_MaterialType@" ); 
+#else
+	techniqueSet( "@SW4_MaterialType@_transparent" ); 
+#endif
+
+// -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -
+	
+#include "commonsetup.template" 
+
+// -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -
+	
+#define SPEC_MAP_FORMAT 	 	  "DXT1"
+      	
+#if TARGET_PLATFORM == "xenon"
+            #define NORMAL_MAP_FORMAT     "DXN"
+	    #else
+	        #define NORMAL_MAP_FORMAT     "DXT5"
+	    #endif
+
+
+// -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -
+	
+textureTable
+{
+	"Reveal_Map" =  map( "tile both", "mip standard (2x bilinear)", "$colorMap05$", 0 ) "<auto compression>" : "colorMap";
+	"Normal_Map" =  normalMap( "tile both", "mip most expensive (4x trilinear)", "$colorMap13$", 0 ) NORMAL_MAP_FORMAT : "normalMap";
+	"Specular_Map" = streamable map( "tile both", "mip standard (2x bilinear)", "$colorMap10$", 0 ) "<auto compression>" : "colorMap";
+	"Diffuse_MapSampler" = streamable map( "tile both", "mip (1x bilinear)", "$colorMap08$", 0 ) "<auto compression>" : "colorMap";
+	"Normal_Map_2" =  normalMap( "tile both", "mip most expensive (4x trilinear)", "$colorMap12$", 0 ) NORMAL_MAP_FORMAT : "normalMap";
+	"Specular_Map_2" = streamable map( "tile both", "mip (1x bilinear)", "$colorMap04$", 0 ) "<auto compression>" : "colorMap";
+	"Diffuse_Map_2" = streamable map( "tile both", "mip (1x bilinear)", "$colorMap06$", 0 ) "<auto compression>" : "colorMap";
+	"RadiantDiffuse" = map( "tile both", "mip (1x bilinear)", "sw4\textures\sw4.tga", 1 ) "Uncompressed" : "colorMap";
+}
+
+// -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -
+	
+constantTable
+{
+	"Scale" = float2( @cg08_x@, @cg08_y@ );
+	"Normal_Amt" = float1( @cg00_x@ );
+	"Reflection_Amount" = float1( @cg14_x@ );
+	"Scale_2" = float2( @cg06_x@, @cg06_y@ );
+	"Normal_2_Amt" = float1( @cg01_x@ );
+}
+	
+// -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -
+	
+allocReflectionProbe();
+
+// -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -
+	
+refImage( "$colorMap08$" );

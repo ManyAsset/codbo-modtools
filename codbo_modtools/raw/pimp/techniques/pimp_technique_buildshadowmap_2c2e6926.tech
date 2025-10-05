@@ -1,0 +1,16 @@
+{
+	stateMap "build_shadowmap_depth_noalpha";
+
+	vertexShader 3.0 "pimp_shader_shadowmapdfoliage_a84b96d3.hlsl"
+	{
+		dynamicFoliageFlexibility = material.dynamicFoliageFlexibility;
+	}
+
+	pixelShader 3.0 "pimp_shader_null_494c2039.hlsl" 
+	{
+	}
+
+	vertex.position = code.position;
+
+}
+

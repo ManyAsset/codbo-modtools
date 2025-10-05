@@ -1,0 +1,20 @@
+{
+	stateMap "default";
+
+	vertexShader 3.0 "pimp_shader_lmap_93cafcbd.hlsl"
+	{
+	}
+
+	pixelShader 3.0 "pimp_shader_lmap_749ee4c5.hlsl" 
+	{
+		colorMapSampler = material.colorMap;
+		specularMapSampler = material.specularMap;
+	}
+
+	vertex.position = code.position;
+	vertex.normal = code.normal;
+	vertex.color[0] = code.color;
+	vertex.texcoord[0] = code.texcoord[0];
+
+}
+

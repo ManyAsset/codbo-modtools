@@ -1,0 +1,36 @@
+{
+	stateMap "additive";
+
+	vertexShader 3.0 "pimp_shader_sw4_3d_burning_embers_58978e4c.hlsl"
+	{
+		Seed_Value  = material.Seed_Value;
+  Flicker_Max = material.Flicker_Max;
+  Flicker_Min = material.Flicker_Min;
+	}
+
+	pixelShader 3.0 "pimp_shader_sw4_3d_burning_embers_58978e4c.hlsl" 
+	{
+		Reveal_Map         = material.Reveal_Map;
+  Normal_Map_Cracked = material.Normal_Map_Cracked;
+  Specular_Map       = material.Specular_Map;
+  Diffuse_MapSampler = material.Diffuse_MapSampler;
+  Heat_Direction     = material.Heat_Direction;
+  Heat_Scale         = material.Heat_Scale;
+  Heat_Map           = material.Heat_Map;
+  Ember_Direction    = material.Ember_Direction;
+  Ember_Scale        = material.Ember_Scale;
+  Diffuse_Map_Damage = material.Diffuse_Map_Damage;
+	}
+
+	vertex.position = code.position;
+	vertex.normal      = code.normal;
+  vertex.texcoord[2] = code.tangent;
+  vertex.texcoord[0] = code.texcoord[0];
+
+	declTypes
+	{
+		packed
+		world
+	}
+}
+

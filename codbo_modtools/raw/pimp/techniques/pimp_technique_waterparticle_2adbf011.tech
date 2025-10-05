@@ -1,0 +1,20 @@
+{
+	stateMap "passthrough";
+
+	vertexShader 3.0 "pimp_shader_waterparticle_5deded0c.hlsl"
+	{
+	}
+
+	pixelShader 3.0 "pimp_shader_waterparticle_5deded0c.hlsl" 
+	{
+		colorMapSampler = material.colorMap;
+	}
+
+	vertex.position = code.position;
+	vertex.normal = code.normal;
+	vertex.texcoord[0] = code.texcoord[0];
+	vertex.texcoord[1] = code.tangent;
+	vertex.color[0] = code.color;
+
+}
+

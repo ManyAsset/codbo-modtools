@@ -1,0 +1,26 @@
+{
+	stateMap "default2d";
+
+	vertexShader 3.0 "pimp_shader_sw4_2d_lensflare_cutoff_6e8b05b3.hlsl"
+	{
+	}
+
+	pixelShader 3.0 "pimp_shader_sw4_2d_lensflare_cutoff_6e8b05b3.hlsl" 
+	{
+		Vignette                  = material.Vignette;
+  Cutoff                    = material.Cutoff;
+  Intensity                 = material.Intensity;
+  PostEffect0_Sampler_C1_P0 = sampler.postEffect0;
+	}
+
+	vertex.position = code.position;
+	vertex.texcoord[0] = code.texcoord[0];
+
+	declTypes
+	{
+		packed
+		debug
+		generic
+	}
+}
+

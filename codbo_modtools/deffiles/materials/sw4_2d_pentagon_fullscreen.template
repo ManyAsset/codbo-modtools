@@ -1,0 +1,43 @@
+
+#if ( ( "@blendFunc@"== "Replace" ) && ( "@alphaTest@" == "Always" ) )
+	techniqueSet( "@SW4_MaterialType@" ); 
+#else
+	techniqueSet( "@SW4_MaterialType@_transparent" ); 
+#endif
+
+// -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -
+	
+#include "commonsetup.template" 
+
+// -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -
+	
+#define SPEC_MAP_FORMAT 	 	  "DXT1"
+      	
+#if TARGET_PLATFORM == "xenon"
+            #define NORMAL_MAP_FORMAT     "DXN"
+	    #else
+	        #define NORMAL_MAP_FORMAT     "DXT5"
+	    #endif
+
+
+// -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -
+	
+textureTable
+{
+	"VignetteMap" =  map( "tile both", "mip standard (2x bilinear)", "$colorMap00$", 1 ) "<auto compression>" : "colorMap";
+}
+
+// -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -
+	
+constantTable
+{
+	"SrcCoords" = float2( @cg00_x@, @cg00_y@ );
+}
+	
+// -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -
+	
+allocReflectionProbe();
+
+// -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -
+	
+refImage( "$white" );

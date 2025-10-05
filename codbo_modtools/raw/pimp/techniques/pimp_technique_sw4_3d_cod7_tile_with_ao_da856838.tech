@@ -1,0 +1,33 @@
+{
+	stateMap "sw4_default";
+
+	vertexShader 3.0 "pimp_shader_sw4_3d_cod7_tile_with_ao_481cf339.hlsl"
+	{
+	}
+
+	pixelShader 3.0 "pimp_shader_sw4_3d_cod7_tile_with_ao_e4ae042b.hlsl" 
+	{
+		detail_tile_amt   = material.detail_tile_amt;
+  detail_normal_map = material.detail_normal_map;
+  normal_tile_amt   = material.normal_tile_amt;
+  normal_map        = material.normal_map;
+  diffuse_tile_amt  = material.diffuse_tile_amt;
+  specular_map      = material.specular_map;
+  diffuse_map       = material.diffuse_map;
+  ao_map            = material.ao_map;
+  reflection_amount = material.reflection_amount;
+  roughness_map     = material.roughness_map;
+	}
+
+	vertex.position = code.position;
+	vertex.normal      = code.normal;
+  vertex.texcoord[2] = code.tangent;
+  vertex.texcoord[0] = code.texcoord[0];
+
+	declTypes
+	{
+		packed
+		world
+	}
+}
+

@@ -1,0 +1,31 @@
+{
+	stateMap "default2d";
+
+	vertexShader 3.0 "pimp_shader_sw4_2d_superflare_f54bb8c8.hlsl"
+	{
+		FadePower      = material.FadePower;
+  FadeMin        = material.FadeMin;
+  ScreenBuffer   = material.ScreenBuffer;
+  FlareIntensity = material.FlareIntensity;
+  Scale          = material.Scale;
+  FlareSeed      = material.FlareSeed;
+  FlareIRotation = material.FlareIRotation;
+	}
+
+	pixelShader 3.0 "pimp_shader_sw4_2d_superflare_f54bb8c8.hlsl" 
+	{
+		FlareMap1 = material.FlareMap1;
+	}
+
+	vertex.position = code.position;
+	vertex.color[0]    = code.color;
+  vertex.texcoord[0] = code.texcoord[0];
+
+	declTypes
+	{
+		packed
+		debug
+		generic
+	}
+}
+

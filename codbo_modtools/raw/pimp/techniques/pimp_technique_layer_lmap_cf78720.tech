@@ -1,0 +1,27 @@
+{
+	stateMap "default";
+
+	vertexShader 3.0 "pimp_shader_layer_lmap_aee7e458.hlsl"
+	{
+	}
+
+	pixelShader 3.0 "pimp_shader_layer_lmap_63da7a53.hlsl" 
+	{
+		colorMapSampler = material.colorMap;
+		detailMapSampler = material.detailMap;
+		detailScale = material.detailScale;
+		normalMapSampler = material.normalMap;
+		specularMapSampler = material.specularMap;
+		envMapParms = material.envMapParms;
+		colorMapSampler1 = material.colorMap1;
+	}
+
+	vertex.position = code.position;
+	vertex.normal = code.normal;
+	vertex.color[0] = code.color;
+	vertex.texcoord[0] = code.texcoord[0];
+	vertex.texcoord[2] = code.tangent;
+	vertex.texcoord[3] = code.texcoord[1];
+
+}
+

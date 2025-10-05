@@ -1,0 +1,549 @@
+// Author - Stev Kalinowski
+// Date Created - March 2010
+// Tested in - Maya 2009
+
+// File and Plugin dependencies
+// MEL Scripts -
+//    PerforceMaya.mel
+//    cod_mew_exporterProcs.mel
+//    cod_mew_convertProcs.mel
+//    cod_aew_nodeLister_UI.mel
+//    cod_aew_exporterProcs.mel
+//    cod_aew_menus.mel
+//    arrayProcs.mel
+//    fileProcs.mel
+//    PerforceMaya.mel
+// Plugins -
+//    PerforceMaya.mll
+//    XAnimExport.mll
+
+{
+   global string $GAME_PROJECT_DIR;
+   global string $GAME_PROJECT_BIN;
+   global string $GAME_ANIMEXPORT_DIR;
+   global string $GAME_COLLMAP_DIR;
+   global string $IW_CORE_PATH;
+
+   $GAME_ANIMEXPORT_DIR = ($GAME_PROJECT_DIR+"/xanim_export/");
+
+   // Change drive letter to user's own local drive
+   // Trim excess stuff between the drive letter and the IW_PROJECT_GAMEDIR variable
+   global proc COD_AEW_fixDriveLetterOnGlobalAttrs() {
+      if (!`objExists IWGlobalNode`) {
+         return;
+      }
+
+      if (`attributeQuery -n "IWGlobalNode" -ex "AnimationCount"` == true) {
+         int $numEntries = `getAttr "IWGlobalNode.AnimationCount"`;
+         string $pattern = ".*";
+         $pattern += substitute( $GAME_PROJECT_DIR, $GAME_ANIMEXPORT_DIR, "" );
+   
+         for ($i=1; $i<=$numEntries; $i++) {
+            string $exportFile = `getAttr ("IWGlobalNode.FileName"+$i)`;
+            string $newExportFile = substitute( $pattern, $exportFile, $GAME_ANIMEXPORT_DIR );
+            setAttr -type "string" ("IWGlobalNode.FileName"+$i) $newExportFile;
+         }
+      }
+   }
+
+   // This proc will move the selected model exports in the scrollList up or down
+   global proc COD_AEW_moveSelectedEntries(int $direction, string $listName) {
+      int $selItems[] = `textScrollList -q -sii $listName`;
+      int $maxItems = `textScrollList -q -ni $listName`;
+      int $numSelected = size($selItems);
+
+      // If no items or all items are selected, the we can't move anything
+      if ($numSelected == 0 || $numSelected == $maxItems) {
+         return;
+      }
+
+      if ($direction == 0) {
+         // If we're moving entries down, we iterate backward
+         for ($i=($numSelected-1); $i>=0; $i--) {
+            // We call the proc that moves the entry down
+            // The proc move the data on the IWGlobalNode, so we let the window
+            // update take care of the UI stuff
+            COD_AEW_MoveModelEntry "Down" $selItems[$i];
+            // Now we update the entry's index value
+            // Moving down the list increases the index
+            $selItems[$i] += 1;
+         }
+      } else {
+         // If we're moving up the list we iterate over the indices
+         for ($i=0; $i<$numSelected; $i++) {
+            // We call the proc that moves the entry up
+            // The proc move the data on the IWGlobalNode, so we let the window
+            // update take care of the UI stuff
+            COD_AEW_MoveModelEntry "Up" $selItems[$i];
+            // Now we update the entry's index value
+            // Moving up the list decreases the index
+            $selItems[$i] -= 1;
+         }
+      }
+
+      // Update the window
+      COD_AEW_updateWindow $listName 0;
+
+      // Reselect the items with their new indices
+      for ($s in $selItems) {
+         if ($s != 0 && $s <= $maxItems) {
+            textScrollList -e -sii $s $listName;
+         }
+      }
+
+      // Since we changed the textScrollList selection, we need to update the entry data fields
+      COD_AEW_updateSelectedEntry $listName;
+   }
+
+   // Proc run from the UI to delete selected entries in the scrollList
+   global proc COD_AEW_deleteSelectedEntries(string $listName) {
+      // Get the selected items in the list
+      int $selExports[] = `textScrollList -q -sii $listName`;
+      // Unlock the IWGlobalNode
+      lockNode -lock off IWGlobalNode;
+
+      // One at a time, delete the selected entries
+      // We iterate backward so the indices don't change on us
+      for ($i=(size($selExports)-1); $i>=0; $i--) {
+         // Call the proc to perform the deletion which happens on the IWGlobalNode
+         COD_AEW_DeleteModelEntry $listName $selExports[$i];
+      }
+
+      // Update the window
+      COD_AEW_updateWindow $listName 0;
+      // Relock the IWGlobalNode
+      lockNode -lock on IWGlobalNode;
+   }
+
+   // Check the IWGlobalNode to see if a export filename already exists
+   global proc int COD_AEW_doesExportNameExist(string $exportName, int $skipIndex) {
+      if (`objExists IWGlobalNode` == 1) {
+         int $numEntries = `getAttr "IWGlobalNode.AnimationCount"`;
+         if ($numEntries > 0) {
+            for ($i=1; $i<=$numEntries; $i++) {
+               // We have to skip the index of the item we are checking because this would
+               // always return true if we were comparing an entry to itself
+               if ($i != $skipIndex) {
+                  string $file = `getAttr ("IWGlobalNode.FileName"+$i)`;
+                  if ($exportName == $file) {
+                     return 1;
+                  }
+               }
+            }
+         }
+      }
+      return 0;
+   }
+
+   // UI proc to refresh the window
+   // Called from scriptJobs on scene open and new scene
+   // Also called when user updates the currently selected entry or deletes entries
+   global proc COD_AEW_updateWindow(string $listName, int $sel) {
+      textScrollList -e -ra $listName;
+      textField -e -tx "" AEWsingleEntry_txt;
+
+      // If there isn't already a global node, create one
+      if ( `objExists IWGlobalNode` == 0 ) {
+         COD_MEW_createIWglobalNode;
+      }
+
+      // It is possible that the anim export window has made a global node, but not with
+      // the AnimationCount attribute, so we need to check for that too
+      if (`attributeQuery -n IWGlobalNode -ex "AnimationCount"` == 0) {
+         lockNode -lock off IWGlobalNode;
+         addAttr -ln AnimationCount -at byte IWGlobalNode;
+         setAttr "IWGlobalNode.AnimationCount" 0;
+         lockNode -lock on IWGlobalNode;
+      }
+
+      // Make sure drive letters on file paths match the user's local machine
+      COD_AEW_fixDriveLetterOnGlobalAttrs;
+
+      for ($i=1; $i<=`getAttr "IWGlobalNode.AnimationCount"`; $i++) {
+         string $exportFile = `getAttr ("IWGlobalNode.FileName"+$i)`;
+         string $shortName = substitute($GAME_ANIMEXPORT_DIR, $exportFile, "" );
+         if ($shortName != "")
+            textScrollList -e -a $shortName $listName;
+         else
+            textScrollList -e -a "< New Entry - Enter Model Export File Path >" $listName;
+      }
+
+      if ($sel != 0) {
+         textScrollList -e -sii $sel $listName;
+      }
+
+      COD_AEW_updateSelectedEntry $listName;
+   }
+
+   // This UI proc is called when a user changes the selected entry's properties
+   global proc COD_AEW_updateSelectedEntry(string $listName) {
+      string $selName[] = `textScrollList -q -si $listName`;
+      int $selIndex[] = `textScrollList -q -sii $listName`;
+
+      if (size($selName) == 1) {
+         int $frameStart = `getAttr ("IWGlobalNode.FrameStart" + $selIndex[0])`;
+         int $frameEnd = `getAttr ("IWGlobalNode.FrameEnd" + $selIndex[0])`;
+         string $noteTrack = `getAttr ("IWGlobalNode.ExportNoteTrack" + $selIndex[0])`;
+
+         textField -e -en 1 AEWsingleEntry_txt;
+         intField -e -en 1 AEWstartFrame_int;
+         intField -e -en 1 AEWendFrame_int;
+
+         if ($noteTrack == "NO NOTE TRACK") {
+            text -e -w 110 -l "NO NOTE TRACK" -bgc 1 0 0.7 AEWaddNoteTrack_lbl;
+         } else {
+            text -e -w 110 -l (" "+$noteTrack+" ") -bgc 0.9 0.9 0.9 AEWaddNoteTrack_lbl;
+         }
+
+         textField -e -tx $selName[0] AEWsingleEntry_txt;
+         intField -e -v $frameStart AEWstartFrame_int;
+         intField -e -v $frameEnd AEWendFrame_int;
+
+         button -e -en 1 AEWbrowseSingleEntry_btn;
+         button -e -en 1 AEWsetExportsSingle_btn;
+
+         COD_AEW_updateNodeLister $selIndex[0];
+      } else {
+         textField -e -tx "" -en 0 AEWsingleEntry_txt;
+         intField -e -v 0 -en 0 AEWstartFrame_int;
+         intField -e -v 0 -en 0 AEWendFrame_int;
+         button -e -en 0 AEWbrowseSingleEntry_btn;
+         button -e -en 0 AEWsetExportsSingle_btn;
+         
+         text -e -w 110 -l "NO NOTE TRACK" -bgc 1 0 0.7 AEWaddNoteTrack_lbl;
+
+         COD_AEW_updateNodeLister -1;
+      }
+   }
+
+   // Set the start frame attribute when user enters a new number in the intField
+   global proc COD_AEW_setStartFrame(string $listName) {
+      int $selIndex[] = `textScrollList -q -sii $listName`;
+
+      if (size($selIndex) == 1 && $selIndex[0] > 0) {
+         int $frameStart = `intField -q -v AEWstartFrame_int`;
+         setAttr ("IWGlobalNode.FrameStart" + $selIndex[0]) $frameStart;
+      }
+   }
+
+   // Set the end frame attribute when user enters a new number in the intField
+   global proc COD_AEW_setEndFrame(string $listName) {
+      int $selIndex[] = `textScrollList -q -sii $listName`;
+
+      if (size($selIndex) == 1 && $selIndex[0] > 0) {
+         int $frameEnd = `intField -q -v AEWendFrame_int`;
+         setAttr ("IWGlobalNode.FrameEnd" + $selIndex[0]) $frameEnd;
+      }
+   }
+
+   // Set the timeline to the selected entry in the scroll list
+   global proc COD_AEW_setToTimeline(string $listName) {
+      int $selIndex[] = `textScrollList -q -sii $listName`;
+
+      if (size($selIndex) == 1 && $selIndex[0] > 0) {
+         SetAnimationTimeline $selIndex[0];
+      }
+   }
+
+   // Read the animation frame range from the time slider and set the export attributes accordingly
+   global proc COD_AEW_getTimeline(string $listName) {
+      int $selIndex[] = `textScrollList -q -sii $listName`;
+
+      if (size($selIndex) == 1 && $selIndex[0] > 0) {
+         int $frameStart = `playbackOptions -q -min`;
+         int $frameEnd = `playbackOptions -q -max`;
+         setAttr ("IWGlobalNode.FrameStart" + $selIndex[0]) $frameStart;
+         setAttr ("IWGlobalNode.FrameEnd" + $selIndex[0]) $frameEnd;
+         intField -e -v $frameStart AEWstartFrame_int;
+         intField -e -v $frameEnd AEWendFrame_int;
+      }
+   }
+
+   // UI proc updates the text field and scrollList when user picks a file using the fileBrowser
+   global proc COD_AEW_updateCurrentEntry(string $listName) {
+      string $newEntryValue = `textField -q -tx AEWsingleEntry_txt`;
+      int $selIndex[] = `textScrollList -q -sii $listName`;
+
+      if (size($selIndex) == 1) {
+         if (`objExists IWGlobalNode`) {
+            if (`COD_AEW_doesExportNameExist ($GAME_ANIMEXPORT_DIR+$newEntryValue) $selIndex[0]`) {
+               confirmDialog -t "Duplicate Name" -m "The file name you have chosen is a duplicate" -b "OK";
+               string $oldName = `getAttr ("IWGlobalNode.FileName"+$selIndex[0])`;
+               textField -e -tx $oldName AEWsingleEntry_txt;
+            } else {
+               setAttr -type "string" ("IWGlobalNode.FileName"+$selIndex[0]) ($GAME_ANIMEXPORT_DIR+$newEntryValue);
+            }
+         }
+         COD_AEW_updateWindow $listName $selIndex[0];
+      }
+   }
+
+   // The right click Move Up and Down menu should only be available when not using the
+   // LOD grouping layout mode
+   // This proc when query which layout mode we are in, then enable or disable the
+   // menu accordingly
+   global proc COD_AEW_menuMoveEnable(string $listName) {
+      int $numSel = `textScrollList -q -nsi $listName`;
+      string $menuItems[] = `popupMenu -q -ia AEW_MoveEntriesMenu_mnu`;
+
+      if ($numSel == 0) {
+         for ($m in $menuItems) {
+            menuItem -e -en 0 $m;
+         }
+      } else {
+         for ($m in $menuItems) {
+            menuItem -e -en 1 $m;
+         }
+      }
+   }
+
+   // Creates the part of the UI that contains the scrollList
+   // It's a separate proc because I initially planned on being able to create groups
+   // Abandoned that idea, I would've had to store a bunch of extra unnecessary data on the global node
+   global proc string[] COD_AEW_createNewGroup() {
+      string $lodMsg = "Group LODs like they are grouped in the GDT files";
+      string $wiiMsg = "Add prefix to filename at export time and calls command to reassign skin weighting for character fingers";
+
+      string $groupLayout = `formLayout -nd 100`;
+         text -l "All Scene Animation Export Entires" AEWallSceneExportsLabel_txt;
+
+         string $exportList = `textScrollList -ams 1 -h 100`;
+         	popupMenu -pmc ("COD_AEW_menuMoveEnable "+$exportList) AEW_MoveEntriesMenu_mnu;
+            	menuItem -rp "N" -l "Move Up" -c ("COD_AEW_moveSelectedEntries 1 "+$exportList);
+            	menuItem -rp "S" -l "Move Down" -c ("COD_AEW_moveSelectedEntries 0 "+$exportList);
+      setParent COD_AEW_MainFormLayout_frm;
+
+      formLayout -e
+         -af AEWallSceneExportsLabel_txt "top" 0
+         -af AEWallSceneExportsLabel_txt "left" 20
+
+         -ac $exportList "top" 10 AEWallSceneExportsLabel_txt
+         -af $exportList "right" 20
+         -af $exportList "left" 20
+         -af $exportList "bottom" 20
+      $groupLayout;
+
+      textScrollList -e -dcc ("COD_AEW_SelectExportNodes "+$exportList) $exportList;
+      textScrollList -e -sc ("COD_AEW_updateSelectedEntry "+$exportList) $exportList;
+
+      return {$groupLayout, $exportList};
+   }
+
+   // First time creation of the UI elements for the single entry layout mode
+   global proc COD_AEW_createSingeEntryLayout() {
+      separator AEWmodifyEntry_sep1;
+      text -l "Modify Selected Entry" AEWmodifyEntryLabel_txt;
+
+      textField AEWsingleEntry_txt;
+      button -l "..." AEWbrowseSingleEntry_btn;
+      button -l "Set Exports" -w 70 AEWsetExportsSingle_btn;
+
+      // Editable entry UI members
+      button -l "Add Note Track" -w 120 AEWaddNoteTrack_btn;
+      button -l "Remove Note Track" -w 120 AEWremoveNoteTrack_btn;
+      text -l "NO NOTE TRACK" -w 110 -al "center" -bgc 1 0 0.7 AEWaddNoteTrack_lbl;
+
+      text -l "Start " AEWstartFrame_lbl;
+      intField -w 40 AEWstartFrame_int;
+      text -l "End " -al "right" AEWendFrame_lbl;
+      intField -w 40 AEWendFrame_int;
+      button -l "Get Timeline" -w 70 -ann "Get time range from Timeslider for Export" AEWgetTimeline_btn;
+      button -l "Set Timeline" -w 70 -ann "Set the Timeslider to the Export time range" AEWsetToTimeline_btn;
+
+      separator AEWmodifyEntry_sep2;
+
+      formLayout -e
+         -ac AEWmodifyEntry_sep1 "bottom" 0 AEWmodifyEntryLabel_txt
+         -af AEWmodifyEntry_sep1 "right" 5
+         -af AEWmodifyEntry_sep1 "left" 5
+
+         -ac AEWmodifyEntryLabel_txt "bottom" 15 AEWsingleEntry_txt
+         -af AEWmodifyEntryLabel_txt "right" 10
+         -af AEWmodifyEntryLabel_txt "left" 10
+
+         -ac AEWsingleEntry_txt "bottom" 20 AEWendFrame_int
+         -ac AEWsingleEntry_txt "right" 5 AEWbrowseSingleEntry_btn
+         -af AEWsingleEntry_txt "left" 20
+
+         -ac AEWbrowseSingleEntry_btn "bottom" 20 AEWendFrame_int
+         -ac AEWbrowseSingleEntry_btn "right" 5 AEWsetExportsSingle_btn
+
+         -ac AEWsetExportsSingle_btn "bottom" 20 AEWendFrame_int
+         -af AEWsetExportsSingle_btn "right" 20
+
+         -ac AEWaddNoteTrack_btn "bottom" 25 AEWmodifyEntry_sep2
+         -af AEWaddNoteTrack_btn "left" 20
+
+         -ac AEWremoveNoteTrack_btn "bottom" 25 AEWmodifyEntry_sep2
+         -ac AEWremoveNoteTrack_btn "left" 0 AEWaddNoteTrack_btn
+
+         -ac AEWaddNoteTrack_lbl "top" 27 AEWsingleEntry_txt
+         -ac AEWaddNoteTrack_lbl "bottom" 25 AEWmodifyEntry_sep2
+         -ac AEWaddNoteTrack_lbl "left" 0 AEWremoveNoteTrack_btn
+
+         -ac AEWstartFrame_lbl "bottom" 2 AEWsetToTimeline_btn
+         -ac AEWstartFrame_lbl "right" 0 AEWstartFrame_int
+
+         -ac AEWstartFrame_int "bottom" 0 AEWsetToTimeline_btn
+         -ac AEWstartFrame_int "right" 7 AEWendFrame_lbl
+
+         -ac AEWendFrame_lbl "bottom" 2 AEWsetToTimeline_btn
+         -ac AEWendFrame_lbl "right" 0 AEWendFrame_int
+
+         -ac AEWendFrame_int "bottom" 0 AEWsetToTimeline_btn
+         -af AEWendFrame_int "right" 20
+
+         -ac AEWgetTimeline_btn "bottom" 10 AEWmodifyEntry_sep2
+         -ac AEWgetTimeline_btn "right" 0 AEWsetToTimeline_btn
+
+         -ac AEWsetToTimeline_btn "bottom" 10 AEWmodifyEntry_sep2
+         -af AEWsetToTimeline_btn "right" 20
+
+         -ac AEWmodifyEntry_sep2 "bottom" 10 AEWexportSelected_btn
+         -af AEWmodifyEntry_sep2 "right" 5
+         -af AEWmodifyEntry_sep2 "left" 5
+      COD_AEW_MainFormLayout_frm;
+   }
+
+   // Prompts the user with a dialog box to pick an export file
+   global proc COD_AEW_pickExportFile(string $listName) {
+      int $selIndex[] = `textScrollList -q -sii $listName`;
+      string $currentDir = dirname( `file -q -sn` );
+
+      if (size($selIndex) == 1) {
+         string $fileToLoad = `fileDialog -m 1 -dm "*.XANIM_EXPORT"`;
+
+         if ($fileToLoad != "") {
+            string $shortName = substitute($GAME_ANIMEXPORT_DIR, $fileToLoad, "" );
+            $shortName = substitute(".XANIM_EXPORT", $shortName, "" );
+            textField -e -tx $shortName AEWsingleEntry_txt;
+         }
+
+         COD_AEW_updateCurrentEntry $listName;
+      } else if (size($selIndex) == 0) {
+         confirmDialog -t "Select an Entry" -m "You must select an entry" -b "OK";
+      } else {
+         confirmDialog -t "Multiple Entries" -m "You must select only one entry to edit" -b "OK";
+      }
+   }
+
+   // General setup, loads needed scripts and plugins
+   global proc int COD_AEW_Setup() {
+      if (!sakCatchSourceScript("CODExportAnimationWindow.mel")) return 0;
+
+      if (!sakCatchSourceScript("ModelExportWindow/cod_mew_exporterProcs.mel")) return 0;
+      if (!sakCatchSourceScript("ModelExportWindow/cod_mew_convertProcs.mel")) return 0;
+      if (!sakCatchSourceScript("AnimationExportWindow/cod_aew_nodeLister_UI.mel")) return 0;
+      if (!sakCatchSourceScript("AnimationExportWindow/cod_aew_exporterProcs.mel")) return 0;
+      if (!sakCatchSourceScript("AnimationExportWindow/cod_aew_menus.mel")) return 0;
+
+      if (!sakCatchSourceScript("library/arrayProcs.mel")) return 0;
+      if (!sakCatchSourceScript("library/fileProcs.mel")) return 0;
+//      if (!sakCatchSourceScript("PerforceMaya")) return 0;
+
+//      if (!sakCatchLoadPlugin("PerforceMaya")) return 0;
+      if (!sakCatchLoadPlugin("XAnimExport")) return 0;
+
+      if (`objExists IWGlobalNode` == 0) {
+         COD_MEW_createIWglobalNode;
+      }
+
+      return 1;
+   }
+
+   // This is the main proc which creates the Model Export window
+   global proc COD_ModelExportWindow_UI() {
+      // Call the setup procedure
+      if (!`COD_AEW_Setup`) {
+         error "Error occured during setup";
+      }
+
+      // Destroy the window if it already exists
+      if (`window -ex codAnimationExport_window`) {
+         deleteUI codAnimationExport_window;
+      }
+
+      // Make the main window
+      window -title (" Animation Export Window   ->   "+$GAME_ANIMEXPORT_DIR) -mb 1 -wh 770 670 -s 1 -mxb 0 codAnimationExport_window;
+
+      int $windowWidth = 690;
+      int $windowHeight = 500;
+
+      // Xanim Exporter Layouts
+      formLayout -nd 100 COD_AEW_frm;
+         formLayout -nd 100 COD_AEW_MainFormLayout_frm;
+            button -l "Add New Entry" AEWaddEntry_btn;
+            button -l "Delete Selected Entry" AEWdeleteSelectedEntry_btn;
+
+            button -l "Export Selected" AEWexportSelected_btn;
+            button -l "Export All" AEWexportAll_btn;
+
+            COD_AEW_createSingeEntryLayout;
+
+      // We start with the single entry layout, which is created here
+      string $exportGrp[] = `COD_AEW_createNewGroup`;
+
+      formLayout -e
+         -af COD_AEW_MainFormLayout_frm "top" 0
+         -af COD_AEW_MainFormLayout_frm "right" 0
+         -af COD_AEW_MainFormLayout_frm "left" 0
+         -af COD_AEW_MainFormLayout_frm "bottom" 0
+      COD_AEW_frm;
+
+      formLayout -e
+         -af $exportGrp "top" 20
+         -af $exportGrp "right" 20
+         -af $exportGrp "left" 20
+         -ac $exportGrp "bottom" 5 AEWmodifyEntry_sep1
+
+         -af AEWaddEntry_btn "bottom" 10
+         -ap AEWaddEntry_btn "right" 10 28
+         -af AEWaddEntry_btn "left" 20
+
+         -af AEWdeleteSelectedEntry_btn "bottom" 10
+         -ap AEWdeleteSelectedEntry_btn "right" 5 50
+         -ac AEWdeleteSelectedEntry_btn "left" 10 AEWaddEntry_btn
+
+         -af AEWexportSelected_btn "bottom" 10
+         -ac AEWexportSelected_btn "right" 10 AEWexportAll_btn
+         -ap AEWexportSelected_btn "left" 5 50
+
+         -af AEWexportAll_btn "bottom" 10
+         -af AEWexportAll_btn "right" 20
+         -ap AEWexportAll_btn "left" 10 72
+      COD_AEW_MainFormLayout_frm;
+
+      COD_AEW_createPulldownMenu();
+
+      // Show the window
+      showWindow codAnimationExport_window;
+
+      // Refresh the window
+      // This is when the IWGlobalNode is read and its information is put into the window
+      COD_AEW_nodeListerUI $exportGrp[1];
+      COD_AEW_updateWindow $exportGrp[1] 0;
+
+      // Add our button commands
+      button -e -c ("COD_AEW_AddAnimation "+$exportGrp[1]) AEWaddEntry_btn;
+      button -e -c ("COD_AEW_deleteSelectedEntries "+$exportGrp[1]) AEWdeleteSelectedEntry_btn;
+      button -e -c ("COD_AEW_StartTheExport 1 "+$exportGrp[1]) AEWexportSelected_btn;
+      button -e -c ("COD_AEW_StartTheExport 0 "+$exportGrp[1]) AEWexportAll_btn;
+
+      button -e -c ("COD_AEW_pickExportFile "+$exportGrp[1]) AEWbrowseSingleEntry_btn;
+      button -e -c ("COD_AEW_SetExportNodes "+$exportGrp[1]) AEWsetExportsSingle_btn;
+      button -e -c ("COD_AEW_setToTimeline "+$exportGrp[1]) AEWsetToTimeline_btn;
+      button -e -c ("COD_AEW_getTimeline "+$exportGrp[1]) AEWgetTimeline_btn;
+
+      button -e -c ("COD_AEW_SelectListNoteTrack "+$exportGrp[1]) AEWaddNoteTrack_btn;
+      button -e -c ("COD_AEW_RemoveNoteTrack "+$exportGrp[1]) AEWremoveNoteTrack_btn;
+
+      intField -e -cc ("COD_AEW_setStartFrame "+$exportGrp[1]) AEWstartFrame_int;
+      intField -e -cc ("COD_AEW_setEndFrame "+$exportGrp[1]) AEWendFrame_int;
+      textField -e -cc ("COD_AEW_updateCurrentEntry "+$exportGrp[1]) AEWsingleEntry_txt;
+
+      // We need to refresh the window when a user opens a new scene
+      scriptJob -p codAnimationExport_window -e "SceneOpened" ("COD_AEW_updateWindow "+$exportGrp[1]+" 0");
+      scriptJob -p codAnimationExport_window -e "NewSceneOpened" ("COD_AEW_updateWindow "+$exportGrp[1]+" 0");
+   }
+   COD_ModelExportWindow_UI;
+}

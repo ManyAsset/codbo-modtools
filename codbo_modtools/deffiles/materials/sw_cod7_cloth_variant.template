@@ -1,0 +1,33 @@
+#if "@blendFunc@" == "Blend" || ("@blendFunc@" == "Replace" && "@alphaTest@" != "Always")
+techniqueSet( "sw_cod7_cloth_variant" ); 
+#else
+techniqueSet( "sw_cod7_cloth_variant_noalpha" ); 
+#endif
+
+#include "commonsetup.template" 
+
+cgfxTextureTableRefImage
+{
+	"Normal_MapSampler" = streamable normalMap( "tile both", "mip (1x trilinear)", "model_export\american\characters\cod7\sprint1_characters\yawchar\textures\c_usa_s1_yawbody_n.tga", 0 ) "<auto compression>" : "normalMap"; 
+	"Detail_Normal_MapSampler" = streamable normalMap( "tile both", "mip (1x trilinear)", "", 0 ) "<auto compression>" : "normalMap"; 
+	"Roughness_MapSampler" = streamable map( "tile both", "mip (1x trilinear)", "", 0 ) "<auto compression>" : "colorMap"; 
+	"Falloff_Detail_MapSampler" = streamable map( "tile both", "mip (1x trilinear)", "", 0 ) "<auto compression>" : "colorMap"; 
+	"Diffuse_MapSampler" = streamable map( "tile both", "mip (1x trilinear)", "model_export\american\characters\cod7\sprint1_characters\yawchar\textures\c_usa_s1_yawbody_c.tga", 0 ) "<auto compression>" : "colorMap"; 
+	"Diffuse_Detail_MapSampler" = streamable map( "tile both", "mip (1x trilinear)", "", 0 ) "<auto compression>" : "colorMap"; 
+	"Specular_MapSampler" = streamable map( "tile both", "mip (1x trilinear)", "", 0 ) "<auto compression>" : "specularMap"; 
+}
+
+cgfxConstantTable
+{
+	"EnvBlurLevel" = float4( 0, 0, 0, 0 );
+	"Reflection_Amount" = float4( 0, 0, 0, 0 );
+	"Normap_Detail_Map_Scale" = float4( 18, 0, 0, 0 );
+	"Normal_Detail_Height_Scale" = float4( 1, 0, 0, 0 );
+	"Falloff_Terminator" = float4( 0.14, 0, 0, 0 );
+	"Falloff_Range" = float4( 0.5, 0, 0, 0 );
+	"Faloff_Detail_Map_Scale" = float4( 5.42, 0.8, 0.74, 0 );
+	"Diffuse_Detail_Map_Scale" = float4( 1, 1, 1, 0 );
+	"Falloff_Color" = float4( 0.8, 0.8, 0.74, 0 );
+}
+allocReflectionProbe();
+

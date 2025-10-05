@@ -1,0 +1,24 @@
+#if "@blendFunc@" == "Blend" || ("@blendFunc@" == "Replace" && "@alphaTest@" != "Always")
+techniqueSet( "sw_chainlink_2" ); 
+#else
+techniqueSet( "sw_chainlink_2_noalpha" ); 
+#endif
+
+#include "commonsetup.template" 
+
+cgfxTextureTableRefImage
+{
+	"Diffuse_MapSampler" = streamable map( "tile both", "mip most expensive (4x trilinear)", "texture_assets\miamisciencecenter\sc_fence_chainlink_c.tga", 0 ) "<auto compression>" : "colorMap"; 
+	"Normal_MapSampler" = streamable normalMap( "tile both", "mip (1x trilinear)", "texture_assets\miamisciencecenter\sc_fence_chainlink_n.tga", 0 ) "<auto compression>" : "normalMap"; 
+	"Specular_MapSampler" = streamable map( "tile both", "mip (1x trilinear)", "texture_assets\miamisciencecenter\sc_fence_chainlink_s.tga", 0 ) "<auto compression>" : "specularMap"; 
+}
+
+cgfxConstantTable
+{
+	"EnvBlurLevel" = float4( 0, 0, 0, 0 );
+	"Specular_Power" = float4( 16.53, 0, 0, 0 );
+	"Spec_Amt" = float4( 5.12, 0, 0, 0 );
+	"Edge_Opacity_Adjust" = float4( 4, 0, 0, 0 );
+}
+allocReflectionProbe();
+

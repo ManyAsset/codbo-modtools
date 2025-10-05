@@ -1,0 +1,29 @@
+#if "@blendFunc@" == "Blend" || ("@blendFunc@" == "Replace" && "@alphaTest@" != "Always")
+techniqueSet( "sw_water_stagnant" ); 
+#else
+techniqueSet( "sw_water_stagnant_noalpha" ); 
+#endif
+
+#include "commonsetup.template" 
+
+cgfxTextureTableRefImage
+{
+	"Normal_MapSampler" = streamable normalMap( "tile both", "mip (1x trilinear)", "texture_assets\water\river_n.tga", 0 ) "<auto compression>" : "normalMap"; 
+	"Detail_NormalSampler" = streamable normalMap( "tile both", "mip (1x trilinear)", "", 0 ) "<auto compression>" : "normalMap"; 
+	"Diffuse_MapSampler" = streamable map( "tile both", "mip (1x trilinear)", "texture_assets\shaderworks\clear_water_c.tga", 0 ) "<auto compression>" : "colorMap"; 
+	"Specular_MapSampler" = streamable map( "tile both", "mip (1x trilinear)", "texture_assets\shaderworks\rock02_g.tga", 0 ) "<auto compression>" : "specularMap"; 
+}
+
+cgfxConstantTable
+{
+	"EnvBlurLevel" = float4( 0, 0, 0, 0 );
+	"Dbg_Env_Amt" = float4( 2, 0, 0, 0 );
+	"Dbg_Frm_Amt" = float4( 1, 0, 0, 0 );
+	"World_Scale" = float4( 1, 0, 0, 0 );
+	"Normal_Scale" = float4( 0.3, 0, 0, 0 );
+	"Detail_Scale" = float4( 0.14, 0, 0, 0 );
+	"Normal_Amt" = float4( 0.6, 0, 0, 0 );
+	"Detail_Amt" = float4( 0.1, 0, 0, 0 );
+}
+allocReflectionProbe();
+

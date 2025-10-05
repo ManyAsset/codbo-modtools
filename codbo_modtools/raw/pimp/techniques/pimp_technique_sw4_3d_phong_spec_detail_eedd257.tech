@@ -1,0 +1,34 @@
+{
+	stateMap "sw4_default";
+
+	vertexShader 3.0 "pimp_shader_sw4_3d_phong_spec_detail_8d97de50.hlsl"
+	{
+	}
+
+	pixelShader 3.0 "pimp_shader_sw4_3d_phong_spec_detail_21252942.hlsl" 
+	{
+		Detail_Normal_Amt       = material.Detail_Normal_Amt;
+  Normal_Detail_Map_Scale = material.Normal_Detail_Map_Scale;
+  Detail_Map              = material.Detail_Map;
+  Normal_Map              = material.Normal_Map;
+  Specular_Map            = material.Specular_Map;
+  Roughness_Map           = material.Roughness_Map;
+  Spec_Detail_Tile_Amt    = material.Spec_Detail_Tile_Amt;
+  Spec_Detail_Tint        = material.Spec_Detail_Tint;
+  Spec_Detail_Map         = material.Spec_Detail_Map;
+  Diffuse_MapSampler      = material.Diffuse_MapSampler;
+  Reflection_Amount       = material.Reflection_Amount;
+	}
+
+	vertex.position = code.position;
+	vertex.normal      = code.normal;
+  vertex.texcoord[2] = code.tangent;
+  vertex.texcoord[0] = code.texcoord[0];
+
+	declTypes
+	{
+		packed
+		world
+	}
+}
+

@@ -1,0 +1,25 @@
+{
+	stateMap "default2d";
+
+	vertexShader 3.0 "pimp_shader_sw4_2d_pentagon_fullscreen_d0602324.hlsl"
+	{
+	}
+
+	pixelShader 3.0 "pimp_shader_sw4_2d_pentagon_fullscreen_d0602324.hlsl" 
+	{
+		VignetteMap                 = material.VignetteMap;
+  SrcCoords                   = material.SrcCoords;
+  ResolvedScene_Sampler_C3_P0 = sampler.resolvedScene;
+	}
+
+	vertex.position = code.position;
+	vertex.texcoord[0] = code.texcoord[0];
+
+	declTypes
+	{
+		packed
+		debug
+		generic
+	}
+}
+

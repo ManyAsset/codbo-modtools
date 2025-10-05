@@ -1,0 +1,165 @@
+//#########################
+//	Traversals
+//#########################
+include,traverse_generic
+include,traverse_dive_over_40
+include,traverse_jump_across_72
+include,traverse_jump_across_120
+include,traverse_jump_down_36
+include,traverse_jump_down_40
+include,traverse_jump_down_56
+include,traverse_jump_down_96
+include,traverse_ladder
+include,traverse_mantle_window_36
+include,traverse_mantle_on_36
+include,traverse_mantle_on_40
+include,traverse_mantle_on_56
+include,traverse_mantle_over_36
+include,traverse_mantle_over_40
+include,traverse_mantle_over_40_down_80
+include,traverse_stairs_down_8x12
+include,traverse_stairs_up_8x12
+
+// Traversal animscripts
+rawfile,animscripts/traverse/temp_traverse.gsc
+
+// Traversal Anims
+xanim,ch_kowloon_136_dropdown_a
+xanim,ch_kowloon_136_dropdown_run2run_leap
+xanim,ch_kowloon_136_dropdown_run2run_roll
+xanim,ch_kowloon_136_dropdown_run2stand_roll
+xanim,ch_kowloon_136_dropdown_stand2stand
+xanim,ch_kowloon_dropdown_awnings_01
+xanim,ch_kowloon_dropdown_awnings_02
+
+//##########################
+//	Scenes
+//##########################
+
+// Interrogation
+xanim,ch_kowloon_b01_intro_clark_glass
+xanim,ch_kowloon_b01_intro_clark_glass_idle
+xanim,ch_kowloon_b01_intro_clark_in
+xanim,ch_kowloon_b01_intro_clark_out
+xanim,ch_kowloon_b01_intro_clark_punch
+xanim,ch_kowloon_b01_intro_clark_punch_idle
+xanim,ch_kowloon_b01_intro_guy_glass
+xanim,ch_kowloon_b01_intro_guy_glass_idle
+xanim,ch_kowloon_b01_intro_guy_in
+xanim,ch_kowloon_b01_intro_guy_out
+xanim,ch_kowloon_b01_intro_guy_punch
+xanim,ch_kowloon_b01_intro_guy_punch_idle
+xanim,int_kowloon_b01_intro_player_glass
+xanim,int_kowloon_b01_intro_player_glass_idle
+xanim,int_kowloon_b01_intro_player_in
+xanim,int_kowloon_b01_intro_player_out
+xanim,int_kowloon_b01_intro_player_punch
+xanim,int_kowloon_b01_intro_player_punch_idle
+xanim,ch_kowloon_b01_intro_clark_escape
+xanim,ch_kowloon_b01_intro_clark_table_idle
+xanim,o_kowloon_b01_intro_chair
+xanim,o_kowloon_b01_intro_glass
+xanim,o_kowloon_b01_intro_hatch
+xanim,o_kowloon_b01_intro_table
+
+
+
+
+// E2 Jump to Cache room
+xanim,ch_kowloon_b01_first_jump_clark
+xanim,ch_kowloon_b01_first_jump_weaver
+xanim,ch_kowloon_b01_first_jump_guy_1
+
+// E3 cache room - Fridge push
+xanim,o_kowloon_b01_fridge_push
+xanim,o_kowloon_b01_fridge_loop
+
+xanim,ch_kowloon_b01_fridge_clark_loop
+xanim,ch_kowloon_b01_fridge_weaver_loop
+		
+xanim,ch_kowloon_b01_fridge_push_weaver
+xanim,ch_kowloon_b01_fridge_push_clark
+
+xanim,ch_kowloon_b01_fridge_push_wait_clark
+xanim,ch_kowloon_b01_fridge_push_wait_weaver
+xanim,ch_kowloon_b01_fridge_push_out_clark
+xanim,ch_kowloon_b01_fridge_push_out_weaver	
+
+xanim,o_kowloon_b01_fridge_push_door
+
+// E3 Rappel through window
+xanim,ch_kowloon_b02_spetz_rappel_breach_1
+xanim,ch_kowloon_b02_spetz_rappel_breach_2
+
+// E4 Pipe slide
+xanim,int_kowloon_b04_pipe_slide
+xanim,ch_kowloon_b04_pipe_slide_clark
+xanim,ch_kowloon_b04_pipe_slide_weaver
+
+//E4 temple roof top
+xanim,ch_kowloon_b04_rooftop_traversal_a
+xanim,ch_kowloon_b04_rooftop_traversal_b
+
+// E5 Clark blows up apartment
+xanim,v_kowloon_b04_destroy_home_heli
+
+
+xanim,ch_kowloon_b04_destroy_home_clark
+xanim,ch_kowloon_b04_destroy_home_clark_loop
+xanim,ch_kowloon_b04_destroy_home_spetz1
+xanim,ch_kowloon_b04_destroy_home_spetz2
+
+// E6 Clark defend scene (unlock gate)
+xanim,ch_kowloon_b06_clark_move2lock
+xanim,ch_kowloon_b06_clark_open2stand
+xanim,ch_kowloon_b06_clark_unlockloop
+
+// E7 Clark death scene
+xanim,int_kowloon_b07_clarkdeath_player
+xanim,ch_kowloon_b07_clarkdeath_clark
+xanim,ch_kowloon_b07_clarkdeath_clark_jump
+xanim,ch_kowloon_b07_clarkdeath_weaver
+xanim,ch_kowloon_b07_clarkdeath_clark_loop
+xanim,o_kowloon_b07_clarkdeath_gutter
+
+
+// civilian pushed from window
+xanim,ch_kowloon_b04_window_push_civ
+xanim,ch_kowloon_b04_window_push_spetz1
+
+// kick door breaching
+xanim,ai_doorbreach_kick
+
+// Van
+xanim,ch_kowloon_b07_vancrash_hero_01
+xanim,ch_kowloon_b07_vancrash_hero_01_loop
+xanim,ch_kowloon_b07_vancrash_hero_01_out
+
+xanim,ch_kowloon_b07_vancrash_hero_02
+xanim,ch_kowloon_b07_vancrash_hero_02_loop
+xanim,ch_kowloon_b07_vancrash_hero_02_out
+
+xanim,ch_kowloon_b07_vancrash_passenger
+xanim,ch_kowloon_b07_vancrash_passenger_loop
+xanim,ch_kowloon_b07_vancrash_passenger_out
+
+xanim,ch_kowloon_b07_vancrash_spetz_01
+xanim,ch_kowloon_b07_vancrash_spetz_02
+
+xanim,ch_kowloon_b07_vancrash_spetz_01_dead
+xanim,ch_kowloon_b07_vancrash_spetz_02_dead
+
+xanim,v_kowloon_b07_vancrash_van
+
+xanim,int_kowloon_b07_vancrash_player_out
+
+//spetz rappel.
+xanim,ch_kowloon_b03_spetznaz_rappel
+
+// gas deaths
+include,ai_anims_gas
+
+// player gas death anim
+xanim,int_player_gas_death
+
+include,ai_anims_pistol

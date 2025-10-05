@@ -1,0 +1,162 @@
+{
+   // Takes a string array, each item represents one DOS command
+   // A temp bat file is written then executed
+   global proc sakRunBatchCommands(string $cmds[]) {
+      string $tmpBatchFile = "c:\\temp_convert.bat";
+
+      if (`filetest -w $tmpBatchFile` == true) {
+         sysFile -del $tmpBatchFile;
+      } else if (`filetest -r $tmpBatchFile` == true) {
+         return;
+      }
+
+      $fout = `fopen $tmpBatchFile "w"`;
+      fwrite $fout `stringArrayToString $cmds "\r\n"`;
+      fclose $fout;
+
+      exec( $tmpBatchFile );
+   }
+
+   // Reads a text file assuming each line is one item in the array
+   // Generally used for bone lists and character sets
+   global proc sakReadListFile(string $filePath, string $arr[]) {
+      int $fin = `fopen $filePath "r"`;
+      int $i = 0;
+      string $line = `fgetline $fin`;
+
+      while (size($line) > 0) {
+         $arr[size($arr)] = `strip $line`;
+         $line = `fgetline $fin`;
+         $i++;
+      }
+      fclose $fin;
+   }
+
+   // Given a full depot path from P4, this proc will search the local hard dirve
+   // by trying all possible drive letters until the file is found
+   // The local file path is returned, if it's not found and empty string is returned
+   global proc string findFileFromDepot(string $depotPath) {
+      string $driveLetters[] = stringToStringArray("C,D,E,F,G,H,I,J,K,L,M,N,O,P,Q,R,S,T,U,V,W,X,Y,Z", ",");
+
+      for ($drive in $driveLetters) {
+         string $localPath = substitute( "^//depot", $depotPath, ($drive+":") );
+         if (`filetest -f $localPath` == true) {
+            return $localPath;
+         }
+      }
+
+      return "";
+   }
+
+   // Maya UI object names cannot contain certain characters, this will return the string after
+   // replacing spaces with underscores and removing invalid characters
+   global proc string removeInvalidCharacters(string $pItemName) {
+      string $chars[] = stringToStringArray("\,/,|,-,!,@,#,$,%,^,&,*,(,),[,],{,},=,+,?,<,>", ",");
+      string $str = `substituteAllString $pItemName " " "_"`;
+
+      for ($c in $chars) {
+         $str = `substituteAllString $str $c ""`;
+      }
+
+      return $str;
+   }
+
+   // Given a folder depot path from P4, this proc will search the local hard dirve
+   // by trying all possible drive letters until the directory is found
+   // The local folder path is returned, if it's not found and empty string is returned
+   global proc string findFolderFromDepot(string $depotPath) {
+      string $driveLetters[] = stringToStringArray("C,D,E,F,G,H,I,J,K,L,M,N,O,P,Q,R,S,T,U,V,W,X,Y,Z", ",");
+
+      for ($drive in $driveLetters) {
+         string $localPath = substitute( "^//depot", $depotPath, ($drive+":") );
+         if (`filetest -d $localPath` == true) {
+            return $localPath;
+         }
+      }
+
+      return "";
+   }
+
+   // Reads all of an ini file's items in a given section
+   global proc string[] getConfigSectionItems(string $file, string $sectionName) {
+      string $items[];
+
+      if (!`filetest -f $file`) {
+         return $items;
+      }
+
+      int $fin = `fopen $file "r"`;
+      int $readingSection = false;
+
+      while (!`feof $fin`) {
+         string $line = strip(`fgetline $fin`);
+         string $section = `match "^\\[.+\\]$" $line`;
+
+         if ($line != "") {
+            if ($section != "" && $readingSection == false) {
+               string $name = substitute( "\\]$", substitute("^\\[", $section, ""), "" );
+   
+               if (strcmp($name, $sectionName) == 0) {
+                  $readingSection = true;
+               }
+            } else if ($section != "" && $readingSection == true) {
+               fclose $fin;
+               return $items;
+            } else if ($readingSection == true) {
+               string $tmp[];
+               tokenize $line "=" $tmp;
+   
+               if (size($tmp) > 0) {
+                  $items[size($items)] = strip($tmp[0]);
+               }
+            }
+         }
+      }
+
+      fclose $fin;
+      return $items;
+   }
+
+   // Given a section and item name, this will return the value of the item from an ini file
+   global proc string getConfigItem(string $file, string $sectionName, string $itemName) {
+      string $items[];
+
+      if (!`filetest -f $file`) {
+         return "";
+      }
+
+      int $fin = `fopen $file "r"`;
+      int $readingSection = false;
+
+      while (!`feof $fin`) {
+         string $line = strip(`fgetline $fin`);
+         string $section = `match "^\\[.+\\]$" $line`;
+
+         if ($line != "") {
+            if ($section != "" && $readingSection == false) {
+               string $name = substitute( "\\]$", substitute("^\\[", $section, ""), "" );
+   
+               if (strcmp($name, $sectionName) == 0) {
+                  $readingSection = true;
+               }
+            } else if ($readingSection == true) {
+               string $tmp[];
+               tokenize $line "=" $tmp;
+   
+               if (size($tmp) > 1) {
+                  string $item = strip($tmp[0]);
+                  string $itemValue = strip($tmp[1]);
+
+                  if (strcmp($item, $itemName) == 0) {
+                     fclose $fin;
+                     return $itemValue;
+                  }
+               }
+            }
+         }
+      }
+
+      fclose $fin;
+      return "";
+   }
+}

@@ -1,0 +1,100 @@
+{
+   // Write a mel script which will create the IWGlobalNode with its current exports
+   proc COD_MEW_writeGlobalNodeFile(string $filename) {
+      int $fout = `fopen $filename "w"`;
+      
+      fprint $fout "{\n";
+      fprint $fout "COD_MEW_createIWglobalNode();\n";
+
+      int $exportCount = getAttr("IWGlobalNode.ModelCount");
+      fprint $fout ("setAttr (\"IWGlobalNode.ModelCount\") "+$exportCount+";\n");
+
+      for ($i=1; $i<($exportCount+1); $i++) {
+         fprint $fout ("COD_MEW_AddModelAttributes "+$i+";\n");
+
+         string $filename = `getAttr ("IWGlobalNode.ModelFileName" + $i)`;
+         string $exportNode1 = `getAttr ("IWGlobalNode.ExportModelNodes" + $i)`;
+         int $doNotExportChildren1 = `getAttr ("IWGlobalNode.DoNotExportChildren" + $i)`;
+         int $forceExportSelectedJoints1 = `getAttr ("IWGlobalNode.ForceExportSelectedJoints" + $i)`;
+
+         fprint $fout ("setAttr -type \"string\" (\"IWGlobalNode.ModelFileName"+$i+"\") \""+$filename+"\";\n");
+         fprint $fout ("setAttr -type \"string\" (\"IWGlobalNode.ExportModelNodes"+$i+"\") \""+$exportNode1+"\";\n");
+         fprint $fout ("setAttr (\"IWGlobalNode.DoNotExportChildren"+$i+"\") "+$doNotExportChildren1+";\n");
+         fprint $fout ("setAttr (\"IWGlobalNode.ForceExportSelectedJoints"+$i+"\") "+$forceExportSelectedJoints1+";\n");
+      }
+
+      fprint $fout "}";
+      fclose $fout;
+   }
+
+   // Creates a new IWGlobalNode
+   global proc COD_MEW_newGlobalNode(string $listName) {
+      if (`objExists IWGlobalNode`) {
+         if (`confirmDialog -t "New Exports"
+            -m "This will delete all Export Entires.\nDo you want to proceed?"
+            -b "Yes" -b "No" -db "Yes" -cb "No" -ds "No"` == "Yes") {
+            // Unlock and delete the IWGlobalNode
+            lockNode -l off IWGlobalNode;
+            delete IWGlobalNode;
+            // Make a new one
+            COD_MEW_createIWglobalNode;
+         } else {
+            return;
+         }
+      }
+      // Refresh the window
+      COD_MEW_updateWindow $listName 0;
+   }
+
+   // Saves the IWGlobalNode to an empty maya file
+   // The extra extension ".EXPORTS." is added to the file name
+   global proc COD_MEW_saveGlobalNode() {
+      if (`objExists IWGlobalNode`) {
+         // Remember the current selection
+         string $sel[] = `ls -sl -l`;
+         // Get the file name from the user
+         string $fileToSave = `fileDialog -m 1 -dm "*.EXPORTS.mel"`;
+
+         select -cl;
+
+         if ($fileToSave != "") {
+            $fileToSave = substitute(".EXPORTS", substitute(".mel", $fileToSave, ""), "");
+            $fileToSave += ".EXPORTS.mel";
+
+            COD_MEW_writeGlobalNodeFile($fileToSave);
+         }
+
+         // Reselect the user's original selection
+         select -r $sel;
+      }
+   }
+
+   // This will delete the current file's IWGlobalNode then import another one
+   global proc COD_MEW_openGlobalNode(string $listName) {
+      if (`confirmDialog -t "Open Exports"
+         -m "This will replace all Export Entires.\nDo you want to proceed?"
+         -b "Yes" -b "No" -db "Yes" -cb "No" -ds "No"` == "No") {
+         return;
+      }
+
+      // Get the file to import from the user
+      string $fileToLoad = `fileDialog -dm "*.EXPORTS.mel"`;
+
+      if ($fileToLoad != "") {
+         if ( exists($fileToLoad) ) {
+            if (`objExists IWGlobalNode`) {
+               // Delete the existing IWGlobalNode
+               lockNode -l off IWGlobalNode;
+               delete IWGlobalNode;
+            }
+            // Import the new one
+            eval("source \""+$fileToLoad+"\"");
+         } else {
+            error "File not found";
+         }
+      }
+
+      // Refresh the window
+      COD_MEW_updateWindow $listName 0;
+   }
+}

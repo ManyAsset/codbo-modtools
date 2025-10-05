@@ -1,0 +1,28 @@
+{
+	stateMap "additive_alpha";
+
+	vertexShader 3.0 "pimp_shader_cod7modelcloak_fa450c03.hlsl"
+	{
+		cloakTextureControl0 = material.cloakTextureControl0;
+		cloakTextureControl1 = material.cloakTextureControl1;
+	}
+
+	pixelShader 3.0 "pimp_shader_cod7modelcloak_fa450c03.hlsl" 
+	{
+		diffuseMap = material.diffuseMap;
+		normalMap = material.normalMap;
+		specularMap = material.specularMap;
+		cloakMap = material.cloakMap;
+		distortionMap = material.distortionMap;
+		cloakedSampler = sampler.resolvedPostSun;
+		specularBaseColor = material.specularBaseColor;
+		cloakDistortionAmount = material.cloakDistortionAmount;
+	}
+
+	vertex.position = code.position;
+	vertex.texcoord[0] = code.texcoord[0];
+	vertex.normal = code.normal;
+	vertex.texcoord[1] = code.tangent;
+
+}
+

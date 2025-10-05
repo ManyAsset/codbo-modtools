@@ -1,0 +1,63 @@
+
+#if ( ( "@blendFunc@"== "Replace" ) && ( "@alphaTest@" == "Always" ) )
+	techniqueSet( "@SW4_MaterialType@" ); 
+#else
+	techniqueSet( "@SW4_MaterialType@_transparent" ); 
+#endif
+
+// -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -
+	
+#include "commonsetup.template" 
+
+// -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -
+	
+#define SPEC_MAP_FORMAT 	 	  "DXT1"
+      	
+#if TARGET_PLATFORM == "xenon"
+            #define NORMAL_MAP_FORMAT     "DXN"
+	    #else
+	        #define NORMAL_MAP_FORMAT     "DXT5"
+	    #endif
+
+
+// -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -
+	
+textureTable
+{
+	"Charred_Normal_Detail_Map" = streamable normalMap( "tile both", "mip standard (2x bilinear)", "$colorMap06$", 0 ) NORMAL_MAP_FORMAT : "normalMap";
+	"Compress_Map" = streamable normalMap( "tile both", "mip (1x bilinear)", "$colorMap00$", 0 ) NORMAL_MAP_FORMAT : "normalMap";
+	"Stretch_Map" = streamable normalMap( "tile both", "mip (1x bilinear)", "$colorMap01$", 0 ) NORMAL_MAP_FORMAT : "normalMap";
+	"Normal_Map" = streamable normalMap( "tile both", "mip (1x bilinear)", "$colorMap05$", 0 ) NORMAL_MAP_FORMAT : "normalMap";
+	"Diffuse_MapSampler" = streamable map( "tile both", "mip (1x bilinear)", "$colorMap04$", 0 ) "<auto compression>" : "colorMap";
+	"Charred_Specular_Detail_Map" = streamable map( "tile both", "mip standard (2x bilinear)", "$colorMap15$", 0 ) "<auto compression>" : "colorMap";
+	"Specular_Map" = streamable map( "tile both", "mip (1x bilinear)", "$colorMap02$", 0 ) SPEC_MAP_FORMAT : "specularMap";
+	"Charred_Diffuse_Detail_Map" = streamable map( "tile both", "mip standard (2x bilinear)", "$colorMap10$", 0 ) "<auto compression>" : "colorMap";
+	"Rim_Specular_Mask" = streamable map( "tile both", "mip (1x bilinear)", "$colorMap14$", 0 ) SPEC_MAP_FORMAT : "specularMap";
+	"Roughness_Map" = streamable map( "tile both", "mip (1x bilinear)", "$colorMap03$", 0 ) SPEC_MAP_FORMAT : "specularMap";
+}
+
+// -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -
+	
+constantTable
+{
+	"Char_Swatch_Scale" = float2( @cg15_x@, @cg15_y@ );
+	"Tension_Data_2" = float4( @cg00_x@, @cg00_y@, @cg00_z@, @cg00_w@ );
+	"Tension_Data_1" = float4( @cg01_x@, @cg01_y@, @cg01_z@, @cg01_w@ );
+	"Compress_Map_Height" = float1( @cg02_x@ );
+	"Stretch_Map_Height" = float1( @cg03_x@ );
+	"Temporal_Sharpness" = float1( @cg09_x@ );
+	"Charred_Ember_Color" = float4( @cg08_x@, @cg08_y@, @cg08_z@, @cg08_w@ );
+	"Scatter_Intensity" = float1( @cg10_x@ );
+	"Edge_Intensity" = float1( @cg11_x@ );
+	"Rim_Specular" = float1( @cg27_x@ );
+	"Spotlight_Spec_Multiplier" = float1( @cg24_x@ );
+	"Reflection_Amount" = float1( @cg06_x@ );
+}
+	
+// -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -
+	
+allocReflectionProbe();
+
+// -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -
+	
+refImage( "$colorMap04$" );

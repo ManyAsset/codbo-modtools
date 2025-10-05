@@ -1,0 +1,23 @@
+{
+	stateMap "additive";
+
+	vertexShader 3.0 "pimp_shader_sw4_3d_pentagon_animated_windows_363f99ea.hlsl"
+	{
+	}
+
+	pixelShader 3.0 "pimp_shader_sw4_3d_pentagon_animated_windows_363f99ea.hlsl" 
+	{
+		VideoBrightness = material.VideoBrightness;
+  VideoCoords     = material.VideoCoords;
+	}
+
+	vertex.position = code.position;
+	vertex.texcoord[0] = code.texcoord[0];
+
+	declTypes
+	{
+		packed
+		world
+	}
+}
+

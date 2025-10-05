@@ -1,0 +1,18 @@
+{
+	stateMap "effect_add_noztest";
+
+	vertexShader 3.0 "pimp_shader_effectsimple_5fc4301f.hlsl"
+	{
+		eyeOffsetParms = material.eyeOffsetParms;
+	}
+
+	pixelShader 3.0 "pimp_shader_effectsimple_7df2a676.hlsl" 
+	{
+		colorMapSampler = material.colorMap;
+	}
+
+	vertex.position = code.position;
+	vertex.texcoord[0] = code.texcoord[0];
+
+}
+

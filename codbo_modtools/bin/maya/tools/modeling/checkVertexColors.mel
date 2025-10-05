@@ -1,0 +1,75 @@
+{
+   global proc sak_applyWhiteVertexColors(string $obj) {
+      polyColorPerVertex -r 1 -g 1 -b 1 -a 1 $obj;
+   }
+
+   global proc sak_getPolyShapes(string $obj, string $polyShapes[]) {
+      string $shapes[] = `listRelatives -s -f -ni $obj`;
+
+      for ($s in $shapes) {
+         if (`objectType $s` == "mesh") {
+            $polyShapes[size($polyShapes)] = $s;
+         }
+      }
+   }
+
+   global proc int sak_checkForColorSet(string $obj) {
+      string $cSet[] = `polyColorSet -q -currentColorSet $obj`;
+
+      if ($cSet[0] == "")
+         return 0;
+      else
+         return 1;
+   }
+
+   global proc int sak_checkSelectedForColors(string $missingColors[]) {
+      string $sel[] = listRelatives("-s", "-ni", ls("-sl", "-l"));
+      clear($missingColors);
+
+      for ($s in $sel) {
+         if (`sak_checkForColorSet $s` == 0) {
+            $missingColors[size($missingColors)] = $s;
+         }
+      }
+
+      if (size($missingColors) > 0) {
+         return true;
+      } else {
+         return false;
+      }
+   }
+
+   global proc sak_getModelExports() {
+      string $IWglobal = "IWGlobalNode";
+      string $allScenePolyShapes[];
+      string $noColorSets[];
+
+      if (`objExists $IWglobal` == 1) {
+         int $mCount = `getAttr ($IWglobal + ".ModelCount")`;
+
+         for ($o=1; $o<($mCount+1); $o++) {
+            string $tmpNodes = `getAttr ($IWglobal + ".ExportModelNodes" + $o)`;
+            string $expNodes[] = stringToStringArray($tmpNodes, " ");
+
+            for ($p=0; $p<size($expNodes); $p++) {
+               string $polyShapes[];
+               sak_getPolyShapes $expNodes[$p] $polyShapes;
+               appendStringArray($allScenePolyShapes, $polyShapes, size($polyShapes));
+            }
+         }
+
+         for ($node in $allScenePolyShapes) {
+            if (`sak_checkForColorSet $node` == 0) {
+               $noColorSets[size($noColorSets)] = $node;
+            }
+         }
+
+         if (size($noColorSets) > 0) {
+            select $noColorSets;
+            pickWalk -d "up";
+         } else {
+            select -cl;
+         }
+      }
+   }
+}

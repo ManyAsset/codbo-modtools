@@ -1,0 +1,16 @@
+
+main()
+{
+	self setModel("c_vtn_mp_smg_fb_player");
+	self.headModel = "c_vtn_vc3_head";
+	self attach(self.headModel, "", true);
+	self setViewmodel("viewmodel_vtn_arms");
+	self.voice = "american";
+	self.skeleton = "base";
+}
+precache()
+{
+	precacheModel("c_vtn_mp_smg_fb_player");
+	precacheModel("c_vtn_vc3_head");
+	precacheModel("viewmodel_vtn_arms");
+}  

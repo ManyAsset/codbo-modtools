@@ -1,0 +1,26 @@
+{
+	stateMap "sw4_default";
+
+	vertexShader 3.0 "pimp_shader_sw4_3d_caustics_above_animated_94bc6bb4.hlsl"
+	{
+	}
+
+	pixelShader 3.0 "pimp_shader_sw4_3d_caustics_above_animated_2aa4d998.hlsl" 
+	{
+		Scale          = material.Scale;
+  FPS            = material.FPS;
+  Grid           = material.Grid;
+  CausticsPadded = material.CausticsPadded;
+	}
+
+	vertex.position = code.position;
+	vertex.color[0]    = code.color;
+  vertex.texcoord[0] = code.texcoord[0];
+
+	declTypes
+	{
+		packed
+		world
+	}
+}
+

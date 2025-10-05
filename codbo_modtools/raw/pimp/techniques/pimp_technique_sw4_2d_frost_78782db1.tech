@@ -1,0 +1,25 @@
+{
+	stateMap "default2d";
+
+	vertexShader 3.0 "pimp_shader_sw4_2d_frost_2474efee.hlsl"
+	{
+	}
+
+	pixelShader 3.0 "pimp_shader_sw4_2d_frost_2474efee.hlsl" 
+	{
+		IceMap                      = material.IceMap;
+  WarpAmplitude               = material.WarpAmplitude;
+  ResolvedScene_Sampler_C4_P0 = sampler.resolvedScene;
+	}
+
+	vertex.position = code.position;
+	vertex.texcoord[0] = code.texcoord[0];
+
+	declTypes
+	{
+		packed
+		debug
+		generic
+	}
+}
+

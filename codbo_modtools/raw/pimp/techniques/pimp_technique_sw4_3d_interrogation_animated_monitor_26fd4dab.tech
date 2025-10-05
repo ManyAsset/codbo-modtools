@@ -1,0 +1,23 @@
+{
+	stateMap "build_floatz";
+
+	vertexShader 3.0 "pimp_shader_sw4_3d_interrogation_animated_monitor_77151989.hlsl"
+	{
+	}
+
+	pixelShader 3.0 "pimp_shader_sw4_3d_interrogation_animated_monitor_77151989.hlsl" 
+	{
+		NormalMap      = material.NormalMap;
+  DiffuseMap     = material.DiffuseMap;
+  SpecularAmount = material.SpecularAmount;
+	}
+
+	vertex.position = code.position;
+
+	declTypes
+	{
+		packed
+		world
+	}
+}
+

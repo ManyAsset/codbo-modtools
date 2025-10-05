@@ -1,0 +1,25 @@
+{
+	stateMap "default";
+
+	vertexShader 3.0 "pimp_shader_lprobe_68302fd3.hlsl"
+	{
+	}
+
+	pixelShader 3.0 "pimp_shader_lprobe_2cc70ccb.hlsl" 
+	{
+		colorMapSampler = material.colorMap;
+		eyeballGlossScale = material.eyeballGlossScale;
+		eyeballEyeScale = material.eyeballEyeScale;
+		eyeballEyeCenter = material.eyeballEyeCenter;
+		eyeballGlossMap_Sampler = material.eyeballGlossMap;
+		eyeballSphereMap_Sampler = material.eyeballSphereMap;
+		dynamicFoliageSunDiffuseMinMax = material.dynamicFoliageSunDiffuseMinMax;
+	}
+
+	vertex.position = code.position;
+	vertex.normal = code.normal;
+	vertex.texcoord[0] = code.texcoord[0];
+	vertex.texcoord[3] = code.texcoord[1];
+
+}
+

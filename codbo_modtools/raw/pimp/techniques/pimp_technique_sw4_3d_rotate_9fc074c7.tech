@@ -1,0 +1,28 @@
+{
+	stateMap "sw4_default";
+
+	vertexShader 3.0 "pimp_shader_sw4_3d_rotate_76e83508.hlsl"
+	{
+		Seed_Value         = material.Seed_Value;
+  Rotation_Speed_Max = material.Rotation_Speed_Max;
+  Rotation_Speed_Min = material.Rotation_Speed_Min;
+	}
+
+	pixelShader 3.0 "pimp_shader_sw4_3d_rotate_76e83508.hlsl" 
+	{
+		Normal_Map         = material.Normal_Map;
+  Diffuse_MapSampler = material.Diffuse_MapSampler;
+	}
+
+	vertex.position = code.position;
+	vertex.normal      = code.normal;
+  vertex.texcoord[2] = code.tangent;
+  vertex.texcoord[0] = code.texcoord[0];
+
+	declTypes
+	{
+		packed
+		world
+	}
+}
+

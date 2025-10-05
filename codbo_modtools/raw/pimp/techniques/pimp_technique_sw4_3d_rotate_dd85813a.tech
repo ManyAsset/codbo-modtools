@@ -1,0 +1,23 @@
+{
+	stateMap "build_shadowmap_depth_noalpha";
+
+	vertexShader 3.0 "pimp_shader_sw4_3d_rotate_b05c869f.hlsl"
+	{
+		Seed_Value         = material.Seed_Value;
+  Rotation_Speed_Max = material.Rotation_Speed_Max;
+  Rotation_Speed_Min = material.Rotation_Speed_Min;
+	}
+
+	pixelShader 3.0 "pimp_shader_null_494c2039.hlsl" 
+	{
+	}
+
+	vertex.position = code.position;
+
+	declTypes
+	{
+		packed
+		world
+	}
+}
+

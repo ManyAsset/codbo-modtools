@@ -1,0 +1,23 @@
+{
+	stateMap "additive";
+
+	vertexShader 3.0 "pimp_shader_lpoint_e0490aee.hlsl"
+	{
+		uvScroll = material.uvScroll;
+	}
+
+	pixelShader 3.0 "pimp_shader_lpoint_9bf7c88c.hlsl" 
+	{
+		colorMapSampler = material.colorMap;
+		specularMapSampler = material.specularMap;
+		envMapParms = material.envMapParms;
+		fogColor = float4( 0, 0, 0, 0 );
+	}
+
+	vertex.position = code.position;
+	vertex.normal = code.normal;
+	vertex.color[0] = code.color;
+	vertex.texcoord[0] = code.texcoord[0];
+
+}
+

@@ -1,0 +1,21 @@
+{
+	stateMap "default";
+
+	vertexShader 3.0 "pimp_shader_distortion_d1796933.hlsl"
+	{
+		distortionScale = material.distortionScale;
+	}
+
+	pixelShader 3.0 "pimp_shader_distortion_4afc1585.hlsl" 
+	{
+		colorMapSampler = sampler.resolvedPostSun;
+		normalMapSampler = material.colorMap;
+	}
+
+	vertex.position = code.position;
+	vertex.normal = code.normal;
+	vertex.texcoord[0] = code.texcoord[0];
+	vertex.texcoord[1] = code.tangent;
+
+}
+

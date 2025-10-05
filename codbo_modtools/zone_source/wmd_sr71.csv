@@ -1,0 +1,125 @@
+ignore,code_post_gfx
+ignore,common
+//ignore,dev
+
+screenclearcolor,1,1,1,1
+
+// Dept. zone_source
+
+include,wmd_sr71_fx
+include,wmd_sr71_animation
+include,wmd_sr71_vehicles
+include,wmd_sr71_characters
+include,wmd_sr71_lighting
+include,wmd_sr71_weapons
+
+// Level zone_source
+
+col_map_sp,maps/wmd_sr71.d3dbsp
+gfx_map,maps/wmd_sr71.d3dbsp
+
+rawfile,maps/wmd_sr71.gsc
+rawfile,maps/wmd_sr71_anim.gsc
+rawfile,maps/wmd_sr71_amb.gsc
+rawfile,maps/wmd_sr71_fx.gsc
+rawfile,maps/createfx/wmd_sr71_fx.gsc
+rawfile,maps/wmd_sr71_util.gsc
+
+rawfile,character/c_rus_spetznaz_snow_sr71.gsc
+
+rawfile,clientscripts/wmd_sr71.csc
+rawfile,clientscripts/wmd_sr71_amb.csc
+rawfile,clientscripts/wmd_sr71_fx.csc
+rawfile,clientscripts/createfx/wmd_sr71_fx.csc
+
+// Set up by Lighting,
+rawfile,sun/wmd.sun
+rawfile,exposure/wmd_sr71.xpo
+rawfile,maps/createart/wmd_sr71_art.gsc
+xmodel,skybox_sp_wmd
+rawfile,vision/wmd_sr71_rts_interior.vision
+rawfile,vision/wmd_runway.vision
+rawfile,vision/wmd_gforce.vision
+rawfile,vision/wmd_jumpcut.vision
+rawfile,vision/wmd_pilot.vision
+rawfile,vision/wmd_sr71.vision
+rawfile,vision/wmd_sr71cam.vision
+rawfile,vision/wmd_sr71barracks.vision
+rawfile,vision/wmd_sr71_rts_barracks_destroy.vision
+
+
+// localize
+localize,wmd_sr71
+sound,spl_wmd_sr71
+
+// rusher
+include,rusher
+
+include,common_player_us
+
+// WMD SR71
+rawfile,maps/wmd_rts.gsc
+rawfile,maps/wmd_intro.gsc
+
+
+// Rumble - WMD SR71
+rawfile,rumble/sr71_exterior
+rawfile,rumble/sr71_interior
+rawfile,rumble/sr71_interior_gforce
+rawfile,rumble/rappel_falling
+rawfile,rumble/rappel_falling_h.rmb
+rawfile,rumble/rappel_falling_l.rmb
+
+// traversals
+include,traverse_mantle_window_36
+include,traverse_jump_down_96
+include,traverse_jump_across_120
+include,traverse_mantle_on_40
+include,traverse_mantle_over_40_down_80
+include,traverse_jump_down_56
+include,traverse_jump_down_96
+include,traverse_dive_over_40
+include,traverse_jump_down_36
+include,traverse_jump_down_40
+include,traverse_mantle_over_36
+include,traverse_mantle_over_40
+include,traverse_stairs_down_8x12
+include,hill_run
+
+// MODELS
+xmodel,tag_origin_animate
+xmodel,tag_origin
+xmodel,p_glo_cardboardbox_1
+xmodel,anim_glo_clipboard_wpaper
+xmodel,viewmodel_hands_no_model
+xmodel,anim_jun_lights_searchlight
+xmodel,t5_weapon_aug_viewmodel_arctic
+xmodel,anim_rus_door_white_plain_60
+xmodel,t5_veh_jet_sr71_cockpit
+xmodel,t5_veh_jet_sr71_gear_doors
+xmodel,melee_chair
+xmodel,t5_knife_animate
+xmodel,weapon_semtex_grenade
+
+// MATERIALS
+material,hud_sr71_camera_diamond
+material,hud_sr71_camera_e_square
+material,hud_sr71_camera_arrow
+material,hud_onscreenobjectivepointer
+
+//generic filters / overlays
+material,generic_filter_helmet
+material,generic_overlay_helmet
+//material,generic_filter_superflare_sr71
+//material,generic_filter_warp_sr71
+
+material,cinematic
+cinematicmaxsize,1280,720
+rawfile,bik/dropfirstperson_v2.bik
+rawfile,bik/reversefirstperson_v1.bik
+
+// pistol anims
+include,ai_anims_pistol
+
+// initial texture load order list (keep at end)
+texturelist,texturelist/wmd_sr71.csv

@@ -1,0 +1,37 @@
+{
+	stateMap "sw4_default";
+
+	vertexShader 3.0 "pimp_shader_sw4_3d_tv_bink_4x4_6b5a1fcd.hlsl"
+	{
+	}
+
+	pixelShader 3.0 "pimp_shader_sw4_3d_tv_bink_4x4_3cfa60ea.hlsl" 
+	{
+		Diffuse_MapSampler = material.Diffuse_MapSampler;
+  StaticScale        = material.StaticScale;
+  StaticAmount       = material.StaticAmount;
+  ScanlineOffset     = material.ScanlineOffset;
+  ScanlinePower      = material.ScanlinePower;
+  ScanlineColor      = material.ScanlineColor;
+  ScanlineSpeed      = material.ScanlineSpeed;
+  ScanlineIntensity  = material.ScanlineIntensity;
+  Lookup             = material.Lookup;
+  OverallAmount      = material.OverallAmount;
+  ExtraCamBrightness = material.ExtraCamBrightness;
+  VideoIntensity     = material.VideoIntensity;
+  Reflection_Amount  = material.Reflection_Amount;
+  PreviewCompID      = material.PreviewCompID;
+	}
+
+	vertex.position = code.position;
+	vertex.normal      = code.normal;
+  vertex.texcoord[2] = code.tangent;
+  vertex.texcoord[0] = code.texcoord[0];
+
+	declTypes
+	{
+		packed
+		world
+	}
+}
+

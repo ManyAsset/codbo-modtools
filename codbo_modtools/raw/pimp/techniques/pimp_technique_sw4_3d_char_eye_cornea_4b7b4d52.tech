@@ -1,0 +1,33 @@
+{
+	stateMap "sw4_default";
+
+	vertexShader 3.0 "pimp_shader_sw4_3d_char_eye_cornea_7f534903.hlsl"
+	{
+		Fill_Direction2 = material.Fill_Direction2;
+  Fill_Direction  = material.Fill_Direction;
+	}
+
+	pixelShader 3.0 "pimp_shader_sw4_3d_char_eye_cornea_46138957.hlsl" 
+	{
+		Highlight_2_Brightness = material.Highlight_2_Brightness;
+  Highlight_2_Sharpness  = material.Highlight_2_Sharpness;
+  Highlight_2_Size       = material.Highlight_2_Size;
+  Highlight_1_Brightness = material.Highlight_1_Brightness;
+  Highlight_1_Sharpness  = material.Highlight_1_Sharpness;
+  Hightlight_1_Size      = material.Hightlight_1_Size;
+  Surface_Normal_Map     = material.Surface_Normal_Map;
+  Diffuse_MapSampler     = material.Diffuse_MapSampler;
+	}
+
+	vertex.position = code.position;
+	vertex.normal      = code.normal;
+  vertex.texcoord[2] = code.tangent;
+  vertex.texcoord[0] = code.texcoord[0];
+
+	declTypes
+	{
+		packed
+		world
+	}
+}
+

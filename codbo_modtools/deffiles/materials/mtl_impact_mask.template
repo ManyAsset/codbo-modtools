@@ -1,0 +1,22 @@
+#include "commonsetup.template"
+
+#define TECHSET_NAME_PREFIX "impactmask"
+
+techniqueSet( TECHSET_NAME_PREFIX );
+
+textureTable
+{
+	#if "$colorMap$" == ""
+		#error "colorMap may not be blank in phong materials"
+	#endif
+	"colorMap" = streamable map( "@tileColor@", "@filterColor@", "$colorMap$", @nopicmipColor@ ) "@formatColor@" : "colorMap";	
+}
+
+
+constantTable
+{
+}
+
+allocReflectionProbe();
+
+refImage( "$colorMap$" );

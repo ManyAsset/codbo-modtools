@@ -1,0 +1,21 @@
+{
+	stateMap "premulalpha";
+
+	vertexShader 3.0 "pimp_shader_lmap_3e6d59ea.hlsl"
+	{
+	}
+
+	pixelShader 3.0 "pimp_shader_lmap_e4a380c0.hlsl" 
+	{
+		colorMapSampler = material.colorMap;
+		normalMapSampler = material.normalMap;
+		specularMapSampler = material.specularMap;
+	}
+
+	vertex.position = code.position;
+	vertex.normal = code.normal;
+	vertex.texcoord[0] = code.texcoord[0];
+	vertex.texcoord[2] = code.tangent;
+
+}
+

@@ -1,0 +1,28 @@
+#include "commonsetup.template"
+
+
+#if @ui3dWindowId@ == 0
+	#define WND_SUFFIX "_wnda"
+#elif @ui3dWindowId@ == 1
+	#define WND_SUFFIX "_wndb"
+#elif @ui3dWindowId@ == 2
+	#define WND_SUFFIX "_wndc"
+#elif @ui3dWindowId@ == 3
+	#define WND_SUFFIX "_wndd"
+#elif @ui3dWindowId@ == 4
+	#define WND_SUFFIX "_wnde"
+#elif @ui3dWindowId@ == 5
+	#define WND_SUFFIX "_wndf"
+#else
+	#error "invalid window ID in ui3d material"
+#endif
+
+
+techniqueSet( "ui3d" + WND_SUFFIX );
+
+textureTable
+{
+	"colorMap" = map( "tile both", "nomip nearest", "texture_assets\editor\ui3d.tga", 0 ) "DXT1" : "colorMap";
+}
+
+refImage( "texture_assets\editor\ui3d.tga" );

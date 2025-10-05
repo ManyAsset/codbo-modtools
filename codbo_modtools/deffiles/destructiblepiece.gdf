@@ -1,0 +1,814 @@
+#name "destructiblepiece"
+#dll "all" "configstringconvert"
+#source_dir "destructiblepiece/"
+#target_dir "destructiblepiece/"
+#file_ext "*"
+#version 30
+
+// This tells the configstring converter what the file type identifier should be
+string "DESTRUCTIBLEPIECE" configstringFileType
+
+string showBone
+float 0 -1000000 100 breakHealth
+int 0 0 1 explosiveDamageOnly
+int 0 0 1 meleeDamage
+int 0 0 1 parentDamage
+int 0 0 1 physicsParent
+float -1 -1 500 maxTime
+string breakEffect
+string breakSound
+string loopSound
+string breakNotify
+string physPreset
+string spawnModel1
+string spawnModel2
+
+string showBoneD1
+float 0 -1000000 100 breakHealthD1
+int 0 0 1 explosiveDamageOnlyD1
+int 0 0 1 meleeDamageD1
+int 0 0 1 parentDamageD1
+int 0 0 1 physicsParentD1
+float -1 -1 500 maxTimeD1
+string breakEffectD1
+string breakSoundD1
+string loopSoundD1
+string breakNotifyD1
+string physPresetD1
+string spawnModel1D1
+string spawnModel2D1
+
+string showBoneD2
+float 0 -1000000 100 breakHealthD2
+int 0 0 1 explosiveDamageOnlyD2
+int 0 0 1 meleeDamageD2
+int 0 0 1 parentDamageD2
+int 0 0 1 physicsParentD2
+float -1 -1 500 maxTimeD2
+string breakEffectD2
+string breakSoundD2
+string loopSoundD2
+string breakNotifyD2
+string physPresetD2
+string spawnModel1D2
+string spawnModel2D2
+
+string showBoneD3
+float 0 -1000000 100 breakHealthD3
+int 0 0 1 explosiveDamageOnlyD3
+int 0 0 1 meleeDamageD3
+int 0 0 1 parentDamageD3
+int 0 0 1 physicsParentD3
+float -1 -1 500 maxTimeD3
+string breakEffectD3
+string breakSoundD3
+string loopSoundD3
+string breakNotifyD3
+string physPresetD3
+string spawnModel1D3
+string spawnModel2D3
+
+string showBoneD4
+float 0 -1000000 100 breakHealthD4
+int 0 0 1 explosiveDamageOnlyD4
+int 0 0 1 meleeDamageD4
+int 0 0 1 parentDamageD4
+int 0 0 1 physicsParentD4
+float -1 -1 500 maxTimeD4
+string breakEffectD4
+string breakSoundD4
+string loopSoundD4
+string breakNotifyD4
+string physPresetD4
+string spawnModel1D4
+string spawnModel2D4
+
+
+vcontainer
+{
+	vcontainer
+	{
+		edit(showBone)
+		[
+			exec
+			{
+				label("Show Bone")
+				tooltip("Specify the bone tag name to show during this damage stage, all other bones listed in this piece will be hidden")
+				width(600)
+			}
+		]
+		hcontainer
+		{
+			floatedit(breakHealth, .1, .2)
+			[
+				exec
+				{
+					label("Break Health %")
+					tooltip("Piece will fall off into physics after health is below this percentage if physPreset is specified, else it will disapper/swap in Damage Stage")	
+				}
+			]
+			floatedit(maxTime, .1, .2)
+			[
+				exec
+				{
+					label("Max Shown Time")
+					tooltip("After the specified seconds this piece will automatically go to the next damage stage")
+				}
+			]
+		}
+		vcontainer
+		{
+			checkbox(explosiveDamageOnly)
+			[
+				exec
+				{
+					label("Explosives Only")
+					tooltip("Only explosive damage can be done to this model.")
+					labelwidth(150)
+					righttext()
+				}
+			]
+			checkbox(meleeDamage)
+			[
+				exec
+				{
+					label("Melee Damage")
+					tooltip("This piece will be affected by melee damage")
+					labelwidth(150)
+					righttext()
+				}
+			]
+			checkbox(parentDamage)
+			[
+				exec
+				{
+					label("Damage Parent")
+					tooltip("The parent piece will also take damage if this piece is damaged")
+					labelwidth(150)
+					righttext()
+				}
+			]
+			checkbox(physicsParent)
+			[
+				exec
+				{
+					label("Physics On Parent Death")
+					tooltip("This piece will only break off into physics when the parent's health reaches 0")
+					labelwidth(200)
+					righttext()
+				}
+			]
+		}
+		fileedit(breakEffect)
+		[
+			exec
+			{
+				label("Base Break Effect")
+				reldir("raw/fx/")
+				width(600)
+				tooltip("Effect to play when health gets to 0")	
+			}
+		]
+		edit(breakSound)
+		[
+			exec
+			{
+				label("Base Break Sound")
+				width(600)
+				tooltip("Sound to play when health gets to 0")	
+			}
+		]
+		edit(loopSound)
+		[
+			exec
+			{
+				label("Loop Sound")
+				width(600)
+				tooltip("Loop sound to play when this model is showing")	
+			}
+		]
+		edit(breakNotify)
+		[
+			exec
+			{
+				label("Base Break Notify")
+				tooltip("Notify that goes out to the script system when this stage breaks.  self waittill( \"broken\", breakNofiy ); ")	
+				width(600)
+			}
+		]
+		edit(physPreset)
+		[
+			exec
+			{
+				label("Phys Preset")
+				tooltip("If set this bone will go into physics using the specified physpreset GDT")	
+				width(600)
+			}
+		]
+		fileedit(spawnModel1)
+		[
+			exec
+			{
+				label("Spawn Model 1")
+				reldir("raw/xmodel/")
+				width(600)
+			}
+		]
+		fileedit(spawnModel2)
+		[
+			exec
+			{
+				label("Spawn Model 2")
+				reldir("raw/xmodel/")
+				width(600)
+			}
+		]
+	}
+	[
+		exec
+		{
+			groupBox("Base Model Properties" )
+		}
+	]
+	
+	
+	vcontainer
+	{
+		edit(showBoneD1)
+		[
+			exec
+			{
+				label("Show Bone")
+				tooltip("Specify the bone tag name to show during this damage stage, all other bones listed in this piece will be hidden")
+				width(600)
+			}
+		]
+		hcontainer
+		{
+			floatedit(breakHealthD1, .1, .2)
+			[
+				exec
+				{
+					label("Break Health %")
+					tooltip("Piece will fall off into physics after health is below this percentage if physPreset is specified, else it will disapper/swap in Damage Stage")	
+				}
+			]
+			floatedit(maxTimeD1, .1, .2)
+			[
+				exec
+				{
+					label("Max Shown Time")
+					tooltip("After the specified seconds this piece will automatically go to the next damage stage")
+				}
+			]
+		}
+		vcontainer
+		{
+			checkbox(explosiveDamageOnlyD1)
+			[
+				exec
+				{
+					label("Explosives Only")
+					tooltip("Only explosive damage can be done to this model.")
+					labelwidth(150)
+					righttext()
+				}
+			]
+			checkbox(meleeDamageD1)
+			[
+				exec
+				{
+					label("Melee Damage")
+					tooltip("This piece will be affected by melee damage")
+					labelwidth(150)
+					righttext()
+				}
+			]
+			checkbox(parentDamageD1)
+			[
+				exec
+				{
+					label("Damage Parent")
+					tooltip("The parent piece will also take damage if this piece is damaged")
+					labelwidth(150)
+					righttext()
+				}
+			]
+			checkbox(physicsParentD1)
+			[
+				exec
+				{
+					label("Physics On Parent Death")
+					tooltip("This piece will only break off into physics when the parent's health reaches 0")
+					labelwidth(200)
+					righttext()
+				}
+			]
+		}
+		fileedit(breakEffectD1)
+		[
+			exec
+			{
+				label("Break Effect")
+				reldir("raw/fx/")
+				width(600)
+				tooltip("Effect to play when health gets to 0")	
+			}
+		]
+		edit(breakSoundD1)
+		[
+			exec
+			{
+				label("Break Sound")
+				width(600)
+				tooltip("Sound to play when health gets to 0")	
+			}
+		]
+		edit(loopSoundD1)
+		[
+			exec
+			{
+				label("Loop Sound")
+				width(600)
+				tooltip("Loop sound to play when this model is showing")	
+			}
+		]
+		edit(breakNotifyD1)
+		[
+			exec
+			{
+				label("Break Notify")
+				tooltip("Notify that goes out to the script system when this stage breaks.  self waittill( \"broken\", breakNofiy ); ")	
+				width(600)
+			}
+		]
+		edit(physPresetD1)
+		[
+			exec
+			{
+				label("Phys Preset")
+				tooltip("If set this bone will go into physics using the specified physpreset GDT")	
+				width(600)
+			}
+		]
+		fileedit(spawnModel1D1)
+		[
+			exec
+			{
+				label("Spawn Model 1")
+				reldir("raw/xmodel/")
+				width(600)
+			}
+		]
+		fileedit(spawnModel2D1)
+		[
+			exec
+			{
+				label("Spawn Model 2")
+				reldir("raw/xmodel/")
+				width(600)
+			}
+		]
+	}
+	[
+		exec
+		{
+			groupBox("Damage Stage 1 Properties" )
+		}
+	]
+	
+	vcontainer
+	{
+		edit(showBoneD2)
+		[
+			exec
+			{
+				label("Show Bone")
+				tooltip("Specify the bone tag name to show during this damage stage, all other bones listed in this piece will be hidden")
+				width(600)
+			}
+		]
+		hcontainer
+		{
+			floatedit(breakHealthD2, .1, .2)
+			[
+				exec
+				{
+					label("Break Health %")
+					tooltip("Piece will fall off into physics after health is below this percentage if physPreset is specified, else it will disapper/swap in Damage Stage")	
+				}
+			]
+			floatedit(maxTimeD2, .1, .2)
+			[
+				exec
+				{
+					label("Max Shown Time")
+					tooltip("After the specified seconds this piece will automatically go to the next damage stage")
+				}
+			]
+		}
+		vcontainer
+		{
+			checkbox(explosiveDamageOnlyD2)
+			[
+				exec
+				{
+					label("Explosives Only")
+					tooltip("Only explosive damage can be done to this model.")
+					labelwidth(150)
+					righttext()
+				}
+			]
+			checkbox(meleeDamageD2)
+			[
+				exec
+				{
+					label("Melee Damage")
+					tooltip("This piece will be affected by melee damage")
+					labelwidth(150)
+					righttext()
+				}
+			]
+			checkbox(parentDamageD2)
+			[
+				exec
+				{
+					label("Damage Parent")
+					tooltip("The parent piece will also take damage if this piece is damaged")
+					labelwidth(150)
+					righttext()
+				}
+			]
+			checkbox(physicsParentD2)
+			[
+				exec
+				{
+					label("Physics On Parent Death")
+					tooltip("This piece will only break off into physics when the parent's health reaches 0")
+					labelwidth(200)
+					righttext()
+				}
+			]
+		}
+		fileedit(breakEffectD2)
+		[
+			exec
+			{
+				label("Break Effect")
+				reldir("raw/fx/")
+				width(600)
+				tooltip("Effect to play when health gets to 0")	
+			}
+		]
+		edit(breakSoundD2)
+		[
+			exec
+			{
+				label("Break Sound")
+				width(600)
+				tooltip("Sound to play when health gets to 0")	
+			}
+		]
+		edit(loopSoundD2)
+		[
+			exec
+			{
+				label("Loop Sound")
+				width(600)
+				tooltip("Loop sound to play when this model is showing")	
+			}
+		]
+		edit(breakNotifyD2)
+		[
+			exec
+			{
+				label("Break Notify")
+				tooltip("Notify that goes out to the script system when this stage breaks.  self waittill( \"broken\", breakNofiy ); ")	
+				width(600)
+			}
+		]
+		edit(physPresetD2)
+		[
+			exec
+			{
+				label("Phys Preset")
+				tooltip("If set this bone will go into physics using the specified physpreset GDT")	
+				width(600)
+			}
+		]
+		fileedit(spawnModel1D2)
+		[
+			exec
+			{
+				label("Spawn Model 1")
+				reldir("raw/xmodel/")
+				width(600)
+			}
+		]
+		fileedit(spawnModel2D2)
+		[
+			exec
+			{
+				label("Spawn Model 2")
+				reldir("raw/xmodel/")
+				width(600)
+			}
+		]
+	}
+	[
+		exec
+		{
+			groupBox("Damage Stage 2 Properties", showBoneD2 != "" )
+		}
+	]
+	
+	vcontainer
+	{
+		edit(showBoneD3)
+		[
+			exec
+			{
+				label("Show Bone")
+				tooltip("Specify the bone tag name to show during this damage stage, all other bones listed in this piece will be hidden")
+				width(600)
+			}
+		]
+		hcontainer
+		{
+			floatedit(breakHealthD3, .1, .2)
+			[
+				exec
+				{
+					label("Break Health %")
+					tooltip("Piece will fall off into physics after health is below this percentage if physPreset is specified, else it will disapper/swap in Damage Stage")	
+				}
+			]
+			floatedit(maxTimeD3, .1, .2)
+			[
+				exec
+				{
+					label("Max Shown Time")
+					tooltip("After the specified seconds this piece will automatically go to the next damage stage")
+				}
+			]
+		}
+		vcontainer
+		{
+			checkbox(explosiveDamageOnlyD3)
+			[
+				exec
+				{
+					label("Explosives Only")
+					tooltip("Only explosive damage can be done to this model.")
+					labelwidth(150)
+					righttext()
+				}
+			]
+			checkbox(meleeDamageD3)
+			[
+				exec
+				{
+					label("Melee Damage")
+					tooltip("This piece will be affected by melee damage")
+					labelwidth(150)
+					righttext()
+				}
+			]
+			checkbox(parentDamageD3)
+			[
+				exec
+				{
+					label("Damage Parent")
+					tooltip("The parent piece will also take damage if this piece is damaged")
+					labelwidth(150)
+					righttext()
+				}
+			]
+			checkbox(physicsParentD3)
+			[
+				exec
+				{
+					label("Physics On Parent Death")
+					tooltip("This piece will only break off into physics when the parent's health reaches 0")
+					labelwidth(200)
+					righttext()
+				}
+			]
+		}
+		fileedit(breakEffectD3)
+		[
+			exec
+			{
+				label("Break Effect")
+				reldir("raw/fx/")
+				width(600)
+				tooltip("Effect to play when health gets to 0")	
+			}
+		]
+		edit(breakSoundD3)
+		[
+			exec
+			{
+				label("Break Sound")
+				width(600)
+				tooltip("Sound to play when health gets to 0")	
+			}
+		]
+		edit(loopSoundD3)
+		[
+			exec
+			{
+				label("Loop Sound")
+				width(600)
+				tooltip("Loop sound to play when this model is showing")	
+			}
+		]
+		edit(breakNotifyD3)
+		[
+			exec
+			{
+				label("Break Notify")
+				tooltip("Notify that goes out to the script system when this stage breaks.  self waittill( \"broken\", breakNofiy ); ")	
+				width(600)
+			}
+		]
+		edit(physPresetD3)
+		[
+			exec
+			{
+				label("Phys Preset")
+				tooltip("If set this bone will go into physics using the specified physpreset GDT")	
+				width(600)
+			}
+		]
+		fileedit(spawnModel1D3)
+		[
+			exec
+			{
+				label("Spawn Model 1")
+				reldir("raw/xmodel/")
+				width(600)
+			}
+		]
+		fileedit(spawnModel2D3)
+		[
+			exec
+			{
+				label("Spawn Model 2")
+				reldir("raw/xmodel/")
+				width(600)
+			}
+		]
+	}
+	[
+		exec
+		{
+			groupBox("Damage Stage 3 Properties", showBoneD3 != "" )
+		}
+	]
+	
+	vcontainer
+	{
+		edit(showBoneD4)
+		[
+			exec
+			{
+				label("Show Bone")
+				tooltip("Specify the bone tag name to show during this damage stage, all other bones listed in this piece will be hidden")
+				width(600)
+			}
+		]
+		hcontainer
+		{
+			floatedit(breakHealthD4, .1, .2)
+			[
+				exec
+				{
+					label("Break Health %")
+					tooltip("Piece will fall off into physics after health is below this percentage if physPreset is specified, else it will disapper/swap in Damage Stage")	
+				}
+			]
+			floatedit(maxTimeD4, .1, .2)
+			[
+				exec
+				{
+					label("Max Shown Time")
+					tooltip("After the specified seconds this piece will automatically go to the next damage stage")
+				}
+			]
+		}
+		vcontainer
+		{
+			checkbox(explosiveDamageOnlyD4)
+			[
+				exec
+				{
+					label("Explosives Only")
+					tooltip("Only explosive damage can be done to this model.")
+					labelwidth(150)
+					righttext()
+				}
+			]
+			checkbox(meleeDamageD4)
+			[
+				exec
+				{
+					label("Melee Damage")
+					tooltip("This piece will be affected by melee damage")
+					labelwidth(150)
+					righttext()
+				}
+			]
+			checkbox(parentDamageD4)
+			[
+				exec
+				{
+					label("Damage Parent")
+					tooltip("The parent piece will also take damage if this piece is damaged")
+					labelwidth(150)
+					righttext()
+				}
+			]
+			checkbox(physicsParentD4)
+			[
+				exec
+				{
+					label("Physics On Parent Death")
+					tooltip("This piece will only break off into physics when the parent's health reaches 0")
+					labelwidth(200)
+					righttext()
+				}
+			]
+		}
+		fileedit(breakEffectD4)
+		[
+			exec
+			{
+				label("Break Effect")
+				reldir("raw/fx/")
+				width(600)
+				tooltip("Effect to play when health gets to 0")	
+			}
+		]
+		edit(breakSoundD4)
+		[
+			exec
+			{
+				label("Break Sound")
+				width(600)
+				tooltip("Sound to play when health gets to 0")	
+			}
+		]
+		edit(loopSoundD4)
+		[
+			exec
+			{
+				label("Loop Sound")
+				width(600)
+				tooltip("Loop sound to play when this model is showing")	
+			}
+		]
+		edit(breakNotifyD4)
+		[
+			exec
+			{
+				label("Break Notify")
+				tooltip("Notify that goes out to the script system when this stage breaks.  self waittill( \"broken\", breakNofiy ); ")	
+				width(600)
+			}
+		]
+		edit(physPresetD4)
+		[
+			exec
+			{
+				label("Phys Preset")
+				tooltip("If set this bone will go into physics using the specified physpreset GDT")	
+				width(600)
+			}
+		]
+		fileedit(spawnModel1D4)
+		[
+			exec
+			{
+				label("Spawn Model 1")
+				reldir("raw/xmodel/")
+				width(600)
+			}
+		]
+		fileedit(spawnModel2D4)
+		[
+			exec
+			{
+				label("Spawn Model 2")
+				reldir("raw/xmodel/")
+				width(600)
+			}
+		]
+	}
+	[
+		exec
+		{
+			groupBox("Damage Stage 4 Properties", showBoneD4 != "" )
+		}
+	]
+}

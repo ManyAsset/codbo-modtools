@@ -1,0 +1,25 @@
+{
+	stateMap "default";
+
+	vertexShader 3.0 "pimp_shader_lprobe_142e3c1f.hlsl"
+	{
+	}
+
+	pixelShader 3.0 "pimp_shader_lprobe_c3f2c809.hlsl" 
+	{
+		colorMapSampler = material.colorMap;
+		specularMapSampler = material.specularMap;
+		envMapParms = material.envMapParms;
+		occMapSampler = material.colorMap15;
+		colorDetailScale = material.colorDetailScale;
+		colorDetailMapSampler = material.colorDetailMap;
+		dynamicFoliageSunDiffuseMinMax = material.dynamicFoliageSunDiffuseMinMax;
+	}
+
+	vertex.position = code.position;
+	vertex.normal = code.normal;
+	vertex.color[0] = code.color;
+	vertex.texcoord[0] = code.texcoord[0];
+
+}
+

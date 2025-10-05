@@ -1,0 +1,34 @@
+{
+	stateMap "sw4_default";
+
+	vertexShader 3.0 "pimp_shader_sw4_3d_cod7_ice_3e47b12.hlsl"
+	{
+	}
+
+	pixelShader 3.0 "pimp_shader_sw4_3d_cod7_ice_d10519fa.hlsl" 
+	{
+		Master_scale         = material.Master_scale;
+  Surface_Height_Scale = material.Surface_Height_Scale;
+  Surface_scale        = material.Surface_scale;
+  Normal_Map           = material.Normal_Map;
+  Parallax_Amt         = material.Parallax_Amt;
+  Height_Map           = material.Height_Map;
+  Stretch_Map          = material.Stretch_Map;
+  Diffuse_MapSampler   = material.Diffuse_MapSampler;
+  AO_Map               = material.AO_Map;
+  Reflection_Amount    = material.Reflection_Amount;
+  Roughness_Map        = material.Roughness_Map;
+	}
+
+	vertex.position = code.position;
+	vertex.normal      = code.normal;
+  vertex.texcoord[2] = code.tangent;
+  vertex.texcoord[0] = code.texcoord[0];
+
+	declTypes
+	{
+		packed
+		world
+	}
+}
+

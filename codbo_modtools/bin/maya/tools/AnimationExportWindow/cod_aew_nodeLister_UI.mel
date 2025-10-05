@@ -1,0 +1,144 @@
+{
+   // Read the selected Export's node list, then load the names into the
+   // Node Lister scroll list
+   proc COD_AEW_getExportNodes(int $exportIndex) {
+      textScrollList -e -ra AEW_NL_nodes_list;
+
+      if ($exportIndex > 0) {
+         string $nodeStr = `getAttr ("IWGlobalNode.ExportNodes"+$exportIndex)`;
+         string $nodes[];
+         tokenize $nodeStr " " $nodes;
+
+         for ($n in $nodes) {
+            textScrollList -e -a $n AEW_NL_nodes_list;
+         }
+      }
+   }
+
+   // Select objects in the current scene according to the Node Lister's selection
+   global proc COD_AEW_selectSceneNode() {
+      string $selItems[] = `textScrollList -q -si AEW_NL_nodes_list`;
+
+      if (size($selItems) > 0) {
+         select -cl;
+
+         for ($s in $selItems) {
+            if (`objExists $s` == 1) {
+               select -add $s;
+            }
+         }
+      }
+   }
+
+   // Add the selected scene nodes to the Node Lister list and the IWGlobalNode attribute
+   global proc COD_AEW_addNodesToLister(string $listName) {
+      int $selIndex[];
+
+      $selIndex = `textScrollList -q -sii $listName`;
+
+      if (size($selIndex) > 0 && $selIndex[0] > 0) {
+         string $nodeStr = `getAttr ("IWGlobalNode.ExportNodes"+$selIndex[0])`;
+         string $sel[] = `ls -sl`;
+         string $newNodes;
+   
+         for ($s in $sel) {
+            $nodeStr += shortNameOf($s);
+            $nodeStr += " ";
+         }
+   
+         $newNodes = stringArrayToString( stringArrayRemoveDuplicates( stringToStringArray($nodeStr, " ") ), " ");
+         $newNodes += " ";
+         setAttr -type "string" ("IWGlobalNode.ExportNodes" + $selIndex[0]) $newNodes;
+   
+         // Refresh the Node Lister scroll list
+         COD_AEW_getExportNodes $selIndex[0];
+      }
+   }
+
+   // Remove the Lister's selected nodes from the IWGlobalNode attribute
+   global proc COD_AEW_removeNodesFromLister(string $listName) {
+      int $selIndex[];
+      select -cl;
+
+      $selIndex = `textScrollList -q -sii $listName`;
+
+      $selIndex = `textScrollList -q -sii $listName`;
+
+      if (size($selIndex) > 0 && $selIndex[0] > 0) {
+         string $selItems[] = `textScrollList -q -si AEW_NL_nodes_list`;
+         string $nodeStr = `getAttr ("IWGlobalNode.ExportNodes"+$selIndex[0])`;
+         string $newNodes;
+   
+         $newNodes = stringArrayToString( stringArrayRemoveExact($selItems, stringToStringArray($nodeStr, " ")), " ");
+         if (size($newNodes) > 0) $newNodes += " ";
+         setAttr -type "string" ("IWGlobalNode.ExportNodes" + $selIndex[0]) $newNodes;
+   
+         // Refresh the Node Lister scroll list
+         COD_AEW_getExportNodes $selIndex[0];
+      }
+   }
+
+   // This proc refreshes the Node Lister
+   // It is called from the Model Export window when an entry is updated
+   // We only need to repopulate the Node Lister if it is visible
+   global proc COD_AEW_updateNodeLister(int $index) {
+      if (`formLayout -q -ex AEW_NL_main_frm` == 1) {
+         if (`formLayout -q -vis AEW_NL_main_frm` == 1) {   
+            COD_AEW_getExportNodes $index;
+         }
+      }
+   }
+
+   // Create the Node Lister UI elements
+   global proc COD_AEW_nodeListerUI(string $listName) {
+      int $selIndex[] = `textScrollList -q -sii $listName`;
+
+      if (!`window -ex codAnimationExport_window`) {
+         return;
+      }
+
+      formLayout -p COD_AEW_frm -nd 100 AEW_NL_main_frm;
+      text -l "Export Nodes" AEW_NL_nodes_lb;
+      textScrollList -ams 1 AEW_NL_nodes_list;
+      button -l "Add" AEW_NL_addSelection_btn;
+      button -l "Remove" AEW_NL_removeSelection_btn;
+
+      formLayout -e
+         -af COD_AEW_MainFormLayout_frm "top" 0
+         -ap COD_AEW_MainFormLayout_frm "right" 0 75
+         -af COD_AEW_MainFormLayout_frm "left" 0
+         -af COD_AEW_MainFormLayout_frm "bottom" 0
+
+         -af AEW_NL_main_frm "top" 0
+         -af AEW_NL_main_frm "right" 0
+         -ac AEW_NL_main_frm "left" 0 COD_AEW_MainFormLayout_frm
+         -af AEW_NL_main_frm "bottom" 0
+      COD_AEW_frm;
+
+      formLayout -e
+         -af AEW_NL_nodes_lb "top" 10
+         -af AEW_NL_nodes_lb "right" 10
+         -af AEW_NL_nodes_lb "left" 10
+
+         -ac AEW_NL_nodes_list "top" 0 AEW_NL_nodes_lb
+         -af AEW_NL_nodes_list "right" 10
+         -af AEW_NL_nodes_list "left" 10
+         -ac AEW_NL_nodes_list "bottom" 10 AEW_NL_addSelection_btn
+
+         -ap AEW_NL_addSelection_btn "right" 0 50
+         -af AEW_NL_addSelection_btn "left" 10
+         -af AEW_NL_addSelection_btn "bottom" 10
+
+         -af AEW_NL_removeSelection_btn "right" 10
+         -ap AEW_NL_removeSelection_btn "left" 0 50
+         -af AEW_NL_removeSelection_btn "bottom" 10
+      AEW_NL_main_frm;
+
+      button -e -c ("COD_AEW_addNodesToLister "+$listName) AEW_NL_addSelection_btn;
+      button -e -c ("COD_AEW_removeNodesFromLister "+$listName) AEW_NL_removeSelection_btn;
+      textScrollList -e -sc "COD_AEW_selectSceneNode" AEW_NL_nodes_list;
+      textScrollList -e -dkc ("COD_AEW_removeNodesFromLister "+$listName) AEW_NL_nodes_list;
+
+      COD_AEW_getExportNodes $selIndex[0];
+   }
+}

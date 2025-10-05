@@ -1,0 +1,26 @@
+{
+	stateMap "skybox";
+
+	vertexShader 3.0 "pimp_shader_skycubemaphdr_1637d280.hlsl"
+	{
+		skyBoxRotationSize = material.skyBoxRotationSize;
+		skyBoxCloudWeights = material.skyBoxCloudWeights;
+		cloudsUVMad1 = material.cloudsUVMad1;
+		cloudsUVMad2 = material.cloudsUVMad2;
+	}
+
+	pixelShader 3.0 "pimp_shader_skycubemaphdr_1cf3086d.hlsl" 
+	{
+		colorMapSampler = material.colorMap;
+		cloudsHeights = material.cloudsHeights;
+		cloudsFeather = material.cloudsFeather;
+		cloudsUVMul1 = material.cloudsUVMul1;
+		cloudsUVMul2 = material.cloudsUVMul2;
+		cloudLayer0Sampler = material.cloudLayer0;
+		cloudMask0Sampler = material.cloudMask0;
+	}
+
+	vertex.position = code.position;
+
+}
+

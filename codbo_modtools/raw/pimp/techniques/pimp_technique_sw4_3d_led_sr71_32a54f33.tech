@@ -1,0 +1,30 @@
+{
+	stateMap "sw4_default";
+
+	vertexShader 3.0 "pimp_shader_sw4_3d_led_sr71_5bcfb382.hlsl"
+	{
+	}
+
+	pixelShader 3.0 "pimp_shader_sw4_3d_led_sr71_892ed16a.hlsl" 
+	{
+		ScanlinePower      = material.ScanlinePower;
+  Vignette           = material.Vignette;
+  ScanlineColor      = material.ScanlineColor;
+  Scale              = material.Scale;
+  ScanlineSpeed      = material.ScanlineSpeed;
+  ScanlineIntensity  = material.ScanlineIntensity;
+  FinalGamma         = material.FinalGamma;
+  FinalExposure      = material.FinalExposure;
+  Diffuse_MapSampler = material.Diffuse_MapSampler;
+	}
+
+	vertex.position = code.position;
+	vertex.texcoord[0] = code.texcoord[0];
+
+	declTypes
+	{
+		packed
+		world
+	}
+}
+

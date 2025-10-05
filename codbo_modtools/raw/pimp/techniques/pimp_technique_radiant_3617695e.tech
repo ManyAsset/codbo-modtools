@@ -1,0 +1,19 @@
+{
+	stateMap "default";
+
+	vertexShader 3.0 "pimp_shader_radiant_64651663.hlsl"
+	{
+	}
+
+	pixelShader 3.0 "pimp_shader_radiant_64651663.hlsl" 
+	{
+		Diffuse_MapSampler = material.Facepaint_Mask;
+	}
+
+	vertex.position = code.position;
+	vertex.normal = code.normal;
+	vertex.texcoord[0] = code.texcoord[0];
+	vertex.color[0] = code.color;
+
+}
+

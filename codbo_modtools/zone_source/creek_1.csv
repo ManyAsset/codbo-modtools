@@ -1,0 +1,863 @@
+ignore,code_post_gfx
+ignore,common
+
+screenclearcolor,1,1,1,1
+
+col_map_sp,maps/creek_1.d3dbsp
+gfx_map,maps/creek_1.d3dbsp
+
+// --------------------------------------
+// SCRIPTS
+
+rawfile,maps/creek_1.gsc
+rawfile,maps/creek_1_assault.gsc
+rawfile,maps/creek_1_stealth.gsc
+rawfile,maps/creek_1_tunnel.gsc
+rawfile,maps/creek_1_tank_battle.gsc
+rawfile,maps/creek_1_util.gsc
+rawfile,maps/creek_1_anim.gsc
+rawfile,maps/creek_1_amb.gsc
+rawfile,maps/creek_1_fx.gsc
+rawfile,maps/creek_1_livestock.gsc
+rawfile,maps/creek_1_spawn_func.gsc
+rawfile,maps/creek_1_fade_screen.gsc
+rawfile,maps/creek_1_calvary.gsc
+rawfile,maps/createfx/creek_1_fx.gsc
+rawfile,maps/createart/creek_1_art.gsc
+rawfile,maps/_civilians.gsc
+rawfile,maps/_mgturret.gsc
+rawfile,clientscripts/creek_1.csc
+rawfile,clientscripts/creek_1_amb.csc
+rawfile,clientscripts/creek_1_fx.csc
+rawfile,clientscripts/createfx/creek_1_fx.csc
+rawfile,character/c_vtn_vc1.gsc
+rawfile,character/c_vtn_vc2.gsc
+rawfile,character/c_vtn_vc3.gsc
+rawfile,character/c_usa_jungmar_wet_assault.gsc
+rawfile,character/c_usa_jungmar_wet_snip.gsc
+rawfile,character/c_usa_jungmar_wet_lmg.gsc
+rawfile,character/c_usa_jungmar_wet_shotgun.gsc
+
+// --------------------------------------
+// MISC INCLUDES
+
+// event 1 stuff
+include,creek_1_start
+
+localize,creek_1
+sound,spl_creek_1
+
+include,creek_1_calvary
+include,common_civilians
+include,rusher
+include,vehicle_zpu_antiair
+
+// Rat Tunnel Exit
+include,traverse_generic
+
+// hiding door
+include,hiding_door
+include,hiding_window
+
+// door breach
+include,common_door_breach
+
+// reznov pistol anims
+include,ai_anims_pistol
+
+// anim trees
+rawfile,animtrees/creek_1.atr
+rawfile,animtrees/critter.atr
+rawfile,animtrees/vehicles.atr
+rawfile,animtrees/player.atr
+
+//compass material
+material,compass_map_sp_creek_1
+
+//generic filters / overlays
+material,generic_filter_scope
+
+// rumble
+rawfile,rumble/damage_heavy
+rawfile,rumble/damage_heavy_h.rmb
+rawfile,rumble/damage_heavy_l.rmb
+rawfile,rumble/damage_light
+rawfile,rumble/damage_light_h.rmb
+rawfile,rumble/damage_light_l.rmb
+rawfile,rumble/heavygun_fire_h.rmb
+rawfile,rumble/heavygun_fire_l.rmb
+rawfile,rumble/grenade_rumble_h.rmb
+rawfile,rumble/grenade_rumble_l.rmb
+rawfile,rumble/tank_rumble_h.rmb
+rawfile,rumble/tank_rumble_l.rmb
+rawfile,rumble/tank_fire_h.rmb
+rawfile,rumble/tank_fire_l.rmb
+rawfile,rumble/artillery_rumble_h.rmb
+rawfile,rumble/artillery_rumble_l.rmb
+
+// --------------------------------------
+// VIEWMODELS
+
+xmodel,viewmodel_usa_jungmar_wet_arms
+xmodel,viewmodel_usa_jungmar_wet_player
+xmodel,viewmodel_usa_jungmar_wet_player_fullbody
+
+// --------------------------------------
+// VISION
+
+rawfile,vision/water.vision
+rawfile,vision/drown.vision
+rawfile,vision/creek_1.vision
+rawfile,vision/creek_1_water.vision
+rawfile,vision/creek_1_tunnel.vision
+rawfile,vision/creek_1_tunnel_off.vision
+rawfile,vision/creek_1_tunnel_enter.vision
+rawfile,vision/creek_1_rain.vision
+rawfile,vision/creek_1_ambush_path.vision
+rawfile,vision/creek_1_village.vision
+rawfile,vision/creek_1_war_room.vision
+rawfile,vision/creek_1_tunnel_collapse.vision
+rawfile,vision/creek_1_tunnel_cave_light_end.vision
+rawfile,vision/creek_1_tunnel_cliffhanger.vision
+rawfile,vision/creek_1_helicopter_start.vision
+rawfile,exposure/creek_1.xpo
+rawfile,sun/creek_1.sun
+
+// --------------------------------------
+// WEAPONS
+
+weapon,sp/ak47_sp
+weapon,sp/ak47_acog_sp
+weapon,sp/ak47_extclip_sp
+weapon,sp/ak47_dualclip_sp
+weapon,sp/ak47_mk_sp
+weapon,sp/mk_ak47_sp
+weapon,sp/ak47_acog_extclip_sp
+weapon,sp/ak47_acog_dualclip_sp
+weapon,sp/ak47_acog_mk_sp
+weapon,sp/rpk_sp
+weapon,sp/rpk_acog_sp
+weapon,sp/rpk_extclip_sp
+weapon,sp/rpk_acog_extclip_sp
+weapon,sp/saw_bipod_stand
+weapon,sp/saw_bipod_crouch
+weapon,sp/wa2000_sp
+weapon,sp/skorpion_sp
+weapon,sp/skorpion_extclip_sp
+weapon,sp/commando_sp
+weapon,sp/commando_gl_sp
+weapon,sp/commando_acog_sp
+weapon,sp/commando_extclip_sp
+weapon,sp/commando_dualclip_sp
+weapon,sp/commando_mk_sp
+weapon,sp/mk_commando_sp
+weapon,sp/commando_silencer_sp
+weapon,sp/gl_commando_sp
+weapon,sp/commando_acog_extclip_sp
+weapon,sp/commando_acog_dualclip_sp
+weapon,sp/commando_acog_mk_sp
+weapon,sp/m1911_sp
+weapon,sp/makarov_sp
+weapon,sp/creek_flashlight_pistol_sp
+weapon,sp/m202_flash_magic_bullet_sp
+weapon,sp/creek_satchel_charge_sp
+weapon,sp/rus_aa_bipod_stand
+weapon,sp/creek_knife_sp
+weapon,sp/knife_creek_sp
+weapon,sp/rpg_player_sp
+// weapon,sp/m8_white_smoke_sp
+
+xmodel,t5_weapon_commando_world
+xmodel,t5_weapon_ak47_world
+
+// --------------------------------------
+// FXANIMS
+
+xanim,fxanim_gp_crow_look_anim
+xanim,fxanim_gp_crow_eat_anim
+xanim,fxanim_gp_crow_flap_anim
+xanim,fxanim_gp_crow_jump_anim
+xanim,fxanim_gp_crow_die_anim
+xanim,fxanim_gp_crow_90rflyr_anim
+xanim,fxanim_gp_vinemed_anim
+xanim,fxanim_gp_vinesm_anim
+xanim,fxanim_gp_leafmed_anim
+xanim,fxanim_gp_leafsm_anim
+xanim,fxanim_gp_pant01_anim
+xanim,fxanim_gp_shirt01_anim
+xanim,fxanim_gp_shirt02_anim
+xanim,fxanim_gp_snakeswim_anim
+xanim,fxanim_gp_roaches_anim
+
+xanim,fxanim_creek_fish1_anim
+xanim,fxanim_creek_fish2_anim
+xanim,fxanim_creek_fish3_anim
+xanim,fxanim_creek_hut01_anim
+xanim,fxanim_creek_windowdive_anim
+xanim,fxanim_creek_windowshoot_anim
+xanim,fxanim_creek_banner_anim
+xanim,fxanim_creek_junk1_anim
+xanim,fxanim_creek_junk2_anim
+xanim,fxanim_creek_junk3_anim
+xanim,fxanim_creek_waterhut_anim
+xanim,fxanim_creek_vinecluster_anim
+xanim,fxanim_creek_mg_anim
+xanim,fxanim_creek_mgcurtainside_anim
+xanim,fxanim_creek_mgcurtainfront_anim
+xanim,fxanim_creek_overhang_anim
+xanim,fxanim_creek_huey_debris01_anim
+xanim,fxanim_creek_huey_debris02_anim
+xanim,fxanim_creek_huey_debris03_anim
+xanim,fxanim_creek_huey_debris04_anim
+xanim,fxanim_creek_huey_debris05_anim
+xanim,fxanim_creek_chickencoop_anim
+xanim,fxanim_creek_cover_anim
+xanim,fxanim_creek_hueydamage_anim
+xanim,fxanim_creek_hueywire_anim
+xanim,fxanim_creek_rat_01_anim
+xanim,fxanim_creek_rat_02_anim
+xanim,fxanim_creek_rat_03_anim
+xanim,fxanim_creek_mgexplode_anim
+xanim,fxanim_creek_rat_hole_lid_anim
+xanim,fxanim_creek_cave_pillar_anim
+xanim,fxanim_creek_cave_bolder_anim
+xanim,fxanim_creek_cave_sprinkle_anim
+xanim,fxanim_creek_cave_bolder_ceiling_anim
+xanim,fxanim_creek_cave_fill_anim
+xanim,fxanim_creek_net_anim
+xanim,fxanim_creek_tarp_cover01_anim
+xanim,fxanim_creek_crane01_anim
+xanim,fxanim_creek_crane02_anim
+xanim,fxanim_creek_cave_pillar_break_high_anim
+xanim,fxanim_creek_cave_pillar_break_med_anim
+xanim,fxanim_creek_cave_pillar_break_low_anim
+xanim,fxanim_creek_cave_panel_anim
+xanim,fxanim_creek_warroom_wires_anim
+xanim,fxanim_creek_warroom_flags_anim
+xanim,fxanim_creek_warroom_rocks_anim
+xanim,fxanim_creek_zpu_hut_anim
+xanim,fxanim_creek_door_kick_anim
+
+// --------------------------------------
+// TRAVERSAL
+
+include,traverse_jump_down_96
+include,traverse_mantle_on_40
+include,traverse_mantle_on_56
+include,traverse_mantle_over_40
+include,traverse_jump_down_40
+include,traverse_jump_down_56
+include,traverse_mantle_on_56
+include,traverse_dive_over_40
+include,traverse_slide_across_car
+include,traverse_mantle_over_96
+include,traverse_jump_down_36
+include,traverse_mantle_window_36
+include,traverse_stairs_up_8x12
+include,traverse_stairs_down_8x12
+
+// --------------------------------------
+// MODELS
+
+xmodel,tag_origin
+xmodel,tag_origin_animate
+
+// Objective related models
+//xmodel,weapon_satchel_charge
+//xmodel,weapon_satchel_charge_obj
+xmodel,t5_weapon_m202_world
+xmodel,t5_weapon_m202_world_obj
+
+// special player knife
+xmodel,t5_knife_sog 
+
+// held by AI
+xmodel,t5_knife_animate
+
+// held by VC
+//xmodel,p_glo_cigarette01 
+
+// Held by Bowman
+//xmodel,weapon_c4
+//xmodel,c_usa_jungmar_wet_bowman_backpack
+
+// attach to Reznov in tunnel
+xmodel,t5_weapon_1911_world 
+
+// mg model
+xmodel,t5_weapon_rus_aa
+
+//flashlight
+xmodel,t5_weapon_viewmodel_flashlight
+
+// Beat 2 throat cut
+xmodel,c_vtn_vc3_head_neck_cut
+xmodel,c_vtn_vc2_head_sleeper_neck_cut
+xmodel,c_vtn_vc1_body
+xmodel,c_vtn_vc1_head
+
+// player model
+xmodel,c_usa_jungmar_mp_snip_fb
+
+// --------------------------------------
+// FX
+
+// Ambient Effects
+fx,env/smoke/fx_fog_low
+fx,env/smoke/fx_fog_low_sm
+
+fx,env/weather/fx_rain_splash_detail
+fx,env/weather/fx_rain_mist
+fx,env/weather/fx_rain_mist_sm
+fx,env/weather/fx_rain_heavy_looping
+fx,env/weather/fx_rain_light_looping
+fx,env/weather/fx_rain_xlight_oneshot
+fx,env/weather/fx_rain_xlight_looping
+fx,env/weather/fx_rain_splash_swimming_xlg
+fx,env/weather/fx_rain_splash_swimming_lg
+
+fx,env/water/fx_water_drip_tree_xlight
+fx,env/water/fx_water_drip_xlight_line
+fx,env/water/fx_water_drip_hvy_long
+
+fx,env/water/fx_water_wake_creek
+fx,env/water/fx_water_wake_creek_mouth
+fx,env/water/fx_water_wake_creek_mouth_froth
+fx,maps/creek/fx_water_splash_creek_rocks
+fx,maps/creek/fx_water_splash_creek_rocks_sm
+fx,maps/creek/fx_water_fall_sm
+fx,maps/creek/fx_water_fall_xsm
+fx,maps/creek/fx_water_fall_mist
+fx,maps/creek/fx_water_wake_creek_flow
+
+fx,maps/creek/fx_water_river_shore
+
+fx,env/water/fx_water_bubble_column
+fx,env/water/fx_water_bubble_column_thin_sm
+
+fx,maps/creek/fx_insect_swarm_lg
+fx,bio/insects/fx_insects_dragonflies_ambient
+
+fx,env/foliage/fx_leaves_falling_lite
+
+fx,maps/creek/fx_water_wake_sanpan
+fx,maps/creek/fx_water_wake_sanpan_med
+fx,maps/creek/fx_water_wake_sanpan_sm
+
+fx,maps/creek/fx_fog_tunnel_sm
+fx,maps/creek/fx_fog_tunnel_md
+fx,maps/creek/fx_water_drips_tunnel
+fx,maps/creek/fx_water_drips_wtr_tunnel
+fx,maps/creek/fx_tunnel_fight_vc_drown
+fx,maps/creek/fx_tunnel_fight_vc_blood_cloud
+fx,maps/creek/fx_tunnel_fight_vc_splash
+fx,maps/creek/fx_tunnel_roach_scurry
+fx,maps/creek/fx_tunnel_water_foam
+fx,maps/creek/fx_tunnel_reznov_impact
+fx,maps/creek/fx_tunnel_light_exit
+fx,maps/creek/fx_tunnel_godray_exit
+
+fx,props/fx_lantern_smoke_corona
+fx,env/light/fx_light_incandescent
+fx,maps/creek/fx_light_creek_ray_wide
+fx,env/light/fx_light_dust_motes_md
+
+fx,maps/creek/fx_light_godray_crk_overcast_sm_thin
+fx,maps/creek/fx_light_godray_crk_overcast_lg
+
+//fx,maps/creek/fx_water_barnes_water_entry
+//fx,maps/creek/fx_water_barnes_splash
+
+// New fires and smokes
+fx,env/smoke/fx_smk_plume_hut_sm_white
+fx,env/smoke/fx_smk_plume_hut_md_white
+fx,env/smoke/fx_smk_plume_hut_lg_white
+
+fx,env/fire/fx_fire_ember_column_lg
+fx,env/fire/fx_ash_embers_light
+
+fx,env/fire/fx_fire_hut_wall_xsm
+fx,env/fire/fx_fire_detail_nodlight
+fx,env/fire/fx_fire_detail_sm_nodlight
+
+fx,env/fire/fx_fire_column_creep_xsm
+fx,env/fire/fx_fire_column_xsm_thin
+fx,env/fire/fx_fire_column_sm_thin
+fx,env/fire/fx_fire_line_xsm_thin
+fx,env/fire/fx_fire_line_sm_thin
+fx,env/fire/fx_fire_wall_back_sm
+
+// Helicopter Intro
+fx,maps/creek/fx_water_heli_spill_sm
+fx,maps/creek/fx_water_heli_spill_sm_froth
+fx,maps/creek/fx_bullet_hole_gray_heli
+fx,maps/creek/fx_water_heli_pcloud
+fx,maps/creek/fx_light_huey_dome
+fx,maps/creek/fx_sparks_heli_upper_pnl_fxr
+fx,maps/creek/fx_sparks_heli_upper_pnl
+fx,maps/creek/fx_sparks_heli_mid_pnl_fxr
+fx,maps/creek/fx_sparks_heli_mid_pnl
+fx,maps/creek/fx_sparks_heli_mid_pnl_smk
+fx,props/fx_cigarette_floating
+fx,props/fx_cigarette_pack_floating
+fx,props/fx_heli_insulation_floating_sm
+fx,props/fx_heli_cloth_floating_sm
+//fx,bio/player/fx_player_water_knee_ripple
+fx,maps/creek/fx_water_heli_gun_grab
+fx,impacts/fx_small_waterhit
+fx,maps/creek/fx_glass_heli_break
+fx,bio/player/fx_player_underwater_bubbles_drowning
+
+//  MG Event
+fx,impacts/fx_large_woodhit
+fx,maps/creek/fx_exp_mg_nest
+
+// Hut Explosions
+fx,maps/creek/fx_exp_satchel_hut
+fx,maps/creek/fx_exp_satchel_hut_core
+fx,maps/creek/fx_exp_hut_water
+
+// Tunnel Hatch
+fx,explosions/fx_exp_tunnel_mouth
+
+// Animal FX
+fx,bio/animals/fx_chicken_death_feathers
+fx,bio/animals/fx_crow_death_feathers
+fx,bio/animals/fx_fish_emitter
+fx,bio/animals/fx_pigeon_panic_flight_med
+
+fx,impacts/fx_melee_neck_stab_uw
+
+// contextual_melee related
+fx,maps/creek/fx_creek_contextual_melee2
+// fx,maps/creek/fx_creek_m202_death
+fx,maps/creek/fx_creek_swift_death
+
+// water related
+fx,bio/player/fx_water_hit_player_bubbles
+fx,bio/player/fx_player_underwater_bubbles_drowning
+fx,bio/player/fx_player_underwater_bubbles_exhale
+fx,bio/player/fx_player_underwater_bubbles_hand_fxr
+fx,bio/player/fx_player_underwater_bubbles_hand_fxr_right
+fx,bio/player/fx_player_underwater_hand_emitter
+fx,bio/player/fx_player_underwater_hand_emitter_right
+fx,bio/player/fx_player_water_swim_wake
+fx,bio/player/fx_player_water_swim_ripple
+fx,bio/player/fx_player_underwater_sediment_spawner
+fx,bio/player/fx_player_water_splash_impact
+//fx,bio/player/fx_player_water_waist_ripple
+fx,system_elements/fx_water_player_wake_emit
+fx,env/water/fx_water_particles_surface_os
+fx,env/water/fx_water_particles_surface_fxr
+fx,env/water/fx_water_particle_dp_spawner
+fx,env/water/fx_water_particles_deep
+
+// footstep fxs
+fx,bio/player/fx_footstep_dust
+fx,bio/player/fx_footstep_sand
+fx,bio/player/fx_footstep_mud
+fx,bio/player/fx_footstep_water
+
+// Underwater and Swimming
+fx,env/water/fx_water_particles_surface_os
+fx,env/water/fx_water_particle_dp_spawner
+fx,env/water/fx_water_ai_wake
+//fx,system_elements/fx_water_ai_wake_emit
+fx,bio/player/fx_player_water_knee_ripple
+
+fx,impacts/fx_water_hit_sm
+fx,impacts/fx_water_hit_md
+fx,impacts/fx_water_hit_lg
+fx,impacts/fx_water_object_ripple
+
+// Rathole close smoke
+fx,maps/creek/fx_exp_rat_tunnel
+
+// b2 guy falling into water
+fx,bio/player/fx_player_water_splash_impact
+fx,bio/player/fx_player_underwater_bubbles_emitter
+fx,bio/player/fx_player_underwater_blood_emitter
+
+// reznov drowns vc
+fx,maps/creek/fx_tunnel_fight_surface_splash
+
+// misc 
+fx,impacts/fx_flesh_hit
+fx,env/light/fx_spotlight_flashlight
+//fx,env/smoke/fx_cig_smoke
+impactfx,creek
+
+// large explosions
+fx,maps/pow/fx_pow_rocket_xtreme_exp_default
+
+// ending fxs
+fx,weapon/muzzleflashes/fx_heavy_flash_base
+fx,weapon/muzzleflashes/fx_zpu4_world
+fx,bio/animals/fx_pigeon_panic_flight_med
+fx,vehicle/props/fx_huey_main_blade_full
+
+// Tunnel fxs
+fx,maps/creek/fx_exp_war_room
+	
+fx,maps/creek/fx_dirt_tunnel_collapse
+fx,maps/creek/fx_cave_pillar_crush
+fx,maps/creek/fx_cave_rock_hit
+fx,maps/creek/fx_dirt_tunnel_collapse_blast
+
+fx,weapon/muzzleflashes/fx_huey_minigun
+
+fx,weapon/rocket/fx_rocket_xtreme_exp_mud
+
+
+// --------------------------------------
+// ANIMS
+
+// patrols
+xanim,patrol_bored_2_walk_180turn
+xanim,patrol_bored_walk_2_bored
+xanim,patrol_bored_patrolwalk
+xanim,patrol_bored_idle_smoke
+xanim,patrol_bored_react_look_v1
+xanim,casual_stand_v2_idle
+xanim,casual_stand_v2_twitch_shift
+xanim,casual_stand_v2_twitch_talk
+xanim,casual_stand_v2_idle
+
+// swimming
+xanim,viewmodel_swim_breaststroke_a
+xanim,viewmodel_swim_breaststroke_b
+xanim,viewmodel_swim_breaststroke_c
+xanim,viewmodel_swim_backwards_a
+xanim,viewmodel_swim_backwards_b
+xanim,viewmodel_swim_backwards_c
+xanim,viewmodel_swim_tread_water
+xanim,viewmodel_swim_to_left
+xanim,viewmodel_swim_to_right
+
+// livestock
+xanim,a_chicken_death
+xanim,a_chicken_idle
+xanim,a_chicken_react
+xanim,a_chicken_run
+xanim,a_pig_death
+xanim,a_pig_idle
+xanim,a_pig_idle_a
+xanim,a_pig_idle_scratch
+xanim,a_pig_idle_scratch_fast
+xanim,a_pig_react
+xanim,a_pig_run
+xanim,a_chicken_death_a
+xanim,a_chicken_idle_a
+xanim,a_chicken_react_a
+xanim,a_chicken_run_panic_a
+xanim,a_chicken_run_panic_b
+xanim,a_pig_run_panic_a
+xanim,a_pig_run_fast
+
+// for reznov
+xanim,ai_reznov_crouchrun
+xanim,ai_reznov_crouchsprint
+xanim,ai_reznov_crouchwalk_f
+xanim,ai_reznov_crouchwalk_b
+xanim,ai_reznov_crouchwalk_slow_f
+xanim,ai_reznov_crouchwalk_slow_knee_f
+xanim,ai_reznov_crouchwalk_idle
+xanim,ai_reznov_crouchwalk_idle_in
+xanim,ai_reznov_crouchwalk_idle_out
+
+// Beat 2 intro
+xanim,ai_barnes_run_f_v2
+xanim,ai_barnes_walk_f
+xanim,ai_barnes_walk_f_aim_up
+xanim,ch_creek_b01_barnes_swim_ashore
+xanim,ch_creek_b02_barnes_walk_jungle_path
+xanim,ch_creek_b02_barnes_start2gap
+xanim,ch_creek_b02_barnes_treadwatergap
+xanim,ch_creek_b02_barnes_tread_sampan2
+xanim,ch_creek_b02_barnes_gap2sampan 
+xanim,ch_creek_b02_barnes_treadwatersampan
+xanim,ch_creek_b02_sampan_barnes_swimtodock
+xanim,ch_creek_b02_sampan_barnes_swimtodock_idle
+xanim,ai_sampan_melee_search_close
+xanim,ai_sampan_melee_search_medium
+xanim,ai_sampan_melee_search_distant
+xanim,ai_sampan_melee
+xanim,int_sampan_melee
+xanim,v_sampan_melee_crouch_idle_sampan
+xanim,v_sampan_melee_stand_idle_sampan
+xanim,v_sampan_melee_sampan
+xanim,ai_sampan_melee_crouch_2_stand
+xanim,ai_sampan_melee_crouch_idle
+xanim,ai_sampan_melee_flinch_2_stand
+xanim,ai_sampan_melee_stand_2_flinch
+xanim,ai_sampan_melee_stand_idle
+xanim,ai_sampan_melee_barnesvictim_crouch_idle ai
+xanim,ai_sampan_melee_barnesvictim_crouch_2_stand
+xanim,ai_sampan_melee_barnesvictim_stand_idle
+xanim,ai_sampan_melee_barnesvictim_stand_2_flinch
+xanim,ai_sampan_melee_barnesvictim
+xanim,ai_sampan_melee_barnes
+xanim,int_creek_b02_swimthrugap
+
+// b2 hey charlie hut
+xanim,ch_creek_b02_hey_charlie_woods_loop
+xanim,ch_creek_b02_hey_charlie_bowman_loop
+xanim,ch_creek_b02_hey_charlie_nva_1_loop
+xanim,ch_creek_b02_hey_charlie_nva_2_loop
+xanim,ch_creek_b02_hey_charlie_redshirt_loop
+xanim,ch_creek_b02_hey_charlie_woods_approach
+xanim,ch_creek_b02_hey_charlie_woods_approach_loop
+xanim,ch_creek_b02_hey_charlie_woods
+xanim,ch_creek_b02_hey_charlie_bowman
+xanim,ch_creek_b02_hey_charlie_nva_1
+xanim,ch_creek_b02_hey_charlie_nva_2
+xanim,ch_creek_b02_hey_charlie_redshirt
+xanim,ch_creek_b02_hey_charlie_reznov
+xanim,o_creek_b02_hey_charlie_backpack
+xanim,ch_creek_b02_hey_charlie_nva_1_death_loop
+
+// b2 planting bomb
+xanim,int_creek_water_bombplant
+
+// plant 2nd bomb
+xanim,int_creek_2nd_c4_plant
+xanim,o_creek_2nd_c4_plant_gate_open
+
+// Beat 2 window shimming
+xanim,ch_creek_b02_barnes_swim_climb_dock
+xanim,ch_creek_b02_barnes_swim_dock
+xanim,ch_creek_b02_barnes_swim_climb_loop
+xanim,ch_creek_b02_barnes_window_loop_left
+xanim,ch_creek_b02_barnes_window_loop_right
+xanim,ch_creek_b02_barnes_window_shimy
+xanim,ch_creek_b02_barnes_window_sneek_in
+xanim,ch_creek_b02_sleeping_guy_1
+xanim,ch_creek_b02_sleeping_guy_1_death
+xanim,ch_creek_b02_sleeping_guy_2
+xanim,ch_creek_b02_sleeping_guy_2_death
+xanim,ch_creek_b02_dock_gaurds_talking_guy_1_loop
+xanim,ch_creek_b02_dock_gaurds_talking_guy_2_loop
+xanim,ai_viet_splash_death
+xanim,p_creek_b02_dock_gaurds_talking_guys_stogie
+
+// b2 Hammock guys
+xanim,p_creek_b02_hammock_sleep_hammock
+xanim,ch_creek_b02_hammock_sleep_guy01
+xanim,ch_creek_b02_hammock_sleep_guy02
+xanim,int_creek_hammock_melee_guy01
+xanim,int_creek_hammock_melee_guy02
+xanim,p_creek_hammock_melee_guy01_hammock
+xanim,p_creek_hammock_melee_guy02_hammock
+xanim,ai_creek_hammock_melee_woods_guy01
+xanim,ai_creek_hammock_melee_woodsvictim_guy01
+xanim,ai_creek_hammock_melee_woods_guy02
+xanim,ai_creek_hammock_melee_woodsvictim_guy02
+xanim,ai_creek_hammock_melee_guy01
+xanim,ai_creek_hammock_melee_guy02
+xanim,ai_creek_hammock_melee_guy01_dead_idle
+xanim,ai_creek_hammock_melee_guy02_dead_idle
+
+// Beat 2 - Lewis on bridge
+xanim,ch_creek_b02_lewis_signaling
+
+// b2 rice eating
+xanim,ai_vc_eating_melee_curtain_open
+xanim,ai_vc_eating_melee_attack_opportunity
+xanim,ai_vc_eating_melee
+xanim,ai_vc_eating_melee_fail_grabs_gun
+xanim,p_vc_eating_melee_curtain_open_bowl
+xanim,p_vc_eating_melee_curtain_open_chopstick_1
+xanim,p_vc_eating_melee_curtain_open_chopstick_2
+xanim,p_vc_eating_melee_attack_opportunity_bowl
+xanim,p_vc_eating_melee_attack_opportunity_chopstick_1
+xanim,p_vc_eating_melee_attack_opportunity_chopstick_2
+xanim,p_vc_eating_melee_bowl
+xanim,p_vc_eating_melee_chopstick_1
+xanim,p_vc_eating_melee_chopstick_2
+xanim,p_vc_eating_melee_fail_bowl
+xanim,p_vc_eating_melee_fail_chopstick_1
+xanim,p_vc_eating_melee_fail_chopstick_2
+xanim,int_vc_eating_melee
+
+// b2 we are splitting up
+xanim,ch_creek_b02_woods_splittingup
+
+// Beat 2 window look
+xanim,ch_creek_b02_windowlook_woods
+xanim,ch_creek_b02_windowlook_vc
+xanim,ch_creek_b02_windowlook_vc2
+xanim,o_creek_b02_windowlook_shade_l
+xanim,o_creek_b02_windowlook_shade_r
+xanim,o_creek_b02_windowlook_shade_l_idle
+xanim,o_creek_b02_windowlook_shade_r_idle
+
+// Beat 2 regroup hut
+xanim,ch_creek_b02_regroup_before_village_barnes
+xanim,o_creek_b02_regroup_before_village_door
+xanim,o_creek_b02_regroup_before_village_door_openloop
+
+// beat 3 entrance
+xanim,ch_creek_b02_distraction_idle_bowman
+xanim,ch_creek_b02_distraction_idle_woods
+xanim,ch_creek_b02_distraction_pt1_bowman
+xanim,ch_creek_b02_distraction_pt1_woods
+xanim,ch_creek_b02_distraction_pt2_bowman
+xanim,ch_creek_b02_distraction_pt2_woods
+
+// b3 VC reactions
+xanim,ch_creek_b02_village_bridge_lower_idle
+xanim,ch_creek_b02_village_bridge_lower_react
+xanim,ch_creek_b02_village_bridge_upper_idle
+xanim,ch_creek_b02_village_bridge_upper_react
+xanim,ch_creek_b02_village_bridge_upper_death
+xanim,ch_creek_b02_village_rooftop_rolloff_death
+xanim,ch_creek_b02_village_window_dive
+xanim,ch_creek_b02_village_attack_signal
+xanim,ch_creek_b02_village_hut_corner_slide
+xanim,ch_creek_b02_village_cook_idle
+xanim,ch_creek_b02_village_cookexplo_react
+xanim,ch_creek_b02_village_sitoncrate_idle
+xanim,ch_creek_b02_village_sitoncrateexplo_react
+xanim,ch_creek_b02_village_sitting_bridge_vc1
+xanim,ch_creek_b02_village_sitting_bridge_exploreact_vc1
+xanim,ch_creek_b02_village_sitting_bridge_vc2
+xanim,ch_creek_b02_village_sitting_bridge_exploreact_vc2
+xanim,ch_creek_b02_village_explointro_a_vc1
+xanim,ch_creek_b02_village_explointro_b_vc1
+xanim,ch_creek_b02_village_explointro_fail_vc1
+xanim,ch_creek_b02_village_explointro_a_vc2
+xanim,ch_creek_b02_village_explointro_b_vc2
+xanim,ch_creek_b02_village_explointro_fail_vc2
+xanim,ch_creek_b02_village_explointro_a_vc3
+xanim,ch_creek_b02_village_explointro_b_vc3
+xanim,ch_creek_b02_village_explointro_fail_vc3
+xanim,ch_creek_b02_village_hurdle2fight
+xanim,ch_creek_b02_village_parkour2roof
+xanim,ch_creek_b03_rpg_opens_flap
+xanim,o_creek_b03_roof_flap
+xanim,ch_creek_b03_opens_flap
+xanim,o_creek_b03_roof_flap2
+xanim,ch_creek_b02_vc_window_jump
+xanim,ch_creek_b03_slope_slide_1
+xanim,ch_creek_b03_tree_slide_1
+xanim,ch_creek_b02_roof_traverse_A
+
+// b3 ridge getting help
+xanim,ch_creek_b02_vc1_ridge
+xanim,ch_creek_b02_vc2_ridge
+
+// b3 aa gunner
+xanim,crew_flak1_tag1_idle_1
+
+// beat 3: m202 guy
+xanim,ch_creek_b02_m202_guy_run_cycle
+xanim,ch_creek_b02_m202_guy
+xanim,ch_creek_b02_m202_wingman
+
+// b3 Sampan landing
+xanim,ch_creek_b03_sampan_offload_driver_death
+xanim,ch_creek_b03_sampan_offload_driver_idle
+xanim,ch_creek_b03_sampan_offload_guy_1
+xanim,ch_creek_b03_sampan_offload_guy_2
+xanim,ch_creek_b03_sampan_offload_guy_3
+xanim,v_creek_b03_sampan_offload_dock
+
+// rat tunnel vc
+xanim,ai_mantle_on_56
+xanim,ai_viet_rathole_mantle_on_56_2_crch
+xanim,ai_viet_rathole_mantle_on_56_2_run
+xanim,ai_viet_rathole_mantle_on_56_2_stnd
+
+// aa gunner death
+xanim,crew_model3_driver_death
+
+// Beat 4 entrance
+xanim,ch_creek_b04_rat_tunnel_intro_C_player
+xanim,ch_creek_b04_rat_tunnel_intro_C_light
+xanim,ch_creek_b04_rat_tunnel_intro_A_hatch
+xanim,ch_creek_b04_rat_tunnel_intro_bowman
+xanim,ch_creek_b04_rat_tunnel_intro_swift
+xanim,ch_creek_b04_rat_tunnel_intro_woods
+xanim,ch_creek_b04_rat_tunnel_intro_C_barnes
+xanim,ch_creek_b04_rat_tunnel_intro_C_lewis
+
+// beat 4: strafe VC
+xanim,ch_creek_b04_vc_tunnel_strafe
+
+// Beat 4 - swift death
+xanim,ch_creek_b04_tunnel_reznovblinded_idle
+xanim,ch_creek_b04_tunnel_reznovblinded
+xanim,ch_creek_b04_tunnel_swift_death
+xanim,ch_creek_b04_tunnel_VC_attack
+xanim,ch_creek_b04_tunnel_VC_death1
+xanim,ch_creek_b04_tunnel_VC_death2
+xanim,ch_creek_b04_tunnel_swift_death_loop
+
+// Beat 4 room 1
+xanim,ch_creek_b02_reznov_move_shelf_enter_tunnel
+xanim,ch_creek_b02_reznov_move_shelf_wait_loop
+xanim,ch_creek_b02_reznov_pushvc_walktoshelf
+xanim,ch_creek_b02_vc_deathandrop
+xanim,ch_creek_b02_vc_firingloop
+xanim,ch_creek_b02_shelfpush_player
+xanim,p_creek_b02_shelfpushover
+
+// Beat 4 - Reznov drowns a VC
+xanim,ch_creek_b04_tunnel_reznovdrown_rez
+xanim,ch_creek_b04_tunnel_reznovdrown_vc
+xanim,ch_creek_b04_tunnel_reznovdrown_rez_loop
+xanim,ch_creek_b04_tunnel_reznovdrown_vc_loop
+
+// Beat 4 - Ambushes
+xanim,ch_creek_b04_ambush_1
+xanim,ch_creek_b04_ambush_2
+xanim,ch_creek_b04_ambush_1_idle
+xanim,ch_creek_b04_ambush_2_idle
+
+// war room
+xanim,door_kick_in
+
+// b4 ending crawl
+xanim,int_creek_tunnel_crawl_and_get_up
+xanim,int_creek_tunnel_melee_a
+xanim,int_creek_tunnel_melee_b
+xanim,int_creek_tunnel_melee_c_and_end 
+xanim,int_creek_tunnel_cliffhang_idle
+
+xanim,o_rocks_creek_tunnel_melee_a
+xanim,o_rocks_creek_tunnel_melee_b
+xanim,o_rocks_creek_tunnel_melee_c
+
+//xanim,ai_huey_passenger_f_rt
+
+xanim,ch_creek_b04_end_rescue_barnes
+xanim,ch_creek_b04_end_rescue_bowman
+xanim,v_creek_b04_end_rescue_huey
+
+// misc
+//xanim,crouch_grenade_throw
+xanim,unarmed_run_delta
+xanim,casual_crouch_idle
+xanim,casual_crouch_twitch
+xanim,casual_crouch_idle
+
+// balcony death
+xanim,ai_deathbalcony_b
+xanim,ai_deathbalcony_c
+
+// vc attacking in tunnels
+xanim,ch_creek_b04_tunnel_popout_vc_shoot_1
+xanim,ch_creek_b04_tunnel_popout_vc_shoot_2
+xanim,ch_creek_b04_tunnel_topofincline_vc_shoot_1
+xanim,ch_creek_b04_tunnel_topofincline_vc_shoot_2
+
+// reznov in krav's lair
+xanim,ch_creek_b04_tunnel_kravlair_reznov_enter
+xanim,ch_creek_b04_tunnel_kravlair_reznov_exit
+xanim,ch_creek_b04_tunnel_kravlair_reznov_searchloop
+
+// ai turret animations
+include,common_mg42
+
+// initial texture load order list (keep at end)
+texturelist,texturelist/creek_1.csv

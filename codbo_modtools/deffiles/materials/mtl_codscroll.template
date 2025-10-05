@@ -1,0 +1,55 @@
+
+#if "@noStreamColor@" == "1"
+#define COLOR_STREAMABLE
+#else
+#define COLOR_STREAMABLE streamable
+#endif
+
+// To save on first convert:
+#include "commonsetup.template"
+
+#if @noReceiveDynamicShadow@
+	#define NAME_PREFIX "l"
+//	#define NAME_PREFIX "w"
+#else
+	#define NAME_PREFIX "l"
+//	#define NAME_PREFIX "w"
+#endif
+
+#if "@blendFunc@" == "Add"
+	#define BLEND_MODE "a"
+#elif "@blendFunc@" == "Replace"
+	#if "@alphaTest@" == "Always"
+		#define BLEND_MODE "r"
+	#else
+		#define BLEND_MODE "t"
+	#endif
+#elif "@blendFunc@" == "Blend"
+	#define BLEND_MODE "b"
+#else
+	#error "blendFunc '@blendFunc@' with alphaTest '@alphaTest@' not supported for '@materialType@' materials"
+#endif
+
+techniqueSet( NAME_PREFIX + "_scrolluv_" + BLEND_MODE + "0c0" );
+
+textureTable
+{
+	#if "$colorMap$" == ""
+		#error "colorMap may not be blank in '@materialType@' materials"
+	#endif
+
+	"colorMap" = COLOR_STREAMABLE map( "@tileColor@", "@filterColor@", "$colorMap$", @nopicmipColor@ ) "@formatColor@" : "colorMap";
+	
+	// Some techniques need a normal map..
+	"normalMap" = map( "tile both", "nomip nearest", "$identityNormalMap", true ) "<auto compression>" : "normalMap";
+}
+
+
+constantTable
+{
+	"uvScroll" = float2( @uScroll@, @vScroll@ );
+}
+
+allocReflectionProbe();
+
+refImage( "$colorMap$" );

@@ -1,0 +1,26 @@
+{
+	stateMap "build_floatz";
+
+	vertexShader 3.0 "pimp_shader_sw4_3d_animated_unlit_normals_ef0273ac.hlsl"
+	{
+	}
+
+	pixelShader 3.0 "pimp_shader_sw4_3d_animated_unlit_normals_ef0273ac.hlsl" 
+	{
+		Normal_Map         = material.Normal_Map;
+  Reflection_Amount  = material.Reflection_Amount;
+  FPS                = material.FPS;
+  Grid               = material.Grid;
+  Flicker_Map        = material.Flicker_Map;
+  Diffuse_MapSampler = material.Diffuse_MapSampler;
+	}
+
+	vertex.position = code.position;
+
+	declTypes
+	{
+		packed
+		world
+	}
+}
+

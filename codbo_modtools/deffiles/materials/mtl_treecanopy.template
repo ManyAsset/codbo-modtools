@@ -1,0 +1,94 @@
+#include "clamp.template"
+#include "textureAtlas.template"
+#include "statebits.template"
+
+allocLightmap( 0 );
+tessSize( @tessSize@ );
+hasEditorMaterial( @hasEditorMaterial@ );
+refBlend( "Blend" );
+sort( 14 ); // just before dynamic water
+forModel( 1 );
+forWorld( 0 );
+
+#if @noReceiveDynamicShadow@
+	#define NAME_PREFIX ""
+#else
+	#define NAME_PREFIX "sm_"
+#endif
+
+#if @treeCanopyEnableSway@ == 1
+#define SWAY_SUFFIX "_sway"
+#else
+#define SWAY_SUFFIX ""
+#endif
+
+#if "$normalMap$" == "" || "$normalMap$" == "$identityNormalMap"
+	#define NORMAL_MAP_IMAGE 	"$identityNormalMap"
+	#define NORMAL_SUFFIX		""
+	#define USE_NORMAL_MAP		0
+#else
+	#define NORMAL_MAP_IMAGE	"$normalMap$"
+	#define NORMAL_SUFFIX		"_nrm"
+	#define USE_NORMAL_MAP		1
+#endif
+
+#if "@formatNormal@" == "<auto compression>"
+	#if TARGET_PLATFORM == "xenon"
+		#define NORMAL_MAP_FORMAT	"DXN"
+	#else
+		#define NORMAL_MAP_FORMAT	"DXT5"
+	#endif
+#else
+	#define NORMAL_MAP_FORMAT	"@formatNormal@"
+#endif
+
+#if "$specColorMap$" == ""
+	#define SPEC_MAP_IMAGE	"$white"
+	#define SPEC_SUFFIX		""
+	#define USE_SPEC_MAP	0
+#else
+	#define SPEC_MAP_IMAGE	"$specColorMap$"
+	#define SPEC_SUFFIX		"_spec"
+	#define USE_SPEC_MAP	1
+#endif
+
+
+#if "@blendFunc@" == "Add"
+	#error "additive not allowed on ambient materials"
+#endif
+
+#if "@blendFunc@" == "Replace" || "@blendFunc@" == "Blend"
+	techniqueSet( NAME_PREFIX + "treecanopy" + SWAY_SUFFIX + NORMAL_SUFFIX + SPEC_SUFFIX);
+#else
+	#error "blendFunc '@blendFunc@' with alphaTest '@alphaTest@' not supported for ambient materials"
+#endif
+
+
+textureTable
+{
+	#if "$colorMap$" == ""
+		#error "colorMap may not be blank in tree canopy materials"
+	#endif
+
+	"colorMap" = streamable gammaMap( "@tileColor@", "@filterColor@", "$colorMap$", @nopicmipColor@ ) "@formatColor@" : "colorMap";
+	#if USE_NORMAL_MAP
+		"normalMap" = streamable normalMap( "@tileNormal@", "@filterNormal@", NORMAL_MAP_IMAGE, @nopicmipNormal@ ) NORMAL_MAP_FORMAT : "normalMap";
+	#endif
+	#if USE_SPEC_MAP
+		"specularMap" = streamable gammaMap( "@tileSpecular@", "@filterSpecular@", SPEC_MAP_IMAGE, @nopicmipSpecular@ ) "@formatSpecular@" : "specularMap";
+	#endif
+}
+
+
+constantTable
+{
+	"colorTint" = float4( @,colorTint@ );
+	
+	"treeCanopySwayParms" = float3( @treeCanopyMinimumSway@, @treeCanopySwayRange@, @treeCanopyScaleRotationAngles@ );
+	"treeCanopyLightingParms" = float3( @treeCanopyAmbientOcclusion@, @treeCanopyRadialLighting@, @treeCanopySpecularRoughness@ );
+	"treeCanopyLightingAmount" = float2( @treeCanopyLightingAmount@, (1 - @treeCanopyLightingAmount@) );
+	"treeCanopyScatterColor" = float4( @,treeCanopyScatterColor@ );
+}
+
+
+refImageByKey( "colorMap" );

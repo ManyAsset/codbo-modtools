@@ -1,0 +1,21 @@
+{
+	stateMap "effect_add_noztest";
+
+	vertexShader 3.0 "pimp_shader_effectsimple_df2e0eb0.hlsl"
+	{
+		falloffParms = material.falloffParms;
+		falloffBeginColor = material.falloffBeginColor;
+		falloffEndColor = material.falloffEndColor;
+	}
+
+	pixelShader 3.0 "pimp_shader_effectsimple_4e29dd6.hlsl" 
+	{
+		colorMapSampler = material.colorMap;
+	}
+
+	vertex.position = code.position;
+	vertex.texcoord[0] = code.texcoord[0];
+	vertex.normal = code.normal;
+
+}
+

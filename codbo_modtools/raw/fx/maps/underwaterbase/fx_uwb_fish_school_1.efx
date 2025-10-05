@@ -1,0 +1,237 @@
+iwfx 3
+
+	efFlags;
+	efPriority 40;
+	efBoundingBoxDim 0 0 0;
+	efBoundingBoxCentre 0 0 0;
+{
+	name "fish_school_model";
+	editorFlags looping useRandScale useRandRotDelta useRandVel0;
+	flags spawnRelative spawnRelativeType0 spawnRelativeType1 spawnOffsetNone runRelToEffect nonUniformScale useRotationAxis;
+	spawnRange 0 0;
+	fadeInRange 0 0;
+	fadeOutRange 0 0;
+	spawnFrustumCullRadius 0;
+	spawnLooping 100 0;
+	spawnOneShot 50 0;
+	spawnDelayMsec 0 0;
+	lifeSpanMsec 6000 0;
+	spawnOrgX -200 400;
+	spawnOrgY 150 -300;
+	spawnOrgZ -150 300;
+	spawnOffsetRadius 0 0;
+	spawnOffsetHeight 0 0;
+	spawnAnglePitch 20 -40;
+	spawnAngleYaw 0 0;
+	spawnAngleRoll 0 0;
+	angleVelPitch 0 0;
+	angleVelYaw 0 0;
+	angleVelRoll 0 0;
+	initialRot 0 0;
+	rotationAxis 0 0 -0.707107 -0.707107;
+	gravity 0 0;
+	elasticity 0 0;
+	windinfluence 0;
+	atlasBehavior startFixed;
+	atlasIndex 0;
+	atlasFps 0;
+	atlasLoopCount 0;
+	atlasColIndexBits 0;
+	atlasRowIndexBits 0;
+	atlasEntryCount 0;
+	atlasIndexRange 6;
+	velGraph0X -0
+	{
+		{
+			0 -0.5
+			1 -0.5
+		}
+		{
+			0 -0.5
+			1 -0.5
+		}
+	};
+	velGraph0Y 300
+	{
+		{
+			0 0
+			0.0581395 0.0645933
+			0.145349 0.0550239
+			0.235465 -0.0598086
+			0.331395 -0.117225
+			0.406977 -0.0980861
+			0.511628 0.0311005
+			0.601744 0.0980861
+			0.703488 0.0789474
+			0.776163 -0.0215311
+			0.851744 -0.0789474
+			0.930233 -0.0550239
+			1 0.007177
+		}
+		{
+			0 0
+			1 0
+		}
+	};
+	velGraph0Z -100
+	{
+		{
+			0 0
+			0.0610465 0.0645933
+			0.148256 0.0550239
+			0.244186 -0.0741627
+			0.340116 -0.117225
+			0.412791 -0.0980861
+			0.517442 0.0406699
+			0.604651 0.0980861
+			0.712209 0.0789474
+			0.776163 -0.0311005
+			0.854651 -0.0837321
+			0.93314 -0.0550239
+			1 0
+		}
+		{
+			0 0
+			1 0
+		}
+	};
+	velGraph1X -0
+	{
+		{
+			0 0
+			1 0
+		}
+		{
+			0 0
+			1 0
+		}
+	};
+	velGraph1Y -0
+	{
+		{
+			0 0
+			1 0
+		}
+		{
+			0 0
+			1 0
+		}
+	};
+	velGraph1Z -0
+	{
+		{
+			0 0
+			1 0
+		}
+		{
+			0 0
+			1 0
+		}
+	};
+	rotGraph 40
+	{
+		{
+			0 0.5
+			1 0.5
+		}
+		{
+			0 0.263889
+			1 0.259259
+		}
+	};
+	sizeGraph0 70
+	{
+		{
+			0 1
+			0.752941 1
+			1 0
+		}
+		{
+			0 1
+			1 0
+		}
+	};
+	sizeGraph1 20
+	{
+		{
+			0 1
+			0.752941 1
+			1 0
+		}
+		{
+			0 1
+			1 0
+		}
+	};
+	scaleGraph 1.2
+	{
+		{
+			0 0
+			0.164706 1
+			0.785294 1
+			1 0
+		}
+		{
+			0 0
+			0.152941 0.681818
+			0.767647 0.681818
+			1 0
+		}
+	};
+	colorGraph 1
+	{
+		{
+			0 1 1 1
+			1 1 1 1
+		}
+		{
+			0 1 1 1
+			1 0 0 0
+		}
+	};
+	alphaGraph 1
+	{
+		{
+			0 0
+			0.0755814 0.124402
+			0.136628 0.655502
+			0.258721 1
+			0.726744 1
+			0.848837 0.69378
+			0.909884 0.129187
+			1 0
+		}
+		{
+			0 1
+			1 0
+		}
+	};
+	lightingFrac 0;
+	collOffset -0 -0 -0;
+	collRadius 0;
+	fxOnImpact "";
+	fxOnDeath "";
+	sortOrder 0;
+	emission "";
+	emitDist 0 0;
+	emitDistVariance 0 0;
+	attachment "";
+	trailSplitDist 100;
+	trailScrollTime 0;
+	trailRepeatDist 10;
+	alphafadetimemsec 0;
+	maxwind_mag 0;
+	maxwind_life 0;
+	maxwind_interval 1;
+	billboardTopWidth 1;
+	billboardBottomWidth 1;
+	elemSpawnSound
+	{
+	};
+	cloudDensity 0 0;
+	billboardPivot 10 0;
+	model
+	{
+		"fish_med"
+	};
+}

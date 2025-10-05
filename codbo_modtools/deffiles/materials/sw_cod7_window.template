@@ -1,0 +1,26 @@
+#if "@blendFunc@" == "Blend" || ("@blendFunc@" == "Replace" && "@alphaTest@" != "Always")
+techniqueSet( "sw_cod7_window" ); 
+#else
+techniqueSet( "sw_cod7_window_noalpha" ); 
+#endif
+
+#include "commonsetup.template" 
+
+cgfxTextureTableRefImage
+{
+	"Warp_MapSampler" = streamable map( "tile both", "mip (1x trilinear)", "", 0 ) "Uncompressed" : "colorMap"; 
+	"Room_MapSampler" = streamable map( "no tile", "mip most expensive (4x trilinear)", "", 0 ) "<auto compression>" : "colorMap"; 
+	"Normal_MapSampler" = streamable normalMap( "tile both", "mip (1x trilinear)", "texture_assets\shaderworks\window_fake_int_01_n.tga", 0 ) "<auto compression>" : "normalMap"; 
+	"Diffuse_MapSampler" = streamable map( "tile both", "mip (1x trilinear)", "texture_assets\shaderworks\window_fake_int_01_c.tga", 0 ) "<auto compression>" : "colorMap"; 
+}
+
+cgfxConstantTable
+{
+	"EnvBlurLevel" = float4( 0, 0, 0, 0 );
+	"Warp_Scale" = float4( 6.1, 1.5, 1, 1 );
+	"Warp_Amts" = float4( 14.66, 0, 0, 0 );
+	"Room_Scale" = float4( 1, 1, 1, 1 );
+	"Window_Tint" = float4( 1.7, 1.392, 1.18667, 1 );
+}
+allocReflectionProbe();
+

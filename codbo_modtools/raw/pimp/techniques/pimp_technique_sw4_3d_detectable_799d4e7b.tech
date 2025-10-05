@@ -1,0 +1,27 @@
+{
+	stateMap "sw4_default";
+
+	vertexShader 3.0 "pimp_shader_sw4_3d_detectable_23c3a885.hlsl"
+	{
+	}
+
+	pixelShader 3.0 "pimp_shader_sw4_3d_detectable_16d803f4.hlsl" 
+	{
+		Maximum_Distance = material.Maximum_Distance;
+  Fade_Distance    = material.Fade_Distance;
+  Max_Color        = material.Max_Color;
+  Min_Color        = material.Min_Color;
+  Color_map        = material.Color_map;
+	}
+
+	vertex.position = code.position;
+	vertex.normal      = code.normal;
+  vertex.texcoord[0] = code.texcoord[0];
+
+	declTypes
+	{
+		packed
+		world
+	}
+}
+

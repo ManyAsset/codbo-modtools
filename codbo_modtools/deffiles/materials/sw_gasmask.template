@@ -1,0 +1,22 @@
+#if "@blendFunc@" == "Blend" || ("@blendFunc@" == "Replace" && "@alphaTest@" != "Always")
+techniqueSet( "sw_gasmask" ); 
+#else
+techniqueSet( "sw_gasmask_noalpha" ); 
+#endif
+
+#include "commonsetup.template" 
+
+cgfxTextureTableRefImage
+{
+	"Normal_MapSampler" = streamable normalMap( "tile both", "mip (1x trilinear)", "texture_assets\hud\GasMask_SM_002b_n.tga", 0 ) "<auto compression>" : "normalMap"; 
+	"Lerp_MapSampler" = streamable map( "tile both", "mip (1x trilinear)", "texture_assets\hud\GasMask_Conden_SM_001_mask.tga", 0 ) "<auto compression>" : "colorMap"; 
+	"Diffuse_MapSampler" = streamable map( "tile both", "mip (1x trilinear)", "texture_assets\hud\GasMask_SM_002a.tga", 0 ) "<auto compression>" : "colorMap"; 
+}
+
+cgfxConstantTable
+{
+	"EnvBlurLevel" = float4( 0, 0, 0, 0 );
+	"Glass_Tint" = float4( 0.994286, 0.996078, 0.945298, 0 );
+}
+allocReflectionProbe();
+

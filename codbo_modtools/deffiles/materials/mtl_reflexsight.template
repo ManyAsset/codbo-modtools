@@ -1,0 +1,29 @@
+#include "commonsetup.template"
+
+#if "@noStreamDetail@" == "1"
+#define DETAIL_STREAMABLE
+#else
+#define DETAIL_STREAMABLE streamable
+#endif
+
+techniqueSet( "reflexsight" );
+
+textureTable
+{
+	#if "$colorMap$" == ""
+		#error "colorMap may not be blank in reflexsight materials"
+	#endif
+	"colorMap" = map( "@tileColor@", "@filterColor@", "$colorMap$", @nopicmipColor@ ) "@formatColor@" : "colorMap";
+	#if ("$detailMap$" == "")
+		#error "detail map may not be blank in reflexsight materials"
+	#endif
+	"detailMap" = DETAIL_STREAMABLE map( "tile both", "@filterDetail@", "$detailMap$", @nopicmipDetail@ ) "@formatDetail@" : "colorMap";
+}
+
+constantTable
+{
+		"detailScale" = float4( @detailScaleX@, @detailScaleY@, 0, 0 );
+}
+
+
+refImage( "$colorMap$" );

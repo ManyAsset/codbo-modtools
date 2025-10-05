@@ -1,0 +1,23 @@
+{
+	stateMap "default2d";
+
+	vertexShader 3.0 "pimp_shader_sw4_2d_goggles_overlay_5c61099f.hlsl"
+	{
+	}
+
+	pixelShader 3.0 "pimp_shader_sw4_2d_goggles_overlay_5c61099f.hlsl" 
+	{
+		Overlay = material.Overlay;
+	}
+
+	vertex.position = code.position;
+	vertex.texcoord[0] = code.texcoord[0];
+
+	declTypes
+	{
+		packed
+		debug
+		generic
+	}
+}
+

@@ -1,0 +1,449 @@
+#define	USE_CLOAK			("$cloakingDevice$" == "1" )
+#define USE_ALPHA_DISSOLVE	("$alphaDissolve$" == "1" )
+#define USE_COLOR_DISSOLVE	("$colorDissolve$" == "1" )
+#define USE_SPLATTER		("$localSplatter$" == "1" )
+#define USE_LOCAL_GLOW		("$localGlow$" == "1" )		
+#define USE_ALPHA_BLEND		("$alphaTexture$" == "1" )	// material feature defines
+
+#if USE_CLOAK
+sort(61);
+#else
+#if USE_ALPHA_BLEND
+sort(17);
+#else
+sort(15);
+#endif
+#endif
+
+
+#include "clamp.template"
+//#include "cullface.template"
+tessSize( @tessSize@ );
+#include "textureAtlas.template"
+
+hasEditorMaterial( @hasEditorMaterial@ );
+
+#include "refblend.template"
+#include "statebits.template"
+
+allocLightmap( 0 );
+forModel( 1 );
+forWorld( 0 );
+
+//refBlend( "Opaque" );
+//alphaTest( Always );
+//blendFunc( Disable, One, Zero );
+//separateAlphaBlendFunc( Disable, One, Zero );
+//colorWrite( Enable, Enable, Enable, Disable );
+//depthTest( LessEqual );
+//depthWrite( Enable );
+
+//#include "polygonoffset.template"
+//#include "stencil.template"
+
+//-----------------------------------------------------------------------------------------------------------------------------
+// set required techset
+//-----------------------------------------------------------------------------------------------------------------------------
+
+#if USE_CLOAK
+	#define	CLOAK_SUFFIX "_ck"
+#else
+	#define	CLOAK_SUFFIX ""
+#endif
+
+#if USE_ALPHA_DISSOLVE
+	#define	ALPHA_DISSOLVE_SUFFIX "_ad"
+#else
+	#define	ALPHA_DISSOLVE_SUFFIX ""
+#endif
+
+#if USE_COLOR_DISSOLVE
+	#define	COLOR_DISSOLVE_SUFFIX "_cd"
+#else
+	#define	COLOR_DISSOLVE_SUFFIX ""
+#endif
+
+#if USE_SPLATTER
+	#define	SPLATTER_SUFFIX "_sp"
+#else
+	#define	SPLATTER_SUFFIX ""
+#endif
+
+#if USE_LOCAL_GLOW
+	#define	LOCAL_GLOW_SUFFIX "_lg"
+#else
+	#define	LOCAL_GLOW_SUFFIX ""
+#endif
+
+#if USE_ALPHA_BLEND
+	#define ALPHA_BLEND_SUFFIX "_ab"
+#else
+	#define ALPHA_BLEND_SUFFIX ""
+#endif	
+
+techniqueSet( "cod7modelcloak" + CLOAK_SUFFIX + ALPHA_DISSOLVE_SUFFIX + COLOR_DISSOLVE_SUFFIX + SPLATTER_SUFFIX + LOCAL_GLOW_SUFFIX + ALPHA_BLEND_SUFFIX );
+
+//-----------------------------------------------------------------------------------------------------------------------------
+// textures
+//-----------------------------------------------------------------------------------------------------------------------------
+#if TARGET_PLATFORM == "xenon"
+	#define NORMAL_MAP_FORMAT	"DXN"
+#else
+	#define NORMAL_MAP_FORMAT	"DXT5"
+#endif
+
+// colorMap					= Diffuse Abledo 
+// normalMap				= Normal Map
+// specularRoughnessMap		= Specular Roughness
+// specularCorrectionMap	= Specular Correction (wall-e)
+// ambientOcclusionMap		= Ambient Occlusion
+
+// --- optional dissolve material feature
+// colorMap00	= AlphaDissolve Mask
+// colorMap01	= AlphaDissolve Abledo
+
+// --- optional cloak material feature
+// colorMap05				= Cloaking Mask
+// colorMap06				= Cloaking Color Transition
+// colorMap07				= Cloaking Distortion
+
+// --- optional splatter material feature
+// colorMap08				= Splatter Mask
+// colorMap09				= Splatter Specular Roughness
+// colorMap10				= Splatter Abledo
+
+// --- optional local glow material feature
+// colorMap11				= Glow Intensity Mask
+// colorMap12				= Glow Index
+// colorMap13				= Glow Color Volume
+
+// --- optional color dissovle material feature
+// colorMap02				= ColorDissolve Index
+// colorMap14				= ColorDissolve Mask
+// colorMap15				= ColorDissolve Color Volume
+
+textureTable
+{
+	//---------------------------------------------------------------------------------------------------------------------
+	// test for required textures and restrictions
+	//---------------------------------------------------------------------------------------------------------------------
+	#if "$colorMap$" == ""
+		#error "diffuse map is not defined"
+	#endif
+	#if "$normalMap$" == ""
+		#error "normal map is not defined"
+	#endif
+	#if "$specularRoughnessMap$" == ""
+		#error "specular roughness map is not defined"
+	#endif
+
+	#if "$specularCorrectionMap$" != ""
+		#define SPEC_CORRECTION "$specularCorrectionMap$"
+	#else
+		#define SPEC_CORRECTION "$white"	// null specular correction use white
+	#endif		
+
+	#if "$ambientOcclusionMap$" != ""				
+		#define AMB_OCC	"$ambientOcclusionMap$"
+	#else
+		#define AMB_OCC	"$white"			// null ambient occlusion use white
+	#endif
+
+
+	#if USE_ALPHA_DISSOLVE
+		#if "$colorMap00$" != ""
+			#define	ALPHA_DISSOLVE_MASK	"$colorMap00$"
+		#else
+			#define ALPHA_DISSOLVE_MASK	"$black"				// null mask then use black
+		#endif
+	
+		#if "$colorMap01$" != ""
+			#define ALPHA_DISSOLVE_COLOR "$colorMap01$"
+		#else
+			#define ALPHA_DISSOLVE_COLOR "$white"				// null index then use white	
+		#endif
+	#endif
+
+
+	#if USE_CLOAK
+		#if USE_ALPHA_DISSOLVE
+			#error "cloak and alpha dissolve not supported at same time, select one only"
+		#endif
+	
+		#if "$colorMap05$" == ""
+			#error "cloak mask map is not defined"
+		#endif
+
+		#if "$colorMap06$" == ""
+			#error "cloak transition color is not defined"
+		#endif
+
+		#if "$colorMap07$" == ""
+			#error "cloak distortion map is not defined"
+		#endif
+	#endif
+
+	#if USE_COLOR_DISSOLVE
+		#if "$colorMap02$" != ""
+			#define	COLOR_DISSOLVE_INDEX	"$colorMap02$"
+		#else
+			#define	COLOR_DISSOLVE_INDEX	"$black"												// no index map use black as defualt
+		#endif
+
+		#if "$colorMap14$" == ""
+			#error "color dissolve mask map is not defined"
+		#endif
+
+		#if "$colorMap15$" == ""
+			#error "color dissolve 3dvolume color map is not defined"
+		#endif
+	#endif
+
+	#if USE_SPLATTER
+		#if "$colorMap08$" == ""
+			#error "splatter mask map is not defined"
+		#endif	
+		
+		#if "$colorMap09$" == ""
+			#error "splatter specular roughness map is not defined"
+		#endif	
+		
+		#if "$colorMap10$" == ""
+			#error "splatter diffuse map is not defined"
+		#endif	
+	#endif
+
+	#if USE_LOCAL_GLOW
+		#if "$colorMap11$" == ""
+			#error "local glow intensity mask map is not defined"
+		#endif			
+	
+		#if "$colorMap12$" != ""															// no index map supplied so use black texture
+			#define GLOW_INDEX	"$colorMap12"
+		#else
+			#define GLOW_INDEX	"$black"
+		#endif	
+	
+		#if "$colorMap13$" == ""
+			#error "local glow 3dvolume color map is not defined"
+		#endif	
+	#endif
+
+
+
+	//---------------------------------------------------------------------------------------------------------------------
+	// refimage for cod2rad lighting
+	//---------------------------------------------------------------------------------------------------------------------	
+	//"colorMap" = map( "@tileColor@", "@filterColor@", "$colorMap$", @nopicmipColor@ ) "@formatColor@" : "colorMap";
+
+	//---------------------------------------------------------------------------------------------------------------------
+	// standard cod7 basic material
+	//---------------------------------------------------------------------------------------------------------------------
+
+
+	"diffuseMap" = streamable map( "@tileColor@", "@filterColor@", "$colorMap$", @nopicmipColor@ ) "@formatColor@" : "colorMap"; 
+
+	"normalMap" = streamable normalMap( "@tileNormal@", "@filterNormal@", "$normalMap$", @nopicmipNormal@ ) NORMAL_MAP_FORMAT : "normalMap";
+
+	"specularMap" = streamable composite
+	(
+		map( "@texTileSpecularRoughness@", "@filterSpecularRoughness@", AMB_OCC,					@nopicmipSpecularRoughness@ ).r,
+		map( "@texTileSpecularRoughness@", "@filterSpecularRoughness@", "$black",					@nopicmipSpecularRoughness@ ).r,
+		map( "@texTileSpecularRoughness@", "@filterSpecularRoughness@", SPEC_CORRECTION,			@nopicmipSpecularRoughness@ ).r,
+		roughMap( "@texTileSpecularRoughness@", "@filterSpecularRoughness@", "$specularRoughnessMap$",	@nopicmipSpecularRoughness@, "normalMap" ).r
+	) "DXT5" : "specularMap";
+
+
+//	#if "$specularCorrectionMap$" == ""																// has optional specular correction map?
+//		"diffuseMap" = streamable map( "@tileColor@", "@filterColor@", "$colorMap$", @nopicmipColor@ ) "@formatColor@" : "colorMap"; 
+//	#else
+//		"diffuseMap" = streamable composite													// combine wall-e
+//		(
+//			map( "@tileColor@", "@filterColor@", "$colorMap$",				@nopicmipColor@ ).r,
+//			map( "@tileColor@", "@filterColor@", "$colorMap$",				@nopicmipColor@ ).g,
+//			map( "@tileColor@", "@filterColor@", "$colorMap$",				@nopicmipColor@ ).b,
+//			map( "@tileColor@", "@filterColor@", "$specularCorrectionMap$",	@nopicmipColor@ ).r
+//		) "@formatColor@" : "colorMap";
+//	#endif
+
+//	#if TARGET_PLATFORM == "xenon"															// combined specular roughness and ambient occlusion 
+//		"specularMap" = streamable composite
+//		(
+//			map( "@texTileSpecularRoughness@", "@filterSpecularRoughness@", AMB_OCC,					@nopicmipSpecularRoughness@ ).r,
+//			map( "@texTileSpecularRoughness@", "@filterSpecularRoughness@", AMB_OCC,					@nopicmipSpecularRoughness@ ).r,
+//			map( "@texTileSpecularRoughness@", "@filterSpecularRoughness@", AMB_OCC,					@nopicmipSpecularRoughness@ ).r,
+//			map( "@texTileSpecularRoughness@", "@filterSpecularRoughness@", "$specularRoughnessMap$",	@nopicmipSpecularRoughness@ ).r
+//		) "DXN" : "specularMap";
+//	#else
+//		"specularMap" = streamable composite
+//		(
+//			map( "@texTileSpecularRoughness@", "@filterSpecularRoughness@", "$black",					@nopicmipSpecularRoughness@ ).r,
+//			map( "@texTileSpecularRoughness@", "@filterSpecularRoughness@", AMB_OCC,					@nopicmipSpecularRoughness@ ).r,
+//			map( "@texTileSpecularRoughness@", "@filterSpecularRoughness@", "$black",					@nopicmipSpecularRoughness@ ).r,
+//			map( "@texTileSpecularRoughness@", "@filterSpecularRoughness@", "$specularRoughnessMap$",	@nopicmipSpecularRoughness@ ).r
+//		) "DXT5" : "specularMap";
+//	#endif
+
+
+
+
+
+	//---------------------------------------------------------------------------------------------------------------------
+	// cloaking device 		
+	//---------------------------------------------------------------------------------------------------------------------
+	#if USE_CLOAK	
+		"cloakMap" = streamable composite
+		(
+			map( "@texTile05@", "@filterColor05@", "$colorMap06$",	@nopicmipColor05@ ).r,
+			map( "@texTile05@", "@filterColor05@", "$colorMap06$",	@nopicmipColor05@ ).g,
+			map( "@texTile05@", "@filterColor05@", "$colorMap06$",	@nopicmipColor05@ ).b,
+			map( "@texTile05@", "@filterColor05@", "$colorMap05$",	@nopicmipColor05@ ).r
+		) "DXT5" : "colorMap";
+
+		#if TARGET_PLATFORM == "xenon"														// two channel distortion texture
+			"distortionMap" = streamable composite
+			(
+				map( "@texTile07@", "@filterColor07@", "$colorMap07$", @nopicmipColor07@ ).g,
+				map( "@texTile07@", "@filterColor07@", "$colorMap07$", @nopicmipColor07@ ).g,
+				map( "@texTile07@", "@filterColor07@", "$colorMap07$", @nopicmipColor07@ ).g,
+				map( "@texTile07@", "@filterColor07@", "$colorMap07$", @nopicmipColor07@ ).r
+			) "DXN" : "colorMap";
+		#else
+			"distortionMap" = streamable composite
+			(
+				map( "@texTile07@", "@filterColor07@", "$black",		@nopicmipColor07@ ).r,
+				map( "@texTile07@", "@filterColor07@", "$colorMap07$",	@nopicmipColor07@ ).g,
+				map( "@texTile07@", "@filterColor07@", "$black",		@nopicmipColor07@ ).r,
+				map( "@texTile07@", "@filterColor07@", "$colorMap07$",	@nopicmipColor07@ ).r
+			) "DXT5" : "colorMap";
+		#endif
+	#endif
+	
+	//---------------------------------------------------------------------------------------------------------------------
+	// alpha dissolve	
+	//---------------------------------------------------------------------------------------------------------------------
+	#if USE_ALPHA_DISSOLVE
+		"dissolveMap00" = streamable composite
+		(
+			map( "@texTile00@", "@filterColor00@", ALPHA_DISSOLVE_COLOR,	@nopicmipColor00@ ).r,
+			map( "@texTile00@", "@filterColor00@", ALPHA_DISSOLVE_COLOR,	@nopicmipColor00@ ).g,
+			map( "@texTile00@", "@filterColor00@", ALPHA_DISSOLVE_COLOR,	@nopicmipColor00@ ).b,
+			map( "@texTile00@", "@filterColor00@", ALPHA_DISSOLVE_MASK,		@nopicmipColor00@ ).r
+		) "DXT5" : "colorMap";
+	#endif
+
+	//---------------------------------------------------------------------------------------------------------------------
+	// color dissolve	
+	//---------------------------------------------------------------------------------------------------------------------
+	#if USE_COLOR_DISSOLVE	
+		#if TARGET_PLATFORM == "xenon"														// combine color dissolve index and mask
+			"dissolveMap01" = streamable composite
+			(
+				map( "@texTile14@", "@filterColor14@", COLOR_DISSOLVE_INDEX,	@nopicmipColor14@ ).r,
+				map( "@texTile14@", "@filterColor14@", COLOR_DISSOLVE_INDEX,	@nopicmipColor14@ ).r,
+				map( "@texTile14@", "@filterColor14@", COLOR_DISSOLVE_INDEX,	@nopicmipColor14@ ).r,
+				map( "@texTile14@", "@filterColor14@", "$colorMap14$",			@nopicmipColor14@ ).r
+			) "DXN" : "colorMap";
+		#else
+			"dissolveMap01" = streamable composite
+			(
+				map( "@texTile14@", "@filterColor14@", "$black",				@nopicmipColor14@ ).r,
+				map( "@texTile14@", "@filterColor14@", COLOR_DISSOLVE_INDEX,	@nopicmipColor14@ ).r,
+				map( "@texTile14@", "@filterColor14@", "$black",				@nopicmipColor14@ ).r,
+				map( "@texTile14@", "@filterColor14@", "$colorMap14$",			@nopicmipColor14@ ).r
+			) "DXT5" : "colorMap";
+		#endif
+	
+		"dissolveMap02" = volmap("@texTile15@", "@filterColor15@", "$colorMap15$", @nopicmipColor15@ ) "@textureFormat15@" : "colorMap";
+	#endif	
+	
+	//---------------------------------------------------------------------------------------------------------------------
+	// splatter		
+	//---------------------------------------------------------------------------------------------------------------------		
+	#if USE_SPLATTER	
+		#if TARGET_PLATFORM == "xenon"														// combine splatter mask and specular roughness
+			"splatterMap00" = streamable composite
+			(
+				map( "@texTile08@", "@filterColor08@", "$colorMap09$",	@nopicmipColor08@ ).r,
+				map( "@texTile08@", "@filterColor08@", "$colorMap09$",	@nopicmipColor08@ ).r,
+				map( "@texTile08@", "@filterColor08@", "$colorMap09$",	@nopicmipColor08@ ).r,
+				map( "@texTile08@", "@filterColor08@", "$colorMap08$",	@nopicmipColor08@ ).r
+			) "DXN" : "colorMap";
+		#else
+			"splatterMap00" = streamable composite
+			(
+				map( "@texTile08@", "@filterColor08@", "$black",		@nopicmipColor08@ ).r,
+				map( "@texTile08@", "@filterColor08@", "$colorMap09$",	@nopicmipColor08@ ).r,
+				map( "@texTile08@", "@filterColor08@", "$black",		@nopicmipColor08@ ).r,
+				map( "@texTile08@", "@filterColor08@", "$colorMap08$",	@nopicmipColor08@ ).r
+			) "DXT5" : "colorMap";
+		#endif	
+
+		"splatterMap01" = streamable map( "@texTile10@", "@filterColor10@", "$colorMap10$", @nopicmipColor10@ ) "@textureFormat10@" : "colorMap";
+	#endif
+	
+	//---------------------------------------------------------------------------------------------------------------------
+	// local glow	
+	//---------------------------------------------------------------------------------------------------------------------		
+	#if USE_LOCAL_GLOW	
+		#if TARGET_PLATFORM == "xenon"														// combine color index and glow amount
+			"glowMap00" = streamable composite
+			(
+				map( "@texTile11@", "@filterColor11@", GLOW_INDEX,		@nopicmipColor11@ ).r,
+				map( "@texTile11@", "@filterColor11@", GLOW_INDEX,		@nopicmipColor11@ ).r,
+				map( "@texTile11@", "@filterColor11@", GLOW_INDEX,		@nopicmipColor11@ ).r,
+				map( "@texTile11@", "@filterColor11@", "$colorMap11$",	@nopicmipColor11@ ).r
+			) "DXN" : "colorMap";
+		#else
+			"glowMap00" = streamable composite
+			(
+				map( "@texTile11@", "@filterColor11@", "$black",		@nopicmipColor11@ ).r,
+				map( "@texTile11@", "@filterColor11@", GLOW_INDEX,		@nopicmipColor11@ ).r,
+				map( "@texTile11@", "@filterColor11@", "$black",		@nopicmipColor11@ ).r,
+				map( "@texTile11@", "@filterColor11@", "$colorMap11$",	@nopicmipColor11@ ).r
+			) "DXT5" : "colorMap";
+		#endif
+	
+		"glowMap01" = volmap("@texTile13@", "@filterColor13@", "$colorMap13$", @nopicmipColor13@ ) "@textureFormat13@" : "colorMap";
+	#endif
+}
+
+//float 4.0 0.0 32.0 cloakScaleU
+//float 4.0 0.0 32.0 cloakScaleV
+//float 4.0 0.0 32.0 cloakDistortionScaleU
+//float 4.0 0.0 32.0 cloakDistortionScaleV
+
+//float 0.015625 0.0 8.0 cloakDistortionTimeScaleU
+//float 0.25 0.0 4.0 cloakDistortionOffsetScaleU
+//float 0.015625 0.0 8.0 cloakDistortionTimeScaleV
+//float 0.25 0.0 4.0 cloakDistortionOffsetScaleV 
+
+//float 5.0 0.0 12.0 cloakDistortionAmountX
+//float 5.0 0.0 12.0 cloakDistortionAmountY
+
+
+constantTable
+{
+	"specularBaseColor" = float4( 0.035, 0.035, 0.035, 1.0 );
+	"cloakTextureControl0" = float4(@cloakScaleU@, 					@cloakScaleV@,		 			@cloakDistortionScaleU@,		@cloakDistortionScaleV@);
+	"cloakTextureControl1" = float4(@cloakDistortionTimeScaleU@,	@cloakDistortionOffsetScaleU@,	@cloakDistortionTimeScaleV@,	@cloakDistortionOffsetScaleV@);
+
+	// the distortion texture needs to remap 0 -> 1 into -1 + 1, this conversion is scaled by the distortion scale
+	"cloakDistortionAmount" = float4( 2.0 * @cloakDistortionAmountX@, 2.0 * @cloakDistortionAmountY@, -1.0 * @cloakDistortionAmountX@, -1.0 * @cloakDistortionAmountY@); 
+
+	#if USE_COLOR_DISSOLVE
+		// color dissolve lut texture lookup requires corrected offsets for bilinear to work correctly
+		"dissolveLutCorrectionMul" = float4( (@colorDissolveLutX@-1.0) / @colorDissolveLutX@,	(@colorDissolveLutY@-1.0) / @colorDissolveLutY@,	(@colorDissolveLutZ@-1.0) / @colorDissolveLutZ@,	0.0); 
+		"dissolveLutCorrectionAdd" = float4( 1.0 / (2.0 * @colorDissolveLutX@),					1.0 / (2.0 * @colorDissolveLutY@),					1.0 / (2.0 * @colorDissolveLutZ@),					0.0);
+	#endif
+
+
+	#if USE_LOCAL_GLOW
+		// glow lut texture lookup requires corrected offsets for bilinear to work correctly
+		"glowLutCorrectionMul" = float4( @glowCycleRateX@,			(@glowLutY@-1.0) / @glowLutY@,	(@glowLutZ@-1.0) / @glowLutZ@,	0.0); 
+		"glowLutCorrectionAdd" = float4( 1.0 / (2.0 * @glowLutX@),	1.0 / (2.0 * @glowLutY@),		1.0 / (2.0 * @glowLutZ@),		0.0);
+	#endif
+}
+
+refImage("$colorMap$");
+allocReflectionProbe();

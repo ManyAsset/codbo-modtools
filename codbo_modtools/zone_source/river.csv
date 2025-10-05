@@ -1,0 +1,249 @@
+ignore,code_post_gfx
+ignore,common
+//ignore,dev
+
+screenclearcolor,1,1,1,1
+
+// Dept. zone_source
+
+include,river_fx
+include,river_animation
+include,river_vehicles
+include,river_characters
+include,river_lighting
+include,river_weapons
+
+// Level zone_source
+
+col_map_sp,maps/river.d3dbsp
+gfx_map,maps/river.d3dbsp
+
+// -- SCRIPTS --
+rawfile,maps/river.gsc
+rawfile,maps/river_anim.gsc
+rawfile,maps/river_amb.gsc
+rawfile,maps/river_fx.gsc
+rawfile,maps/createfx/river_fx.gsc
+rawfile,maps/river_drive.gsc
+rawfile,maps/river_boat_drag.gsc
+rawfile,maps/river_drag_util.gsc
+rawfile,maps/river_jungle.gsc
+//rawfile,maps/river_rail.gsc
+rawfile,maps/river_plane.gsc
+rawfile,maps/river_util.gsc
+rawfile,maps/flamer_util.gsc
+rawfile,maps/river_features.gsc
+rawfile,maps/river_vo.gsc
+rawfile,animtrees/river.atr
+rawfile,character/c_vtn_vc1.gsc
+include,rusher
+include,ai_rappel
+include,patrol
+
+// ART/LIGHTING,
+xmodel,skybox_sp_river
+rawfile,maps/createart/river_art.gsc
+rawfile,maps/river_fx.gsc
+rawfile,vision/river.vision
+rawfile,vision/river_village.vision
+rawfile,vision/river_boat.vision
+rawfile,vision/river_land.vision
+rawfile,vision/river_burn.vision
+rawfile,vision/river_plane.vision
+rawfile,sun/river.sun
+
+
+// -- CLIENTSCRIPTS --
+rawfile,clientscripts/river.csc
+rawfile,clientscripts/river_amb.csc
+rawfile,clientscripts/river_fx.csc
+rawfile,clientscripts/createfx/river_fx.csc
+rawfile,exposure/river.xpo
+
+localize,river
+
+sound,spl_river
+
+include,common_player_us_vietnam_wet
+//xmodel,c_usa_jungmar_mp_snip_fb
+//mptype,player_t5_carter
+//xmodel,viewmodel_usa_jungmar_wet_arms
+//xmodel,viewmodel_usa_jungmar_wet_player
+//xmodel,viewmodel_usa_jungmar_wet_player_fullbody
+
+//include,default_weapons
+
+//include,water
+
+
+// WEAPONS - moved to river_weapons.csv
+
+// models
+xmodel,weapon_c4_obj
+//xmodel,t5_veh_air_c5_crashed_forward_section
+xmodel,anim_jun_sampan_large_a
+xmodel,dest_jun_sampan_large_d0
+//xmodel,t5_foliage_tree_aquilaria01v
+//xmodel,t5_veh_boat_nvapbr_static_dead
+//xmodel,t5_weapon_viewmodel_M16A1
+xmodel,t5_weapon_static_binoculars
+xmodel,t5_veh_boat_pbr_antenna_static
+xmodel,t5_weapon_m202_world
+
+// drone heads
+xmodel,c_usa_jungmar_head1
+xmodel,c_usa_jungmar_head2
+xmodel,c_usa_jungmar_head3
+xmodel,c_usa_jungmar_head4
+xmodel,c_usa_jungmar_head5
+,
+// -- MODELS FOR DYN ENT USAGE ---,
+//xmodel,phys_floats_p_jun_wood_plank_large02
+//xmodel,phys_floats_p_jun_wood_plank_small02
+//xmodel,phys_floats_p_glo_corrugated_metal1
+//xmodel,phys_floats_p_glo_wood_crate_sml
+
+// Mortor
+xmodel,projectile_cbu97_clusterbomb
+
+// model for animation purposes
+xmodel,tag_origin
+
+
+// --EFFECTS--
+//fx,destructibles/fx_pow_woodbridge_splash
+//fx,env/smoke/fx_smk_column_lg_blk
+fx,env/smoke/fx_smk_fire_lg_black
+fx,env/smoke/fx_smk_fire_lg_white
+fx,env/fire/fx_embers_up_dist
+fx,explosions/fx_water_tower_explosion
+fx,explosions/fx_grenadeexp_water
+//fx,maps/river/fx_river_pbr_explo
+//fx,vehicle/vexplosion/fx_vexplode_willyjeep
+//fx,vehicle/vexplosion/fx_vexp_sampan_machinegun
+fx,vehicle/water/fx_wake_nvaboat_churn_river
+fx,explosions/fx_exp_aerial_lg
+//fx,vehicle/water/fx_pbr_sampan_wood_break
+//fx,vehicle/vexplosion/fx_vexp_sampan_sinking
+//fx,destructibles/fx_pow_woodbridge_explo
+fx,vehicle/vexplosion/fx_vexp_truck_gaz63
+
+
+fx,weapon/rocket/fx_lci_rocket_geotrail
+
+// Missile Attack,
+fx,maps/river/fx_river_splash_mortar
+fx,explosions/fx_mortarExp_dirt
+fx,weapon/muzzleflashes/fx_artillery_flash
+//fx,explosions/fx_water_explosion_vertical_large
+
+// Helicopter and boat splash assets (for boat dro intro)
+fx,vehicle/props/fx_huey_main_blade_full
+//fx,vehicle/water/fx_wake_pbr_boat_drop_splash
+
+
+// --TRAVERSALS--
+include,traverse_jump_down_96
+include,traverse_mantle_window_36
+include,traverse_mantle_over_40_down_80
+include,traverse_jump_across_120
+include,traverse_stairs_down_8x12
+include,traverse_jump_down_56
+include,traverse_jump_down_40
+include,traverse_jump_down_36
+include,traverse_mantle_over_40
+include,traverse_mantle_over_36
+
+
+// Drones from KS,
+character,c_vtn_vc1
+character,c_usa_jungmar_drone
+character,c_vtn_vc2_drone
+//character,c_usa_jungmar_assault
+character,c_usa_jungmar_assault
+character,c_usa_jungmar_cqb
+character,c_usa_jungmar_lmg
+character,c_usa_jungmar_shotgun
+character,c_usa_jungmar_snip
+
+character,c_vtn_vc1_nogear
+character,c_vtn_vc2_nogear
+character,c_vtn_vc3_nogear
+
+// nova6 corpses
+//character,c_vtn_nova_gassed_civ
+character,c_rus_airplane_gassed_pilot
+xmodel,c_rus_airplane_gassed_pilot
+character,c_rus_airplane_gassed_worker
+
+// non-mature nova corpses 
+xmodel,c_rus_engineer1_body_blue
+xmodel,c_rus_engineer1_body_grey
+xmodel,c_rus_engineer1_body_orange
+xmodel,c_rus_engineer1_body_yellow
+
+xmodel,c_rus_engineer_head1
+xmodel,c_rus_engineer_head2
+xmodel,c_rus_engineer_head3
+
+
+
+// BOAT HUD ICON
+material,hud_icon_m60e4			// used for the player boat machine gun
+
+
+// VEHICLE EXPLOSIONS
+fx,explosions/fx_large_vehicle_explosion
+
+// SPECIAL WEAPON FOR WOODS
+weapon,sp/rpg_sp
+
+// Hind crates
+xmodel,p_rus_metal_crate
+
+// opening village - photographer's camera
+xmodel,P_rus_camera
+
+
+// ----- TREE SNIPER INCLUSIONS -----
+
+// files
+rawfile,maps/_tree_snipers.gsc
+
+// anims,
+xanim,ch_fall_tree_idle_a
+xanim,ch_fall_tree_a
+
+// cover models,
+//xmodel,dest_test_palm_spawnfrond2
+//xmodel,dest_test_palm_spawnfrond1
+xmodel,t5_foliage_tree_palm_hideout_single
+xmodel,anim_foliage_pacific_palmtree_hideout_rope
+
+// fx
+fx,bio/player/fx_dust_tsniper_foot_kickup
+fx,bio/player/fx_dust_tsniper_fall 
+
+// ----- TREE SNIPER INCLUSIONS END -----
+
+
+// Water Buffalo Data,
+xmodel,anim_asian_water_buffalo
+rawfile,animtrees/critter.atr
+xanim,a_water_buffalo_death_a
+xanim,a_water_buffalo_death_b
+xanim,a_water_buffalo_idle_a
+xanim,a_water_buffalo_idle_b
+xanim,a_water_buffalo_react_a
+xanim,a_water_buffalo_react_b
+xanim,a_water_buffalo_run_a
+xanim,a_water_buffalo_run_b
+
+
+// MISSILE HUD ICONS
+material,hud_hind_rocket
+material,hud_hind_rocket_border_left
+material,hud_hind_rocket_border_right
+
+// movie cinematic
+material,cinematic

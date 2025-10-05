@@ -1,0 +1,20 @@
+{
+	stateMap "premulalpha";
+
+	vertexShader 3.0 "pimp_shader_lprobe_5eb539ed.hlsl"
+	{
+	}
+
+	pixelShader 3.0 "pimp_shader_lprobe_4fea6419.hlsl" 
+	{
+		colorMapSampler = material.colorMap;
+		dynamicFoliageSunDiffuseMinMax = material.dynamicFoliageSunDiffuseMinMax;
+	}
+
+	vertex.position = code.position;
+	vertex.normal = code.normal;
+	vertex.color[0] = code.color;
+	vertex.texcoord[0] = code.texcoord[0];
+
+}
+

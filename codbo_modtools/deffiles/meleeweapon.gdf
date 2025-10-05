@@ -1,0 +1,532 @@
+#name "meleeweapon"
+#dll "all" "weapon"
+#target_dir "weapons/sp/" // target location 1 (single-player)
+#target_dir "weapons/mp/" // target location 2 (multi-player)
+#target_dir "xmodel/"
+#target_dir ""
+#target_dir "xanim/"
+#file_ext "*"
+#version 35
+
+// This tells the configstring converter what the file type identifier should be
+enum { "WEAPONFILE" } configstringFileType
+
+// This uses the config string convert's multi-target folder
+// mechanism to make the weapon either a single-player weapon
+// or a multi-player weapon.
+// The first character is used to specify which target folder to go in
+enum { "1: Single-Player", "2: Multi-Player" } targetFolder
+
+string displayName
+
+int 30 0 1000 playerDamage
+
+enum { "melee" } weaponType
+enum { "melee" } weaponClass
+enum { "melee" } inventoryType
+
+string gunModel
+string worldModel
+string handModel
+
+float 0 0 5 sprintDurationScale
+
+string idleAnim
+string meleeAnim
+string meleeChargeAnim
+string adsUpAnim
+string adsDownAnim
+
+string meleeSwipeSound
+string meleeSwipeSoundPlayer
+string meleeHitSound
+string meleeMissSound
+
+float 0.7 0.0 10.0 meleeTime
+float 0.0 0.0 10.0 meleeChargeTime
+float 0.25 0.05 10.0 meleeDelay
+float 0.0 0.0 10.0 meleeChargeDelay
+float 0.0 0.0 255.0 meleeChargeRange
+int 25 0 1000 meleeDamage
+
+float 0 -300 300 standMoveF
+float 1 -300 300 standMoveR
+float -1.5 -300 300 standMoveU
+float 0 -300 300 standRotP
+float 0 -300 300 standRotY
+float 0 -300 300 standRotR
+float 110 0 3000 standMoveMinSpeed
+float 110 0 1000 standRotMinSpeed
+float 4 0 300 posMoveRate
+float 5 0 300 posRotRate
+
+float 0 -300 300 sprintOfsF
+float 0 -300 300 sprintOfsR
+float 0 -300 300 sprintOfsU
+float 0 -300 300 sprintRotP
+float 0 -300 300 sprintRotY
+float 0 -300 300 sprintRotR
+float 1 0 10 sprintBobH
+float 1 0 10 sprintBobV
+float 1 0.01 10 sprintScale
+
+float 0 -300 300 dtpOfsF
+float 0 -300 300 dtpOfsR
+float 0 -300 300 dtpOfsU
+float 0 -300 300 dtpRotP
+float 0 -300 300 dtpRotY
+float 0 -300 300 dtpRotR
+float 1 0 50 dtpBobH
+float 1 0 50 dtpBobV
+float 1 0.01 10 dtpScale
+
+float 0 -300 300 mantleRotP
+float 0 -300 300 mantleRotY
+float 0 -300 300 mantleRotR
+
+float 0 -300 300 slideOfsF
+float 0 -300 300 slideOfsR
+float 0 -300 300 slideOfsU
+float 0 -300 300 slideRotP
+float 0 -300 300 slideRotY
+float 0 -300 300 slideRotR
+
+float -3 -300 300 duckedSprintOfsF
+float -5 -300 300 duckedSprintOfsR
+float -5 -300 300 duckedSprintOfsU
+float 0 -300 300 duckedSprintRotP
+float 0 -300 300 duckedSprintRotY
+float 0 -300 300 duckedSprintRotR
+float 1 0 10 duckedSprintBobH
+float 1 0 10 duckedSprintBobV
+float 1 0.01 10 duckedSprintScale
+
+float 0 -300 300 duckedMoveF
+float 1 -300 300 duckedMoveR
+float -1.5 -300 300 duckedMoveU
+float 0 -300 300 duckedRotP
+float 0 -300 300 duckedRotY
+float 0 -300 300 duckedRotR
+float -2 -300 300 duckedOfsF
+float 2 -300 300 duckedOfsR
+float -0.2 -300 300 duckedOfsU
+float 60 0 3000 duckedMoveMinSpeed
+float 60 0 1000 duckedRotMinSpeed
+
+float 0 -300 300 proneMoveF
+float 1 -300 300 proneMoveR
+float -1.5 -300 300 proneMoveU
+float 0 -300 300 proneRotP
+float 0 -300 300 proneRotY
+float 0 -300 300 proneRotR
+float -6 -300 300 proneOfsF
+float 3.5 -300 300 proneOfsR
+float 0.8 -300 300 proneOfsU
+float 10 0 300 posProneMoveRate
+float 10 0 300 posProneRotRate
+float 0 0 3000 proneMoveMinSpeed
+float 0 0 1000 proneRotMinSpeed
+
+float 0 -300 300 strafeMoveF
+float 0 -300 300 strafeMoveR
+float 0 -300 300 strafeMoveU
+float 0 -300 300 strafeRotP
+float 0 -300 300 strafeRotY
+float 0 -300 300 strafeRotR
+
+int 80 0 150 hipIdleAmount
+int 25 0 150 adsIdleAmount
+float 1.0 0 100 hipIdleSpeed
+float 1.0 0 100 adsIdleSpeed
+float 0.5 0 1 idleCrouchFactor
+float 0.15 0 1 idleProneFactor
+
+string hideTags
+string notetrackSoundMap
+
+int 0 0 1 bayonet
+
+keyenum("rumble.gdf") meleeImpactRumble
+
+string parentWeaponName
+
+
+vcontainer
+{
+	scrollbox(targetFolder)
+	[
+		exec
+		{
+			label("Target Folder")
+			tooltip("Select platform-gametype this weapon will be used in.")
+			width(270)
+		}
+	]
+	
+	edit(displayName)
+	[
+		exec
+		{
+			label("Display Name")
+			tooltip("Localization alias for weapon name displayed on HUD in game.")
+			width(500)
+		}
+	]
+	
+	edit(parentWeaponName)
+	[
+		exec
+		{
+			label("Stat Name")
+			tooltip("Name of parent weapon for weapon stats e.g. parent weapons for dogs_bite_mp is dogs_mp.")
+			width(500)
+		}
+	]
+	
+	scrollbox(inventoryType)
+	[
+		exec
+		{
+			label("Inventory")
+			tooltip("Select what sort of inventory this weapon is.")
+		}
+	]
+
+   	scrollbox(weaponType)
+	[
+		exec
+		{
+			label("Type")
+			tooltip("Select a weapon type.")
+		}
+	]
+	
+   	scrollbox(weaponClass)
+	[
+		exec
+		{
+			label("Class")
+			tooltip("Select an appropriate class for this weapon.")
+		}
+	]
+
+	floatedit(sprintDurationScale, 0.1, 5)
+	[
+		exec
+		{
+			label("Sprint Duration Scale")
+			tooltip("When sprinting with this weapon, sprint duration is multiplied by this amount.")
+			labelwidth(180)
+			width(260)
+		}
+	]
+	
+	////////////////////////////////////////
+	// Range
+	////////////////////////////////////////
+	vcontainer
+	{
+		hcontainer
+		{
+			checkbox(bayonet)
+			[
+				exec
+				{
+					label("Bayonet")
+					tooltip("Extends the melee range for the weapon")
+				}
+			]
+		}
+	}
+	[
+		exec
+		{
+			groupBox("Range")
+		}
+	]	
+	
+	////////////////////////////////////////
+	// Melee Fields
+	////////////////////////////////////////
+	vcontainer
+	{
+		hcontainer
+		{
+			floatedit( meleeChargeRange, 1.0, 10.0 )
+			[
+				exec
+				{
+					label("Melee Assist Range")
+					tooltip("Range away from the target melee assist will occur. If zero defualt dvar will be used.")
+				}
+			]
+		}
+		hcontainer
+		{
+			floatedit(meleeTime, 0.05, 0.2)
+			[
+				exec
+				{
+					label("Melee")
+					tooltip("Rate of fire in seconds per melee attack.")
+				}
+			]
+			
+			floatedit(meleeDelay, 0.05, 0.2)
+			[
+				exec
+				{
+					label("Melee Delay")
+					tooltip("Delay in seconds between pressing the fire button and the melee attack actually happening.")
+				}
+			]
+		}
+		
+		hcontainer
+		{
+			floatedit(meleeChargeTime, 0.05, 0.2)
+			[
+				exec
+				{
+					label("Melee Charge")
+					tooltip("Rate of fire in seconds per melee charge attack.")
+				}
+			]
+			
+			floatedit(meleeChargeDelay, 0.05, 0.2)
+			[
+				exec
+				{
+					label("Melee Charge Delay")
+					tooltip("Delay in seconds between pressing the fire button and the melee charge attack actually happening.")
+				}
+			]
+		}
+		hcontainer
+		{
+			spinedit(meleeDamage, 1, 10)
+			[
+				exec
+				{
+					label("Melee")
+					tooltip("Damage per melee hit.")
+				}
+			]
+			spinedit(playerDamage, 1, 10)
+			[
+				exec
+				{
+					label("AI-player damage")
+					tooltip("Damage done to player when hit by an AI")
+				}
+			]
+		}
+		hcontainer
+		{
+			edit(meleeSwipeSound)
+			[
+				exec
+				{
+					label("Melee Swipe")
+					width(400)
+				}
+			]
+			edit(meleeSwipeSoundPlayer)
+			[
+				exec
+				{
+					label("Melee Swipe (Player)")
+					width(400)
+				}
+			]
+		}
+		hcontainer
+		{
+			edit(meleeHitSound)
+			[
+				exec
+				{
+					label("Melee Hit")
+					tooltip("Leave empty to use default")
+					width(400)
+				}
+			]
+			edit(meleeMissSound)
+			[
+				exec
+				{
+					label("Melee Miss")
+					tooltip("Leave empty to use default")
+					width(400)
+				}
+			]
+		}
+	}
+	[
+		exec
+		{
+			groupBox("Melee Fields")
+		}
+	]	
+		
+	////////////////////////////////////////
+	// XModels
+	////////////////////////////////////////
+	vcontainer
+	{
+		fileedit(gunModel)
+		[
+			exec
+			{
+				label("Melee Model")
+				reldir("raw/xmodel/")
+				width(500)
+			}
+		]
+		
+		fileedit(worldModel)
+		[
+			exec
+			{
+				label("World Melee Model")
+				reldir("raw/xmodel/")
+				width(500)
+			}
+		]
+		fileedit(handModel)
+		[
+			exec
+			{
+				label("Default view Hand")
+				reldir("raw/xmodel/")
+				width(500)
+			}
+		]
+		
+		multiedit(hideTags)
+		[
+			exec
+			{
+				label("Hide Tags")
+				tooltip("name of tags to hide on this model.  one per line")
+				width(500)
+				height(80)
+			}
+		]
+	}
+	[
+		exec
+		{
+			groupBox("XModels")
+		}
+	]
+	
+	
+	////////////////////////////////////////
+	// XAnims
+	////////////////////////////////////////
+	vcontainer
+	{
+		fileedit(idleAnim)
+		[
+			exec
+			{
+				label("Idle")
+				reldir("raw/xanim/")
+				width(500)
+			}
+		]
+		fileedit(meleeAnim)
+		[
+			exec
+			{
+				label("Melee")
+				reldir("raw/xanim/")
+				width(500)
+			}
+		]
+		
+		fileedit(meleeChargeAnim)
+		[
+			exec
+			{
+				label("Melee Charge")
+				reldir("raw/xanim/")
+				width(500)
+				tooltip("The anim played for a melee charge (use for bayonet weapons)")
+			}
+		]
+		
+		fileedit(adsUpAnim)
+		[
+			exec
+			{
+				label("ADS Up")
+				reldir("raw/xanim/")
+				width(500)
+				tooltip("The anim played for a melee charge (use for bayonet weapons)")
+			}
+		]
+		
+		fileedit(adsDownAnim)
+		[
+			exec
+			{
+				label("ADS Down")
+				reldir("raw/xanim/")
+				width(500)
+				tooltip("The anim played for a melee charge (use for bayonet weapons)")
+			}
+		]
+	}
+	[
+		exec
+		{
+			groupBox("XAnims")
+		}
+	]
+
+	////////////////////////////////////////
+	// Sounds
+	////////////////////////////////////////
+	vcontainer
+	{
+		multiedit(notetrackSoundMap)
+		[
+			exec
+			{
+				label("")
+				labelwidth(0)
+				tooltip("Sounds to play when viewmodel hits different notetrack events.  One per line, format is: NOTETRACKNAME,soundalias")
+				width(500)
+				height(120)
+			}
+		]
+	}
+	[
+		exec
+		{
+			groupBox("Viewmodel Notetrack-to-Sound Mappings")
+		}
+	]
+	
+	////////////////////////////////////////
+	// Rumbles
+	////////////////////////////////////////
+	vcontainer
+	{
+		scrollbox(meleeImpactRumble)
+		[
+			exec
+			{
+				width(500)
+			}
+		]
+	}
+	[
+		exec
+		{
+			groupBox("Rumbles")
+		}
+	]
+}

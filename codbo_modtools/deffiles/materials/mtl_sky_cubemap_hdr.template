@@ -1,0 +1,107 @@
+
+forModel( 1 );
+forWorld( 0 );
+refBlend( "Opaque" );
+
+#include "sort.template"
+#include "clamp.template"
+
+tessSize( 0 );
+
+#include "textureAtlas.template"
+
+hasEditorMaterial( @hasEditorMaterial@ );
+allocLightmap( false );
+
+#include "statebits.template"
+
+#if @noFog@
+	#define FOG_SUFFIX "_nofog"
+#else
+	#define FOG_SUFFIX ""
+#endif
+
+#if "$colorMap00$" == ""
+	#define	HAS_CLOUD_LAYER_1	0
+#else
+	#define HAS_CLOUD_LAYER_1	1
+#endif
+
+#if "$colorMap01$" == ""
+	#define HAS_CLOUD_LAYER_2	0
+#else
+	#define HAS_CLOUD_LAYER_2	1
+#endif
+
+
+#if HAS_CLOUD_LAYER_1
+	#if HAS_CLOUD_LAYER_2
+		#define	CLOUD_SUFFIX	"_cl2"
+	#else
+		#define	CLOUD_SUFFIX	"_cl1"
+	#endif
+#else
+	#define CLOUD_SUFFIX 		""
+#endif
+
+	techniqueSet( "sky_cubemap_hdr" + CLOUD_SUFFIX + FOG_SUFFIX );
+
+textureTable
+{
+	#if "$colorMap$" == ""
+		#error "colorMap may not be blank in sky materials"
+	#endif
+	"colorMap" = cubemap( "@tileColor@", "@filterColor@", "$colorMap$", @nopicmipColor@ ) "@formatColor@" : "colorMap";
+
+	#if HAS_CLOUD_LAYER_1
+		#if "$colorMap02$" == ""
+			#error "cloud mask1 may not be blank"
+		#endif
+		"cloudLayer0" = map( "@texTile00@", "@filterColor00@", "$colorMap00$", @nopicmipColor00@ ) "@textureFormat00@" : "colorMap00";
+		"cloudMask0" = map( "@texTile02@", "@filterColor02@", "$colorMap02$", @nopicmipColor02@ ) "@textureFormat02@" : "colorMap02";
+	#endif
+
+	#if HAS_CLOUD_LAYER_2
+		#if "$colorMap00$" == ""
+			#error "using second cloud layer without first"
+		#endif
+
+		#if "$colorMap03$" == ""
+			#error "cloud mask2 may not be blank"
+		#endif
+		"cloudLayer1" = map( "@texTile01@", "@filterColor01@", "$colorMap01$", @nopicmipColor01@ ) "@textureFormat01@" : "colorMap01";
+		"cloudMask1" = map( "@texTile03@", "@filterColor03@", "$colorMap03$", @nopicmipColor03@ ) "@textureFormat03@" : "colorMap03";
+	#endif
+
+}
+
+
+constantTable
+{
+	"skyBoxRotationSize" = float4( sin(@skyRotation@), cos(@skyRotation@), -sin(@skyRotation@), @skySize@ );
+
+	#if @cloudLayer2Height@ > @cloudLayer1Height@
+		#error "cloudlayer2 height must be less than cloudlayer1 height"
+	#endif
+
+	"cloudsHeights" = float4( @cloudLayer1Height@, @cloudLayer2Height@, @skyScaleRGB@, 0.0 );
+
+	//"cloudsFeather" = float4( @cloudLayer1Distance@, (@cloudLayer1Distance@ + @cloudLayer1Feather@), @cloudLayer2Distance@, (@cloudLayer2Distance@ + @cloudLayer2Feather@) );
+
+
+	// (1.f / (end - start)), -start * (1.f / (end - start))
+	"cloudsFeather" = float4(	(1.0 / (@cloudLayer1Distance@ - (@cloudLayer1Distance@ + @cloudLayer1Feather@))),
+								-(@cloudLayer1Distance@ + @cloudLayer1Feather@) * (1.0 / (@cloudLayer1Distance@ - (@cloudLayer1Distance@ + @cloudLayer1Feather@))),
+								(1.0 / (@cloudLayer2Distance@ - (@cloudLayer2Distance@ + @cloudLayer2Feather@))),
+								-(@cloudLayer2Distance@ + @cloudLayer2Feather@) * (1.0 / (@cloudLayer2Distance@ - (@cloudLayer2Distance@ + @cloudLayer2Feather@))) );							  
+							   
+
+	"cloudsUVMul1" = float4( 1.0 / @cloudLayer1UScale@, 1.0 / @cloudLayer1VScale@, 1.0 / @cloudMask1UScale@, 1.0 / @cloudMask1VScale@ );
+	"cloudsUVMad1" = float4( @cloudLayer1UScroll@, @cloudLayer1VScroll@, @cloudMask1UScroll@, @cloudMask1VScroll@);
+	"cloudsUVMul2" = float4( 1.0 / @cloudLayer2UScale@, 1.0 / @cloudLayer2VScale@, 1.0 / @cloudMask2UScale@, 1.0 / @cloudMask2VScale@ );
+	"cloudsUVMad2" = float4( @cloudLayer2UScroll@, @cloudLayer2VScroll@, @cloudMask2UScroll@, @cloudMask2VScroll@ );
+
+	"skyBoxCloudWeights" = float4( @cloudLayer1Blend0@, @cloudLayer2Blend0@, @cloudLayer1Blend1@, @cloudLayer2Blend1@ );
+}
+
+refCubeImage( "$colorMap$" );

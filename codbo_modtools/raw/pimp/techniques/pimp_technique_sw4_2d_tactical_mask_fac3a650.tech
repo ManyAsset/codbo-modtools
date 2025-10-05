@@ -1,0 +1,25 @@
+{
+	stateMap "default2d";
+
+	vertexShader 3.0 "pimp_shader_sw4_2d_tactical_mask_55ddea60.hlsl"
+	{
+	}
+
+	pixelShader 3.0 "pimp_shader_sw4_2d_tactical_mask_55ddea60.hlsl" 
+	{
+		WarpHeight                  = material.WarpHeight;
+  Normal_Map                  = material.Normal_Map;
+  ResolvedScene_Sampler_C1_P0 = sampler.resolvedScene;
+	}
+
+	vertex.position = code.position;
+	vertex.texcoord[0] = code.texcoord[0];
+
+	declTypes
+	{
+		packed
+		debug
+		generic
+	}
+}
+

@@ -1,0 +1,25 @@
+{
+	stateMap "default2d";
+
+	vertexShader 3.0 "pimp_shader_sw4_2d_ui_mp_blur_f11d6fc2.hlsl"
+	{
+	}
+
+	pixelShader 3.0 "pimp_shader_sw4_2d_ui_mp_blur_f11d6fc2.hlsl" 
+	{
+		Hardness = material.Hardness;
+  Radius   = material.Radius;
+	}
+
+	vertex.position = code.position;
+	vertex.color[0]    = code.color;
+  vertex.texcoord[0] = code.texcoord[0];
+
+	declTypes
+	{
+		packed
+		debug
+		generic
+	}
+}
+

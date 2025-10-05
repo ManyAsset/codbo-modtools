@@ -1,0 +1,19 @@
+{
+	stateMap "default";
+
+	vertexShader 3.0 "pimp_shader_radiant_76f667d8.hlsl"
+	{
+	}
+
+	pixelShader 3.0 "pimp_shader_radiant_76f667d8.hlsl" 
+	{
+		Diffuse_MapSampler = material.Diffuse_MapSampler;
+		caseTextureSampler = sampler.caseTexture;
+	}
+
+	vertex.position = code.position;
+	vertex.texcoord[0] = code.texcoord[0];
+	vertex.color[0] = code.color;
+
+}
+

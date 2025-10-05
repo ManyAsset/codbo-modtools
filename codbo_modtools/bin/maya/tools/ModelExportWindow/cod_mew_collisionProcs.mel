@@ -1,0 +1,234 @@
+{
+   global string $GAME_COLLMAP_DIR;
+
+   global proc COD_MEW_CollisionAddModel() {
+      int $numEntries = `textScrollList -q -ni MEWcollisionExports_lst`;
+      string $newEntryValue = "< New Entry - Enter Collmap Name >";
+
+      textScrollList -e -a $newEntryValue MEWcollisionExports_lst;
+      $numEntries = `textScrollList -q -ni MEWcollisionExports_lst`;
+
+      // Unlock the node to add an attribute
+      lockNode -lock off IWGlobalNode;
+
+      // If the collmap count attribute doesn't alreay exist, then we create it
+      if (!`attributeQuery -node IWGlobalNode -ex CollmapCount`) {
+         addAttr -ln CollmapCount -at byte "IWGlobalNode";
+         setAttr ("IWGlobalNode.CollmapCount") 0;
+      }
+
+      // Add 1 to the Collmap count attribute
+      int $collmapCount = `getAttr "IWGlobalNode.CollmapCount"`;
+
+      $collmapCount++;
+
+      setAttr "IWGlobalNode.CollmapCount" $collmapCount;
+
+      // Add all the extra attributes to the IWGlobalNode for the new Collmap
+      COD_MEW_CollisionAddAttrs $collmapCount;
+
+      setAttr -type "string" ("IWGlobalNode.CollmapFileName"+$collmapCount) ($GAME_COLLMAP_DIR+$newEntryValue);
+
+      // Relock the node to protect it
+      lockNode IWGlobalNode;
+
+      COD_MEW_CollisionUpdateWindow $collmapCount;
+   }
+
+   global proc COD_MEW_CollisionDeleteEntry(int $delIndex) {
+      int $ModelCount = `getAttr IWGlobalNode.CollmapCount`;
+      int $DelLoop;
+
+      for ($DelLoop=$delIndex; $DelLoop<$ModelCount; $DelLoop++) {
+         setAttr -type "string" ("IWGlobalNode.CollmapFileName" + $DelLoop) (`getAttr ("IWGlobalNode.CollmapFileName" + ($DelLoop + 1))`);
+         setAttr -type "string" ("IWGlobalNode.CollmapExportNodes" + $DelLoop) (`getAttr  ("IWGlobalNode.CollmapExportNodes" + ($DelLoop + 1))`);
+      }
+
+      // Delete the last Model entry's attributes
+      COD_MEW_CollisionRemoveAttrs $ModelCount;
+
+      $ModelCount--;
+
+      setAttr IWGlobalNode.CollmapCount $ModelCount;
+   }
+
+   global proc COD_MEW_CollisionAddAttrs (int $index) {
+      addAttr -ln ("CollmapFileName" + $index) -dt "string" IWGlobalNode;
+      setAttr -type "string" ("IWGlobalNode.CollmapFileName" + $index) "";
+      addAttr -ln ("CollmapExportNodes" + $index) -dt "string" IWGlobalNode;
+   }
+
+   global proc COD_MEW_CollisionRemoveAttrs(int $index) {
+      deleteAttr ("IWGlobalNode.CollmapFileName" + $index);
+      deleteAttr ("IWGlobalNode.CollmapExportNodes" + $index);
+   }
+
+   global proc COD_MEW_CollisionExport(int $index) {
+//      global int $skipPerforceEdit;
+
+      string $dirPath;
+      string $command;
+      string $progressWindowTitle;
+      string $FileName = `getAttr ("IWGlobalNode.CollmapFileName" + $index)`;
+      string $Parts = `getAttr ("IWGlobalNode.CollmapExportNodes" + $index)`;
+      int $catchError = 0;
+
+      // change forward slashes to backslashes so we could pass it into "dirname"
+      $FileName = `substituteAllString $FileName "/" "\\"`;
+
+      // get the directory name, but it's going to give it to us in forward slashes
+      $dirPath = `dirname $FileName`;
+
+      // change forward slashes to backslashes because "mkdir" accepts only backslashes
+      $dirPath = `substituteAllString $dirPath "/" "\\"`;
+      system ( "mkdir " + $dirPath );
+
+      // change backslashes to forward slash for writing the file
+      $FileName = `substituteAllString $FileName "\\" "/"`;
+
+      $FileName += ".map";
+
+//      if ( $skipPerforceEdit == 0 ) {
+//         PerforceEdit $FileName;
+//      }
+
+      // For some reason on Vista 64bit calling the export command in with eval causes the
+      // exporter to export an XMODEL_EXPORT instead of a .map file.  To get around this strangness I'm calling
+      // the command like this instead, not as safe because it's not in a catch statement, but it at least works
+      ExportXModel($Parts, $FileName, "-exportAsCollMap");
+
+      $progressWindowTitle = ("Exporting Entry " + $index );
+      progressWindow -title $progressWindowTitle -progress 5 -status "Exporting: 5%" -isInterruptable false;
+
+//       $command = "ExportXModel \"" + $Parts + "\" \"" + $FileName + "\"";
+//       $command += " -exportAsCollMap";
+// 
+//       $catchError = catch ( $errorMsg = eval( $command ) );
+      
+      if ( $catchError ) {
+         progressWindow -endProgress;
+         error ( "Internal failure: " + $FileName );
+      } else {
+         progressWindow -edit -progress 100 -status "Exporting: 100%";
+         pause -sec 1;
+         progressWindow -endProgress;
+      }
+   }
+
+   global proc COD_MEW_CollisionStartTheExport(int $selectedOnly) {
+      if (!`objExists IWGlobalNode`) {
+         return;
+      }
+
+      string $saveMessage;
+      string $saveConfirmResult;
+      string $currentSceneName = `file -q -sn`;
+//      int $perforceResult = `PerforceEdit $currentSceneName`;
+
+      // Rename all shape nodes in scene to prevent duplicates which confuse the exporter
+      catch( eval("sakRenameAllShapeNodes") );
+
+      if ( `file -q -anyModified` > 0 ) {
+         $saveMessage = "Save changes to " + $currentSceneName + " ?";
+         $saveConfirmResult = `confirmDialog -title "Save Changes" -message $saveMessage -button "Yes" -button "No" -button "Cancel Export" -defaultButton "Yes" -cancelButton "Yes" -dismissString "No"`;
+
+         if ( $saveConfirmResult == "Yes" ) {
+            file -save;
+         }
+         if ( $saveConfirmResult == "Cancel Export" ) {
+            return;
+         }
+      }
+
+      if ($selectedOnly == 1) {
+         int $exportsToExport[] = `textScrollList -q -sii MEWcollisionExports_lst`;
+
+         if (size($exportsToExport) > 0) {
+            for ($index in $exportsToExport) {
+               COD_MEW_CollisionExport $index;
+            }
+         }
+      } else {
+         if (`attributeQuery -node IWGlobalNode -ex CollmapCount` == 1) {
+            for ($i=1; $i<=`getAttr "IWGlobalNode.CollmapCount"`; $i++) {
+               COD_MEW_CollisionExport $i;
+            }
+         }
+      }
+   }
+
+   global proc COD_MEW_CollisionSetExportNodes(int $index) {
+      string $sel[] = `ls -sl`;
+      string $exportNodes;
+      
+      for ($s in $sel) {
+         $exportNodes = $exportNodes + $s + " ";
+      }
+
+      if (`size $exportNodes`) {
+         setAttr -type "string" ("IWGlobalNode.CollmapExportNodes" + $index) $exportNodes;
+      } else {
+         setAttr -type "string" ("IWGlobalNode.CollmapExportNodes" + $index) "";
+      }
+   }
+
+   global proc COD_MEW_CollisionSelectExportNodes() {
+      int $exportIndex[] = `textScrollList -q -sii MEWcollisionExports_lst`;
+
+      if (size($exportIndex) == 0) {
+         return;
+      }
+
+      string $exportNodeArray[];
+      string $SelEval = "";
+      int $exportNodeSize;
+
+      string $ExportNodes = `getAttr ("IWGlobalNode.CollmapExportNodes" + $exportIndex[0])`;
+      string $newExportNodes = "";
+      string $deletedNodes = "";
+
+      tokenize $ExportNodes " " $exportNodeArray;
+
+      if ( size($exportNodeArray) > 1 ) {
+         for ( $i=0; $i<size($exportNodeArray); $i++ ) {
+            if ( `objExists $exportNodeArray[$i]` ) {
+               $newExportNodes += $exportNodeArray[$i] + " ";
+            } else {
+               $deletedNodes += $exportNodeArray[$i] + " ";
+            }
+         }
+      } else {
+         $newExportNodes = $ExportNodes;
+      }
+
+      $SelEval = ("select -r " + $newExportNodes);
+      eval $SelEval;
+
+
+      if ($newExportNodes == "") {
+         select -cl;
+      }
+
+      // if objects are deleted, pop a messagebox asking if the export list should be updated.
+      if ( $deletedNodes != "" ) {
+         string $confirmMessage;
+         string $deletedNodesString = "";
+         string $delNodesArr[] = stringToStringArray($deletedNodes, " ");
+
+         for ($j=0; $j<size($delNodesArr); $j++) {
+            $deletedNodesString += ($delNodesArr[$j] + " ");
+
+            if ($j % 10 == 0 && $j != 0) {
+               $deletedNodesString += "\n";
+            }
+         }
+
+         $confirmMessage = "[ " + $deletedNodesString + " ] no longer exist.\n\nWould you like to remove these object references from the export list?";
+
+         if ( "Yes" == `confirmDialog -title "Missing Objects?" -message $confirmMessage -button "Yes" -button "No" -defaultButton "Yes" -cancelButton "No" -dismissString "No"` ) {
+            COD_MEW_CollisionSetExportNodes $exportIndex[0];
+            COD_MEW_CollisionUpdateNodeLister $exportIndex[0];
+         }
+      }
+   }
+}

@@ -1,0 +1,19 @@
+{
+	stateMap "default";
+
+	vertexShader 3.0 "pimp_shader_zfeather_786db0e8.hlsl"
+	{
+		featherParms = material.featherParms;
+	}
+
+	pixelShader 3.0 "pimp_shader_zfeather_786db0e8.hlsl" 
+	{
+		colorMapSampler = material.colorMap;
+		featherParms = material.featherParms;
+		spotLightWeight = material.spotLightWeight;
+	}
+
+	vertex.position = code.position;
+
+}
+

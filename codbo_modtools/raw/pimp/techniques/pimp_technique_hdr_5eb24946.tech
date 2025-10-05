@@ -1,0 +1,22 @@
+{
+	stateMap "default2d";
+
+	vertexShader 3.0 "pimp_shader_hdr_d0eb0e78.hlsl"
+	{
+	}
+
+	pixelShader 3.0 "pimp_shader_hdr_d0eb0e78.hlsl" 
+	{
+		colorSampler = sampler.codeTexture0;
+		lut2DSampler = sampler.codeTexture1;
+	}
+
+	vertex.position = code.position;
+	vertex.texcoord[0] = code.texcoord[0];
+
+	declTypes
+	{
+		generic
+	}
+}
+

@@ -1,0 +1,22 @@
+{
+	stateMap "sw4_default";
+
+	vertexShader 3.0 "pimp_shader_sw4_3d_boat_bink_5a8b39d4.hlsl"
+	{
+	}
+
+	pixelShader 3.0 "pimp_shader_sw4_3d_boat_bink_47d8cde6.hlsl" 
+	{
+		LetterMap = material.LetterMap;
+	}
+
+	vertex.position = code.position;
+	vertex.texcoord[0] = code.texcoord[0];
+
+	declTypes
+	{
+		packed
+		world
+	}
+}
+

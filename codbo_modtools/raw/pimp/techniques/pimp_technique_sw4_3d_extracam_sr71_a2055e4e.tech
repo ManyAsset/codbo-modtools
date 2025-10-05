@@ -1,0 +1,52 @@
+{
+	stateMap "sw4_default";
+
+	vertexShader 3.0 "pimp_shader_sw4_3d_extracam_sr71_5b265fb2.hlsl"
+	{
+	}
+
+	pixelShader 3.0 "pimp_shader_sw4_3d_extracam_sr71_9bf2eacb.hlsl" 
+	{
+		Reflection_Amount  = material.Reflection_Amount;
+  C000_File          = material.C000_File;
+  VignetteIntensity  = material.VignetteIntensity;
+  Vignette           = material.Vignette;
+  ScanlinePower      = material.ScanlinePower;
+  ScanlineColor      = material.ScanlineColor;
+  ScanlineSpeed      = material.ScanlineSpeed;
+  ScanlineIntensity  = material.ScanlineIntensity;
+  LiveFeed           = material.LiveFeed;
+  SateliteBorder     = material.SateliteBorder;
+  MonitorScale       = material.MonitorScale;
+  Overlay            = material.Overlay;
+  BlowoutColor       = material.BlowoutColor;
+  Lines              = material.Lines;
+  FinalGamma         = material.FinalGamma;
+  FinalExposure      = material.FinalExposure;
+  OverlayNoise       = material.OverlayNoise;
+  StaticScale        = material.StaticScale;
+  StaticAmount       = material.StaticAmount;
+  SoldierColor       = material.SoldierColor;
+  Lookup             = material.Lookup;
+  OverallAmount      = material.OverallAmount;
+  SepiaControls      = material.SepiaControls;
+  BrightColor        = material.BrightColor;
+  DarkColor          = material.DarkColor;
+  VignetteIntensity2 = material.VignetteIntensity2;
+  LightVignette      = material.LightVignette;
+  FirstGamma         = material.FirstGamma;
+  FirstExposure      = material.FirstExposure;
+  PreviewCompID      = material.PreviewCompID;
+	}
+
+	vertex.position = code.position;
+	vertex.normal      = code.normal;
+  vertex.texcoord[0] = code.texcoord[0];
+
+	declTypes
+	{
+		packed
+		world
+	}
+}
+

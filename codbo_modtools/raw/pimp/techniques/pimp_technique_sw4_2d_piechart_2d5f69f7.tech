@@ -1,0 +1,24 @@
+{
+	stateMap "default2d";
+
+	vertexShader 3.0 "pimp_shader_sw4_2d_piechart_819e6826.hlsl"
+	{
+	}
+
+	pixelShader 3.0 "pimp_shader_sw4_2d_piechart_819e6826.hlsl" 
+	{
+		PieChart = material.PieChart;
+	}
+
+	vertex.position = code.position;
+	vertex.color[0]    = code.color;
+  vertex.texcoord[0] = code.texcoord[0];
+
+	declTypes
+	{
+		packed
+		debug
+		generic
+	}
+}
+

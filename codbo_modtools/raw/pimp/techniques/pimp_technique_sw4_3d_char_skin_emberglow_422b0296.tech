@@ -1,0 +1,46 @@
+{
+	stateMap "sw4_default";
+
+	vertexShader 3.0 "pimp_shader_sw4_3d_char_skin_emberglow_7c1492e7.hlsl"
+	{
+		Seed_Value  = material.Seed_Value;
+  Flicker_Max = material.Flicker_Max;
+  Flicker_Min = material.Flicker_Min;
+	}
+
+	pixelShader 3.0 "pimp_shader_sw4_3d_char_skin_emberglow_6a85b5f.hlsl" 
+	{
+		Reveal_Map                 = material.Reveal_Map;
+  Normal_Map                 = material.Normal_Map;
+  Normal_Detail_Height_Scale = material.Normal_Detail_Height_Scale;
+  Normal_Detail_Map_Scale    = material.Normal_Detail_Map_Scale;
+  Detail_Map                 = material.Detail_Map;
+  Specular_Map               = material.Specular_Map;
+  Scatter_Intensity          = material.Scatter_Intensity;
+  Diffuse_MapSampler         = material.Diffuse_MapSampler;
+  Edge_Intensity             = material.Edge_Intensity;
+  Rim_Specular_Mask          = material.Rim_Specular_Mask;
+  Rim_Specular               = material.Rim_Specular;
+  Spotlight_Spec_Multiplier  = material.Spotlight_Spec_Multiplier;
+  Reflection_Amount          = material.Reflection_Amount;
+  Roughness_Map              = material.Roughness_Map;
+  Heat_Direction             = material.Heat_Direction;
+  Heat_Scale                 = material.Heat_Scale;
+  Ember_Direction            = material.Ember_Direction;
+  Ember_Scale                = material.Ember_Scale;
+  Diffuse_Map_Damage         = material.Diffuse_Map_Damage;
+	}
+
+	vertex.position = code.position;
+	vertex.normal      = code.normal;
+  vertex.texcoord[2] = code.tangent;
+  vertex.color[0]    = code.color;
+  vertex.texcoord[0] = code.texcoord[0];
+
+	declTypes
+	{
+		packed
+		world
+	}
+}
+

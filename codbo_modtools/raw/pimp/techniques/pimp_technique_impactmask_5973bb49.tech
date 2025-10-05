@@ -1,0 +1,17 @@
+{
+	stateMap "impactmask";
+
+	vertexShader 3.0 "pimp_shader_impactmask_d76a8b22.hlsl"
+	{
+	}
+
+	pixelShader 3.0 "pimp_shader_impactmask_d76a8b22.hlsl" 
+	{
+		colorMapSampler = material.colorMap;
+	}
+
+	vertex.position = code.position;
+	vertex.texcoord[0] = code.texcoord[0];
+
+}
+

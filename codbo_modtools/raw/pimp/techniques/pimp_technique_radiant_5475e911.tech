@@ -1,0 +1,17 @@
+{
+	stateMap "wireframe";
+
+	vertexShader 3.0 "pimp_shader_radiant_8855b4d5.hlsl"
+	{
+	}
+
+	pixelShader 3.0 "pimp_shader_radiant_8855b4d5.hlsl" 
+	{
+		Diffuse_MapSampler = material.RadiantDiffuse;
+	}
+
+	vertex.position = code.position;
+	vertex.texcoord[0] = code.texcoord[0];
+
+}
+

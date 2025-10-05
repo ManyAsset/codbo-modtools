@@ -1,0 +1,28 @@
+#if "@blendFunc@" == "Blend" || ("@blendFunc@" == "Replace" && "@alphaTest@" != "Always")
+techniqueSet( "sw_cod7_skin" ); 
+#else
+techniqueSet( "sw_cod7_skin_noalpha" ); 
+#endif
+
+#include "commonsetup.template" 
+
+cgfxTextureTableRefImage
+{
+	"Normal_MapSampler" = streamable normalMap( "tile both", "mip (1x trilinear)", "", 0 ) "<auto compression>" : "normalMap"; 
+	"Normal_Detail_MapSampler" = streamable normalMap( "tile both", "mip (1x trilinear)", "", 0 ) "<auto compression>" : "normalMap"; 
+	"Roughness_MapSampler" = streamable map( "tile both", "mip (1x trilinear)", "model_export\american\characters\cod7\frank_barnes\textures\c_usa_marine_barnes_head_g.tga", 0 ) "<auto compression>" : "colorMap"; 
+	"Diffuse_MapSampler" = streamable map( "tile both", "mip (1x trilinear)", "", 0 ) "<auto compression>" : "colorMap"; 
+	"Specular_MapSampler" = streamable map( "tile both", "mip (1x trilinear)", "", 0 ) "<auto compression>" : "specularMap"; 
+}
+
+cgfxConstantTable
+{
+	"EnvBlurLevel" = float4( 0, 0, 0, 0 );
+	"Normap_Detail_Map_Scale" = float4( 18, 0, 0, 0 );
+	"Normal_Detail_Height_Scale" = float4( 1, 0, 0, 0 );
+	"Reflection_Amount" = float4( 0, 0, 0, 0 );
+	"Edge_Intensity" = float4( 1.62, 0, 0, 0 );
+	"Scatter_Intensity" = float4( 1.36, 0, 0, 0 );
+}
+allocReflectionProbe();
+

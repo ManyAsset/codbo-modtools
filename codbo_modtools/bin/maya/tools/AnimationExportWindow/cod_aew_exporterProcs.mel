@@ -1,0 +1,389 @@
+{
+   //-------------------------------------------------------------------------------------------------------------------------------------//
+   //	PROC:	SelectExportNodes
+   //
+   //		This procedure selects all the nodes stored in the export list string (ExportNodes#) 
+   //	
+   //-------------------------------------------------------------------------------------------------------------------------------------//
+   global proc COD_AEW_SelectExportNodes(string $listName)
+   {
+      // This proc is a modified version of the old COD Export Model Window procedure
+      int $FileNumber;
+      int $exportIndex[] = `textScrollList -q -sii $listName`;
+
+      if (size($exportIndex) > 0) {
+         $FileNumber = $exportIndex[0];
+      } else {
+         return;
+      }
+
+      string $exportNodeArray[];
+      int $exportNodeSize;
+      int $exportNodeIndex;
+      string $SelEval;
+      
+      string $ExportNodes = `getAttr ("IWGlobalNode.ExportNodes " + $FileNumber)`;
+      string $newExportNodes;
+      string $deletedNodes;
+
+      $exportNodeSize = `tokenize $ExportNodes " " $exportNodeArray`;
+      
+      $newExportNodes = "";
+      $deletedNodes = "";
+      
+      // for each export objects, check its existance.  If it no longer exists, append its name in a string
+      if ( $exportNodeSize > 1 )
+      {
+         for ( $exportNodeIndex = 0; $exportNodeIndex < $exportNodeSize; $exportNodeIndex++ )
+         {
+            if( `objExists $exportNodeArray[$exportNodeIndex]` ) {
+               $newExportNodes += $exportNodeArray[$exportNodeIndex] + " ";
+            } else {
+               $deletedNodes += $exportNodeArray[$exportNodeIndex] + " ";
+            }
+         }
+      }
+      else
+      {
+         $newExportNodes = $ExportNodes;
+      }
+      
+      // select only the objects that exist.
+      $SelEval = ("select -r " + $newExportNodes);
+
+      eval $SelEval;
+      
+      // if objects are deleted, pop a messagebox asking if the export list should be updated.
+      if ( $deletedNodes != "" )
+      {
+         string $confirmMessage;
+         $confirmMessage = "[ " + $deletedNodes + " ] no longer exist.\nWould you like to remove these object references from the export list?";
+         
+         if ( "Yes" == `confirmDialog -title "Confirm" -message $confirmMessage -button "Yes" -button "No" -defaultButton "Yes" -cancelButton "No" -dismissString "No"` ) {
+            COD_AEW_SetExportNodes $FileNumber;
+         }
+      }
+   }
+
+   //-------------------------------------------------------------------------------------------------------------------------------------//
+   //	PROC:	SetExportNodes
+   //
+   //		This procedure loads the export list string (ExportNodes#) with the selected objects.
+   //	
+   //-------------------------------------------------------------------------------------------------------------------------------------//
+   global proc COD_AEW_SetExportNodes(string $listName)
+   {
+      // This proc is a modified version of the old COD Export Model Window procedure
+      int $FileNumber;
+      int $exportIndex[] = `textScrollList -q -sii $listName`;
+
+      if (size($exportIndex) > 0) {
+         $FileNumber = $exportIndex[0];
+      } else {
+         return;
+      }
+
+      string $Sel[] = `ls -sl`;
+      string $Each;
+      string $ExportNodes;
+
+      for ($Each in $Sel)
+      {
+         $ExportNodes = $ExportNodes + $Each + " ";
+      }
+
+      // Get the prefix of the exported asset
+      string $tokNodes[];
+      tokenize $ExportNodes ":" $tokNodes;
+
+      // Check the export nodes list to update the status line
+      if (`size $ExportNodes`)
+      {
+         setAttr -type "string" ("IWGlobalNode.ExportNodes" + $FileNumber) $ExportNodes;
+      }
+      else
+      {
+         setAttr -type "string" ("IWGlobalNode.ExportNodes" + $FileNumber) "";
+         return;
+      }
+
+      COD_AEW_updateNodeLister $exportIndex[0];
+   }
+
+   //-------------------------------------------------------------------------------------------------------------------------------------//
+   //	PROC:	AddAnimation
+   //
+   //		This procedure adds a animation to the list in the IWGlobalNode and re-draws the main window to make it visible
+   //	
+   //-------------------------------------------------------------------------------------------------------------------------------------//
+   global proc COD_AEW_AddAnimation(string $listname)
+   {
+      // Unlock the node to add an attribute
+      lockNode -lock off IWGlobalNode;
+
+      // Add 1 to the animation count attribute
+      int $AnimationCount = `getAttr IWGlobalNode.AnimationCount`;
+
+      $AnimationCount++;
+
+      setAttr IWGlobalNode.AnimationCount $AnimationCount;
+
+      // Add all the extra attributes to the IWGlobalNode for the new animation
+      AddAnimationAttributes $AnimationCount;
+
+      // Relock the node to protect it
+      lockNode IWGlobalNode;
+      
+      COD_AEW_updateWindow($listname, $AnimationCount);
+   }
+
+   global proc COD_AEW_DeleteModelEntry(string $listName, int $ModelNum) {
+      // This proc is a modified version of the old COD Export Model Window procedure
+      int $AnimCount = `getAttr IWGlobalNode.AnimationCount`;
+      int $DelLoop;
+
+      for ($DelLoop=$ModelNum; $DelLoop<$AnimCount; $DelLoop++) {
+         setAttr -type "string" ("IWGlobalNode.FileName" + $DelLoop) (`getAttr ("IWGlobalNode.FileName" + ($DelLoop + 1))`);
+         setAttr -type "string" ("IWGlobalNode.ExportNodes" + $DelLoop) (`getAttr  ("IWGlobalNode.ExportNodes" + ($DelLoop + 1))`);
+         setAttr -type "string" ("IWGlobalNode.ExportNoteTrack" + $DelLoop) (`getAttr  ("IWGlobalNode.ExportNoteTrack" + ($DelLoop + 1))`);
+         setAttr -type "string" ("IWGlobalNode.AnimGroupColor" + $DelLoop) (`getAttr  ("IWGlobalNode.AnimGroupColor" + ($DelLoop + 1))`);
+
+         setAttr ("IWGlobalNode.FrameStart" + $DelLoop) (`getAttr ("IWGlobalNode.FrameStart" + ($DelLoop + 1))`);
+         setAttr ("IWGlobalNode.FrameEnd" + $DelLoop) (`getAttr ("IWGlobalNode.FrameEnd" + ($DelLoop + 1))`);
+         setAttr ("IWGlobalNode.GunNumber" + $DelLoop) (`getAttr ("IWGlobalNode.GunNumber" + ($DelLoop + 1))`);
+      }
+
+      // Delete the last Model entry's attributes
+      RemoveAnimationAttributes $AnimCount;
+
+      $AnimCount--;
+
+      setAttr IWGlobalNode.AnimationCount $AnimCount;
+   }
+
+   global proc COD_AEW_MoveModelEntry(string $direction, int $index) {
+      // This proc is a modified version of the old COD Export Model Window procedure
+      int $modelCount;
+      int $swapIndex;
+
+      $modelCount = `getAttr IWGlobalNode.AnimationCount`;
+
+      if ( $direction == "Up" ) {
+         if ( $index == 1 ) {
+            return;
+         }
+
+         $swapIndex = $index - 1;
+      }
+
+      if ( $direction == "Down" ) {
+         if ( $index == $modelCount ) {
+            return;
+         }
+
+         $swapIndex = $index + 1;
+      }
+
+      string $fileName1 = `getAttr ("IWGlobalNode.FileName" + $index)`;
+      string $exportNode1 = `getAttr ("IWGlobalNode.ExportNodes" + $index)`;
+      string $notetrack1 = `getAttr ("IWGlobalNode.ExportNoteTrack" + $index)`;
+      string $animGroupColor1 = `getAttr ("IWGlobalNode.AnimGroupColor" + $index)`;
+      int $frameStart1 = `getAttr ("IWGlobalNode.FrameStart" + $index)`;
+      int $frameEnd1 = `getAttr ("IWGlobalNode.FrameEnd" + $index)`;
+      int $gunNumber1 = `getAttr ("IWGlobalNode.GunNumber" + $index)`;
+      
+      string $fileName2 = `getAttr ("IWGlobalNode.FileName" + $swapIndex)`;
+      string $exportNode2 = `getAttr ("IWGlobalNode.ExportNodes" + $swapIndex)`;
+      string $notetrack2 = `getAttr ("IWGlobalNode.ExportNoteTrack" + $swapIndex)`;
+      string $animGroupColor = `getAttr ("IWGlobalNode.AnimGroupColor" + $swapIndex)`;
+      int $frameStart2 = `getAttr ("IWGlobalNode.FrameStart" + $swapIndex)`;
+      int $frameEnd2 = `getAttr ("IWGlobalNode.FrameEnd" + $swapIndex)`;
+      int $gunNumber2 = `getAttr ("IWGlobalNode.GunNumber" + $swapIndex)`;
+      
+      setAttr -type "string" ("IWGlobalNode.FileName" + $swapIndex) $fileName1;
+      setAttr -type "string" ("IWGlobalNode.ExportNodes" + $swapIndex) $exportNode1;
+      setAttr -type "string" ("IWGlobalNode.ExportNoteTrack" + $swapIndex) $notetrack1;
+      setAttr -type "string" ("IWGlobalNode.AnimGroupColor" + $swapIndex) $animGroupColor1;
+      setAttr ("IWGlobalNode.FrameStart" + $swapIndex) $frameStart1;
+      setAttr ("IWGlobalNode.FrameEnd" + $swapIndex) $frameEnd1;
+      setAttr ("IWGlobalNode.GunNumber" + $swapIndex) $gunNumber1;
+
+      setAttr -type "string" ("IWGlobalNode.FileName" + $index) $fileName2;
+      setAttr -type "string" ("IWGlobalNode.ExportNodes" + $index) $exportNode2;
+      setAttr -type "string" ("IWGlobalNode.ExportNoteTrack" + $index) $notetrack2;
+      setAttr -type "string" ("IWGlobalNode.AnimGroupColor" + $index) $animGroupColor;
+      setAttr ("IWGlobalNode.FrameStart" + $index) $frameStart2;
+      setAttr ("IWGlobalNode.FrameEnd" + $index) $frameEnd2;
+      setAttr ("IWGlobalNode.GunNumber" + $index) $gunNumber2;
+   }
+
+   //-------------------------------------------------------------------------------------------------------------------------------------//
+   //	PROC:	StartTheExport
+   //
+   //		This procedure calls the ExportAnimation function and exports all the selected animations
+   //	
+   //-------------------------------------------------------------------------------------------------------------------------------------//
+   global proc COD_AEW_StartTheExport(int $Selected, string $listName)
+   {
+      // Set up vars
+      int $loop;
+      int $CheckBox;
+      int $AnimationCount;
+      int $pluginLoaded;
+      string $currentSceneName;
+//      int $perforceResult;
+      string $confirmResult;
+//      global string $perforceOptionGlobal;
+//      global int $skipPerforceEdit;
+      string $saveMessage;
+      string $saveConfirmResult;
+      
+      // Find out if any animations are selected.
+      // Get the animation list number
+      $AnimationCount = `getAttr IWGlobalNode.AnimationCount`;
+      
+      // if animation count is 0, return
+      if ($AnimationCount < 1) {
+         return;
+      }
+      
+      $currentSceneName = `file -q -sn`;
+//      $skipPerforceEdit = 0;
+      
+//      $perforceResult = `PerforceEdit $currentSceneName`;
+
+//      if ( $perforceResult == 0 )
+//      {
+         //$confirmResult = `confirmDialog -title "Continue?" -message "Would you like to continue with the export process?" -button "Yes" -button "No" -defaultButton "No" -cancelButton "No" -dismissString "No"`;
+         //if ( $confirmResult == "No" )
+         //	return;
+//      }
+//      else
+//      {
+         if ( `file -q -anyModified` > 0 )
+         {
+            $saveMessage = "Save changes to " + $currentSceneName + " ?";
+            $saveConfirmResult = `confirmDialog -title "Save Changes" -message $saveMessage -button "Yes" -button "No" -button "Cancel Export" -defaultButton "Yes" -cancelButton "Yes" -dismissString "No"`;
+            if ( $saveConfirmResult == "Yes" )
+            {
+               file -save;
+            }
+            if ( $saveConfirmResult == "Cancel Export" )
+            {
+               return;
+            }
+         }
+//      }
+      
+      // check if the plugin is loaded.  If not, load it.  If that fails, error out
+      $pluginLoaded = `pluginInfo -q -loaded XAnimExport`;
+      if ( $pluginLoaded == 0 ) {
+         loadPlugin XAnimExport;
+      }
+      
+      $pluginLoaded = `pluginInfo -q -loaded XAnimExport`;
+      if ( $pluginLoaded == 0 ) {
+         error ("XAnimExport plugin is not loaded");
+      }
+
+//      $perforceOptionGlobal = "";
+
+      if ($Selected == 1) {
+         int $selExports[] = `textScrollList -q -sii $listName`;
+
+         for ($idx in $selExports) {
+            // Just export it because we don't care if it's selected or not
+            ExportAnimation $idx;
+         }
+      } else {
+         for ($loop = 1; $loop <= $AnimationCount ;$loop++ )
+         {
+            // Just export it because we don't care if it's selected or not
+            ExportAnimation $loop;
+         }
+      }
+   }
+
+   //-------------------------------------------------------------------------------------------------------------------------------------//
+   //	PROC:	RemoveNoteTrack
+   //
+   //		This procedure removes the note track from the export window
+   //	
+   //-------------------------------------------------------------------------------------------------------------------------------------//
+   global proc COD_AEW_RemoveNoteTrack(string $listName)
+   {
+      int $AnimNumber;
+      int $exportIndex[] = `textScrollList -q -sii $listName`;
+
+      if (size($exportIndex) == 1) {
+         $AnimNumber = $exportIndex[0];
+      } else {
+         return;
+      }
+
+      setAttr -type "string" ("IWGlobalNode.ExportNoteTrack" + $AnimNumber) "NO NOTE TRACK";
+      
+      COD_AEW_updateSelectedEntry $listName;
+   }
+
+   global proc COD_AEW_SelectListNoteTrack(string $listName)
+   {
+      int $AnimNum;
+      int $exportIndex[] = `textScrollList -q -sii $listName`;
+
+      if (size($exportIndex) == 1) {
+         $AnimNum = $exportIndex[0];
+      } else {
+         return;
+      }
+
+      // Get a list of the note tracks from the note track mel script
+      source NoteTrack;
+   
+      string $NoteTrackList[] = `GetNoteTrackList`;
+      string $EachNote;
+
+      // Open a selection confirmDialog to select the Note Track using a created Eval command
+      string $DialogEval = ("confirmDialog -title \"Prefix\" -message \"Select a Note Track\" ");
+
+      for ($EachNote in  $NoteTrackList)
+      {
+         $DialogEval = $DialogEval + (" -button \"" + $EachNote + ":\" ");
+      }
+
+      $DialogEval = $DialogEval + (" -b \"Cancel\" -cb \"Cancel\"");
+
+      string $SelNoteTrack = `eval $DialogEval`;
+
+      if ($SelNoteTrack != "Cancel" && $SelNoteTrack != "dismiss")
+      {
+         select -r $SelNoteTrack;
+
+         string $Sel[] = `ls -sl`;
+
+         // First check somthing is selected
+         if (`size $Sel[0]` == 0)
+         {
+            warning "Please select a NoteTrack";
+            return;
+         }
+
+         // Check the selected node is a NoteTrack
+         string $CheckNote = `substring $Sel[0] 1 9`;
+         
+         if ($CheckNote == "NoteTrack" )
+         {
+            setAttr -type "string" ("IWGlobalNode.ExportNoteTrack" + $AnimNum) $Sel[0];
+            // Update the UI
+            COD_AEW_updateSelectedEntry $listName;
+         }
+         else
+         {
+            warning "Please select a NoteTrack";
+            return;
+         }
+
+         select -cl;
+      }
+   }
+}

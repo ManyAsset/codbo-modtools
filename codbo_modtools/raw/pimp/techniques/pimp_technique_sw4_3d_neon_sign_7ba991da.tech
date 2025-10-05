@@ -1,0 +1,24 @@
+{
+	stateMap "build_shadowmap_depth_noalpha";
+
+	vertexShader 3.0 "pimp_shader_sw4_3d_neon_sign_f22a358.hlsl"
+	{
+		Flicker_Seed  = material.Flicker_Seed;
+  Flicker_Speed = material.Flicker_Speed;
+  Flicker_Max   = material.Flicker_Max;
+  Flicker_Min   = material.Flicker_Min;
+	}
+
+	pixelShader 3.0 "pimp_shader_null_494c2039.hlsl" 
+	{
+	}
+
+	vertex.position = code.position;
+
+	declTypes
+	{
+		packed
+		world
+	}
+}
+

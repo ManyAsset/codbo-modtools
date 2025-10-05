@@ -1,0 +1,15 @@
+#include "commonsetup.template"
+
+techniqueSet( "emblem" );
+
+
+textureTable
+{
+	#if "$colorMap$" == ""
+		#error "colorMap may not be blank in emblem materials"
+	#endif
+	"colorMap" = streamable map( "no tile", "nomip nearest", "$colorMap$", 1 ) "Luminance Alpha" : "2d";
+}
+
+
+refImage( "$colorMap$" );

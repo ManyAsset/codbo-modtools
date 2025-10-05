@@ -1,0 +1,24 @@
+{
+	stateMap "default2d";
+
+	vertexShader 3.0 "pimp_shader_compositefx_9ced1014.hlsl"
+	{
+		distortionScale = material.distortionScale;
+	}
+
+	pixelShader 3.0 "pimp_shader_compositefx_9ced1014.hlsl" 
+	{
+		colorMapSampler = sampler.feedback;
+		normalMapSampler = material.detailMap;
+		colorMapSampler2 = sampler.postEffect0;
+	}
+
+	vertex.position = code.position;
+	vertex.texcoord[0] = code.texcoord[0];
+
+	declTypes
+	{
+		generic
+	}
+}
+

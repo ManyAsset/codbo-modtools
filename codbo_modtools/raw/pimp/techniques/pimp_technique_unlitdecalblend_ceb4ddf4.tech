@@ -1,0 +1,17 @@
+{
+	stateMap "default";
+
+	vertexShader 3.0 "pimp_shader_unlitdecalblend_eb7f40cb.hlsl"
+	{
+	}
+
+	pixelShader 3.0 "pimp_shader_unlitdecalblend_b331bbd6.hlsl" 
+	{
+		colorMapSampler = material.colorMap;
+	}
+
+	vertex.position = code.position;
+	vertex.texcoord[0] = code.texcoord[0];
+
+}
+

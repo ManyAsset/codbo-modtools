@@ -1,0 +1,39 @@
+{
+	stateMap "default2d";
+
+	vertexShader 3.0 "pimp_shader_sw4_2d_extracam_8cad9c4c.hlsl"
+	{
+	}
+
+	pixelShader 3.0 "pimp_shader_sw4_2d_extracam_8cad9c4c.hlsl" 
+	{
+		TearPower          = material.TearPower;
+  TearMultiplier     = material.TearMultiplier;
+  TearLookupSpeed    = material.TearLookupSpeed;
+  TearLookupMaxX     = material.TearLookupMaxX;
+  TearLookupMinX     = material.TearLookupMinX;
+  VignetteMultiplier = material.VignetteMultiplier;
+  VignettePower      = material.VignettePower;
+  StaticLookupSpeed  = material.StaticLookupSpeed;
+  StaticLookupX      = material.StaticLookupX;
+  Static             = material.Static;
+  StaticScale        = material.StaticScale;
+  StaticAmount       = material.StaticAmount;
+  MinStatic          = material.MinStatic;
+  Lookup             = material.Lookup;
+  WashoutMultiply    = material.WashoutMultiply;
+  WashOut            = material.WashOut;
+	}
+
+	vertex.position = code.position;
+	vertex.color[0]    = code.color;
+  vertex.texcoord[0] = code.texcoord[0];
+
+	declTypes
+	{
+		packed
+		debug
+		generic
+	}
+}
+

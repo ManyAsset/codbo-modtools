@@ -1,0 +1,29 @@
+{
+	stateMap "default2d";
+
+	vertexShader 3.0 "pimp_shader_sw4_2d_flicker_92c0883e.hlsl"
+	{
+	}
+
+	pixelShader 3.0 "pimp_shader_sw4_2d_flicker_92c0883e.hlsl" 
+	{
+		Coarseness      = material.Coarseness;
+  Noise_Texture   = material.Noise_Texture;
+  Power           = material.Power;
+  MaxFlickerColor = material.MaxFlickerColor;
+  MinFlickerColor = material.MinFlickerColor;
+  Speed           = material.Speed;
+  Lookup          = material.Lookup;
+	}
+
+	vertex.position = code.position;
+	vertex.texcoord[0] = code.texcoord[0];
+
+	declTypes
+	{
+		packed
+		debug
+		generic
+	}
+}
+

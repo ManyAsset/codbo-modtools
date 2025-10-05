@@ -1,0 +1,20 @@
+#if "@blendFunc@" == "Blend" || ("@blendFunc@" == "Replace" && "@alphaTest@" != "Always")
+techniqueSet( "sw_chainlink_1" ); 
+#else
+techniqueSet( "sw_chainlink_1_noalpha" ); 
+#endif
+
+#include "commonsetup.template" 
+
+cgfxTextureTableRefImage
+{
+	"Diffuse_MapSampler" = streamable map( "tile both", "mip most expensive (4x trilinear)", "texture_assets\miamisciencecenter\sc_fence_chainlink_c.tga", 0 ) "<auto compression>" : "colorMap"; 
+}
+
+cgfxConstantTable
+{
+	"Edge_Opacity_Adjust" = float4( 4, 0, 0, 0 );
+	"Coverage_Adjust" = float4( 0.1, 0, 0, 0 );
+}
+allocReflectionProbe();
+

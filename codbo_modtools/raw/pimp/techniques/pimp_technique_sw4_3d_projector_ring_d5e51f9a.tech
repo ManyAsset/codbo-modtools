@@ -1,0 +1,35 @@
+{
+	stateMap "sw4_default";
+
+	vertexShader 3.0 "pimp_shader_sw4_3d_projector_ring_321bc496.hlsl"
+	{
+	}
+
+	pixelShader 3.0 "pimp_shader_sw4_3d_projector_ring_884328b4.hlsl" 
+	{
+		VignetteStrength   = material.VignetteStrength;
+  VignettePower      = material.VignettePower;
+  Vignette           = material.Vignette;
+  BrightnessFPS      = material.BrightnessFPS;
+  BrightnessMax      = material.BrightnessMax;
+  BrightnessMin      = material.BrightnessMin;
+  BrightnessAmount   = material.BrightnessAmount;
+  ScratchFPS         = material.ScratchFPS;
+  ScratchScale       = material.ScratchScale;
+  Diffuse_MapSampler = material.Diffuse_MapSampler;
+  ScratchAmount      = material.ScratchAmount;
+  ScreenColor        = material.ScreenColor;
+  VideoDesaturate    = material.VideoDesaturate;
+  VideoTint          = material.VideoTint;
+	}
+
+	vertex.position = code.position;
+	vertex.texcoord[0] = code.texcoord[0];
+
+	declTypes
+	{
+		packed
+		world
+	}
+}
+

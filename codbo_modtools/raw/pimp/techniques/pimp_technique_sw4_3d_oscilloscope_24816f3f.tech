@@ -1,0 +1,39 @@
+{
+	stateMap "sw4_default";
+
+	vertexShader 3.0 "pimp_shader_sw4_3d_oscilloscope_9538ab16.hlsl"
+	{
+	}
+
+	pixelShader 3.0 "pimp_shader_sw4_3d_oscilloscope_e218acda.hlsl" 
+	{
+		ScanlinePower     = material.ScanlinePower;
+  Vignette          = material.Vignette;
+  ScanlineColor     = material.ScanlineColor;
+  ScanlineScale     = material.ScanlineScale;
+  ScanlineSpeed     = material.ScanlineSpeed;
+  ScanlineIntensity = material.ScanlineIntensity;
+  WaveScaleMin      = material.WaveScaleMin;
+  WaveScaleMax      = material.WaveScaleMax;
+  Lookup            = material.Lookup;
+  WaveSpeed         = material.WaveSpeed;
+  Diffuse_Map       = material.Diffuse_Map;
+  GridIntensity     = material.GridIntensity;
+  Grid_Map          = material.Grid_Map;
+  AOMap             = material.AOMap;
+  Reflection_Amount = material.Reflection_Amount;
+  PreviewCompID     = material.PreviewCompID;
+	}
+
+	vertex.position = code.position;
+	vertex.normal      = code.normal;
+  vertex.texcoord[2] = code.tangent;
+  vertex.texcoord[0] = code.texcoord[0];
+
+	declTypes
+	{
+		packed
+		world
+	}
+}
+

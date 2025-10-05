@@ -1,0 +1,27 @@
+{
+	stateMap "nocolor";
+
+	vertexShader 3.0 "pimp_shader_sw4_3d_unlit_scroll_df3b7ddf.hlsl"
+	{
+	}
+
+	pixelShader 3.0 "pimp_shader_sw4_3d_unlit_scroll_df3b7ddf.hlsl" 
+	{
+		Reflection_Amount = material.Reflection_Amount;
+  Cycle_Direction   = material.Cycle_Direction;
+  Cycle_Scale       = material.Cycle_Scale;
+  Cycle_Map         = material.Cycle_Map;
+  Diffuse_Map       = material.Diffuse_Map;
+	}
+
+	vertex.position = code.position;
+	vertex.normal      = code.normal;
+  vertex.texcoord[0] = code.texcoord[0];
+
+	declTypes
+	{
+		packed
+		world
+	}
+}
+

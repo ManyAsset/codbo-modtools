@@ -1,0 +1,25 @@
+{
+	stateMap "build_floatz";
+
+	vertexShader 3.0 "pimp_shader_sw4_3d_pentagon_animated_glasses_3fc1c208.hlsl"
+	{
+	}
+
+	pixelShader 3.0 "pimp_shader_sw4_3d_pentagon_animated_glasses_3fc1c208.hlsl" 
+	{
+		Alpha             = material.Alpha;
+  VideoBrightness   = material.VideoBrightness;
+  VideoCoords       = material.VideoCoords;
+  Reflection_Amount = material.Reflection_Amount;
+  SoftenMap         = material.SoftenMap;
+	}
+
+	vertex.position = code.position;
+
+	declTypes
+	{
+		packed
+		world
+	}
+}
+

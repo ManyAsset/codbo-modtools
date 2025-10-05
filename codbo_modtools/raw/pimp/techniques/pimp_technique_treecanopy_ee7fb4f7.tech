@@ -1,0 +1,27 @@
+{
+	stateMap "tree_render";
+
+	vertexShader 3.0 "pimp_shader_treecanopy_53ca2ab7.hlsl"
+	{
+		treeCanopySwayParms = material.treeCanopySwayParms;
+		treeCanopyLightingParms = material.treeCanopyLightingParms;
+		treeCanopyScatterColor = material.treeCanopyScatterColor;
+	}
+
+	pixelShader 3.0 "pimp_shader_treecanopy_584bf636.hlsl" 
+	{
+		colorMapSampler = material.colorMap;
+		colorTint = material.colorTint;
+		treeCanopyLightingAmount = material.treeCanopyLightingAmount;
+		normalMapSampler = material.normalMap;
+		specularMapSampler = material.specularMap;
+	}
+
+	vertex.position = code.position;
+	vertex.color[0] = code.color;
+	vertex.texcoord[0] = code.texcoord[0];
+	vertex.normal = code.normal;
+	vertex.texcoord[1] = code.tangent;
+
+}
+

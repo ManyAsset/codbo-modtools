@@ -1,0 +1,9 @@
+
+main()
+{
+	character\c_rus_spetznaz_mp_shotgun::main();
+}
+precache()
+{
+	character\c_rus_spetznaz_mp_shotgun::precache();
+} 

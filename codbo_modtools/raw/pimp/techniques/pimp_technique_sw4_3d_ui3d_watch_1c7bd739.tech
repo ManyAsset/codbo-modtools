@@ -1,0 +1,22 @@
+{
+	stateMap "build_floatz";
+
+	vertexShader 3.0 "pimp_shader_sw4_3d_ui3d_watch_fa678bd5.hlsl"
+	{
+	}
+
+	pixelShader 3.0 "pimp_shader_sw4_3d_ui3d_watch_fa678bd5.hlsl" 
+	{
+		Reflection_Amount = material.Reflection_Amount;
+  PreviewCompID     = material.PreviewCompID;
+	}
+
+	vertex.position = code.position;
+
+	declTypes
+	{
+		packed
+		world
+	}
+}
+

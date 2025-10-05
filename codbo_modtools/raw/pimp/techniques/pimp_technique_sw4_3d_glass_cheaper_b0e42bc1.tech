@@ -1,0 +1,24 @@
+{
+	stateMap "build_shadowmap_depth";
+
+	vertexShader 3.0 "pimp_shader_sw4_3d_glass_cheaper_97bfeb5f.hlsl"
+	{
+	}
+
+	pixelShader 3.0 "pimp_shader_sw4_3d_glass_cheaper_97bfeb5f.hlsl" 
+	{
+		Reflection_Amount = material.Reflection_Amount;
+  Diffuse           = material.Diffuse;
+	}
+
+	vertex.position = code.position;
+	vertex.normal      = code.normal;
+  vertex.texcoord[0] = code.texcoord[0];
+
+	declTypes
+	{
+		packed
+		world
+	}
+}
+

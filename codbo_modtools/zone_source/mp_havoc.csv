@@ -1,0 +1,63 @@
+ignore,code_post_gfx_mp
+ignore,common_mp
+include_console,mp_configStrings
+
+// Dept. zone_source
+
+include,mp_havoc_fx
+include,mp_havoc_animation
+include,mp_havoc_vehicles
+include,mp_havoc_characters
+include,mp_havoc_lighting
+include,mp_havoc_weapons
+//include,water
+
+// water
+fx,bio/player/fx_player_water_waist_ripple
+fx,bio/player/fx_player_water_knee_ripple
+fx,impacts/fx_water_hit_sm
+fx,impacts/fx_water_hit_md
+fx,impacts/fx_water_hit_lg
+fx,impacts/fx_water_object_ripple
+fx,bio/player/fx_footstep_water
+
+
+// Level zone_source
+
+col_map_mp,maps/mp/mp_havoc.d3dbsp
+gfx_map,maps/mp/mp_havoc.d3dbsp
+
+rawfile,maps/mp/mp_havoc.gsc
+rawfile,maps/mp/mp_havoc_amb.gsc
+rawfile,maps/mp/mp_havoc_fx.gsc
+rawfile,maps/mp/createfx/mp_havoc_fx.gsc
+
+rawfile,clientscripts/mp/mp_havoc.csc
+rawfile,clientscripts/mp/mp_havoc_amb.csc
+rawfile,clientscripts/mp/mp_havoc_fx.csc
+rawfile,clientscripts/mp/createfx/mp_havoc_fx.csc
+
+// lighting dept,
+rawfile exposure/mp_havoc.xpo,
+rawfile,maps/mp/createart/mp_havoc_art.gsc
+rawfile,vision/mp_havoc.vision
+xmodel,skybox_mp_havoc
+rawfile,sun/mp_havoc.sun
+
+sound,mpl_havoc
+
+include,mptypes_junglemarines
+
+
+//Script,
+fx,impacts/fx_water_hit_sm
+fx,impacts/fx_water_hit_md
+fx,impacts/fx_water_hit_lg
+fx,impacts/fx_water_object_ripple
+fx,bio/player/fx_water_hit_player_bubbles
+fx,bio/player/fx_player_water_waist_ripple
+fx,bio/player/fx_player_water_knee_ripple
+//fx,bio/player/fx_player_water_splash_impact
+
+// initial texture load order list (keep at end)
+texturelist,texturelist/mp_havoc.csv

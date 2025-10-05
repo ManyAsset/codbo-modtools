@@ -1,0 +1,131 @@
+extracamres,high
+
+ignore,code_post_gfx
+ignore,common
+//ignore,dev
+
+// Dept. zone_source
+
+screenclearcolor,1,1,1,1
+
+include,wmd_fx
+include,wmd_animation
+include,wmd_vehicles
+include,wmd_characters
+include,wmd_lighting
+include,wmd_weapons
+
+// pistol anims
+include,ai_anims_pistol
+
+// localize
+localize,wmd
+sound,spl_wmd
+
+// common player assets
+include,common_player_us
+
+// door breaching
+include,common_door_breach
+
+// Rumble
+// WMD
+rawfile,rumble/rappel_falling
+rawfile,rumble/rappel_falling_h.rmb
+rawfile,rumble/rappel_falling_l.rmb
+
+//shellshock
+rawfile,shock/explosion.shock
+
+
+// Level zone_source
+col_map_sp,maps/wmd.d3dbsp
+gfx_map,maps/wmd.d3dbsp
+
+// scripts
+// WMD
+rawfile,maps/wmd.gsc
+rawfile,maps/wmd_anim.gsc
+rawfile,maps/wmd_amb.gsc
+rawfile,maps/wmd_fx.gsc
+rawfile,maps/wmd_util.gsc
+
+rawfile,maps/wmd_approach_radar.gsc
+rawfile,maps/wmd_base.gsc
+rawfile,maps/wmd_basejump.gsc
+rawfile,maps/wmd_player_rappel.gsc
+rawfile,maps/wmd_radar.gsc
+rawfile,maps/wmd_snow_hide.gsc
+
+
+rawfile,maps/createfx/wmd_fx.gsc
+rawfile,maps/_squad_manager.gsc
+rawfile,maps/_snowcat.gsc
+
+// clientscripts
+rawfile,clientscripts/wmd.csc
+rawfile,clientscripts/wmd_amb.csc
+rawfile,clientscripts/wmd_fx.csc
+rawfile,clientscripts/createfx/wmd_fx.csc
+
+// stealth
+include,common_stealth
+
+// rusher
+include,rusher
+include,rusher_pistol
+
+// patrol
+include,patrol_spetsnaz
+
+// Set up by Lighting,
+rawfile,sun/wmd.sun
+rawfile,exposure/wmd.xpo
+rawfile,maps/createart/wmd_art.gsc
+xmodel,skybox_sp_wmd
+
+// models
+xmodel,tag_origin_animate
+xmodel,tag_origin
+xmodel,p_glo_cardboardbox_1
+xmodel,anim_glo_clipboard_wpaper
+xmodel,viewmodel_hands_no_model
+
+// WMD
+xmodel,clutter_okinawa_prchute_drpbox
+xmodel,p_jun_basejump_parachute
+xmodel,p_glo_rock_snow_round_medium01
+xmodel,Dest_rus_powerbox_case_d1
+xmodel,anim_rus_rappel_rope
+xmodel,anim_jun_rappel_rope
+xmodel,p_rus_camera
+xmodel,p_rus_crumpled_paper_01
+xmodel,t5_weapon_crossbow_viewmodel_arctic
+
+
+// Contextual Melee
+//include,contextual_melee
+
+// Memory Slug
+//include_xenon,wmd_memory
+
+include,common_dogs
+
+// material,nightvision_overlay_goggles
+material,flamethrowerfx_color_distort_overlay_bloom
+
+//generic filters / overlays
+material,generic_filter_scope
+material,generic_filter_frost
+//material,generic_filter_superflare
+
+rawfile,vision/wmd.vision
+rawfile,vision/wmd_power_station.vision
+rawfile,vision/wmd_radar_station.vision
+rawfile,vision/wmd_snow_hide.vision
+rawfile,vision/wmd_avalanche.vision
+rawfile,vision/wmd_lower_valley.vision
+rawfile,vision/wmd_lower_valley_interior.vision
+
+cinematicmaxsize	1024	1024
+rawfile	bik/countdown.bik

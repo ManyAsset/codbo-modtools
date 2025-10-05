@@ -1,0 +1,29 @@
+{
+	stateMap "default2d";
+
+	vertexShader 3.0 "pimp_shader_sw4_2d_infrared_68228104.hlsl"
+	{
+	}
+
+	pixelShader 3.0 "pimp_shader_sw4_2d_infrared_68228104.hlsl" 
+	{
+		Static_amount               = material.Static_amount;
+  Static_Size                 = material.Static_Size;
+  Static_Noise_Map            = material.Static_Noise_Map;
+  WarpHeight                  = material.WarpHeight;
+  Normal_Map                  = material.Normal_Map;
+  ResolvedScene_Sampler_C1_P0 = sampler.resolvedScene;
+	}
+
+	vertex.position = code.position;
+	vertex.color[0]    = code.color;
+  vertex.texcoord[0] = code.texcoord[0];
+
+	declTypes
+	{
+		packed
+		debug
+		generic
+	}
+}
+

@@ -1,0 +1,117 @@
+ignore,code_post_gfx
+ignore,common
+//ignore,dev
+
+screenclearcolor,1,1,1,1
+
+include,common_player_us_urban_wet
+
+// Dept. zone_source
+include,kowloon_fx
+include,kowloon_animation
+include,kowloon_vehicles
+include,kowloon_characters
+include,kowloon_lighting
+include,kowloon_weapons
+
+// sun file
+rawfile,sun/kowloon.sun
+
+// AI stuff
+include,ai_rappel
+include,common_civilians
+include,rusher
+
+
+// Level zone_source,
+col_map_sp,maps/kowloon.d3dbsp
+gfx_map,maps/kowloon.d3dbsp
+
+/////////////////////////////
+// SCRIPTS
+/////////////////////////////
+// Level
+rawfile,maps/kowloon.gsc
+rawfile,maps/kowloon_anim.gsc
+rawfile,maps/kowloon_amb.gsc
+rawfile,maps/kowloon_fx.gsc
+rawfile,maps/kowloon_util.gsc
+// Event Scripts
+rawfile,maps/kowloon_interrogate.gsc
+rawfile,maps/kowloon_gas_leak.gsc
+rawfile,maps/kowloon_cache_run.gsc
+rawfile,maps/kowloon_rooftop_battle.gsc
+rawfile,maps/kowloon_slide_in_and_out.gsc
+rawfile,maps/kowloon_defend.gsc
+rawfile,maps/kowloon_platform.gsc
+rawfile,maps/createart/kowloon_art.gsc
+rawfile,maps/createfx/kowloon_fx.gsc
+// Misc utilities
+rawfile,maps/_color_manager.gsc
+// Clientscripts
+rawfile,clientscripts/kowloon.csc
+rawfile,clientscripts/kowloon_amb.csc
+rawfile,clientscripts/kowloon_fx.csc
+rawfile,clientscripts/createfx/kowloon_fx.csc
+
+rawfile,exposure/kowloon.xpo
+rawfile,vision/kowloon.vision
+rawfile,vision/kowloon_rooftop.vision
+rawfile,vision/kowloon_rooftop_slidearea.vision
+rawfile,vision/kowloon_rooftop_lightning.vision
+rawfile,vision/kowloon_level_start.vision
+
+rawfile,rumble/kowloon_rooftop_plane_1
+rawfile,rumble/kowloon_awning_rumble
+
+localize,kowloon
+
+sound,spl_kowloon
+
+//	XMODELS
+xmodel,p_jun_int_table_lg
+xmodel,anim_glo_melee_chair_01
+xmodel,weapon_claymore_detonator
+xmodel,p_kow_garage_door_dmg
+
+// FXANIMS
+xanim,fxanim_gp_crow_quickfly_anim
+xanim,fxanim_gp_crow_90rfly_fast_anim
+xanim,fxanim_gp_crow_walk01_anim
+xanim,fxanim_gp_crow_look_anim
+xanim,fxanim_gp_crow_look02_anim
+xanim,fxanim_gp_crow_eat_anim
+
+xanim,fxanim_kowloon_awning01_tear_anim
+xanim,fxanim_kowloon_awning01_loop_anim
+xanim,fxanim_kowloon_fishtank_lrg_loop_anim
+xanim,fxanim_kowloon_fishtank_lrg_spill_anim
+xanim,fxanim_kowloon_fishtank_sm_loop_anim
+xanim,fxanim_kowloon_fishtank_sm_spill_01_anim
+xanim,fxanim_kowloon_fishtank_sm_spill_02_anim
+xanim,fxanim_kowloon_door_breach_anim
+xanim,fxanim_kowloon_ceiling_collapse_anim
+xanim,fxanim_kowloon_neon_sign_anim
+xanim,fxanim_kowloon_ceiling_garbage_anim
+xanim,fxanim_kowloon_neon_sign_alley_anim
+xanim,fxanim_kowloon_weapon_cache_anim
+
+//traversal custom anim
+xanim,ai_jump_down_96_kowloon
+
+// generic filters
+material,generic_filter_infrared
+fx,weapon/ir_scope/fx_ir_scope_heartbeat // Use for IR
+material,generic_filter_scope
+
+// Thundergun
+stringtable,mp/zombiemode.csv
+include,zombiemode_weap_thundergun
+rawfile,maps/_zombiemode_net.gsc
+rawfile,maps/kowloon_thundergun.gsc
+rawfile,clientscripts/_zombiemode_dissolve.csc
+rawfile,clientscripts/_zombiemode_weap_thundergun.csc
+
+material,hud_obit_nova_gas
+
+texturelist,texturelist/kowloon.csv

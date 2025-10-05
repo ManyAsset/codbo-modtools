@@ -1,0 +1,13 @@
+#include "refblend.template"
+#include "sort.template"
+#include "clamp.template"
+tessSize( @tessSize@ );
+#include "textureAtlas.template"
+
+hasEditorMaterial( @hasEditorMaterial@ );
+
+allocLightmap( "@materialType@" == "SW4 world" || "@materialType@" == "SW4 model" || "@materialType@" == "CGFXworld" || "@materialType@" == "CGFXmodel" || "@materialType@" == "cod7 simple world" || "@materialType@" == "cod7 simple model" || "@materialType@" == "cod7 basic world" || "@materialType@" == "cod7 basic model" || "@materialType@" == "cod7 alpha world" || "@materialType@" == "cod7 alpha model" || "@materialType@" == "world phong" || "@materialType@" == "model phong" || "@materialType@" == "model cloth" || "@materialType@" == "impact mark" || "@materialType@" == "cod7 scroll" );
+forModel( "@materialType@" == "SW4 model" || "@materialType@" == "CGFXmodel" || "@materialType@" == "cod7 simple model" || "@materialType@" == "cod7 basic model" || "@materialType@" == "cod7 alpha model" || "@materialType@" == "cod7 weapon" || "@materialType@" == "model phong" || "@materialType@" == "weapon phong" || "@materialType@" == "model ambient" || "@materialType@" == "model unlit" || "@materialType@" == "model cloth" || "@materialType@" == "cod7 scroll" );
+forWorld( "@materialType@" == "SW4 world" || "@materialType@" == "CGFXworld" || "@materialType@" == "cod7 simple world" || "@materialType@" == "cod7 basic world" || "@materialType@" == "cod7 alpha world" || "@materialType@" == "world phong" || "@materialType@" == "world unlit" || "@materialType@" == "tools" || "@materialType@" == "sky" || "@materialType@" == "water" || "@materialType@" == "custom" || "@materialType@" == "impact mark" || "@materialType@" == "impact hole mask" || "@materialType@" == "distortion" || "@materialType@" == "cod7 scroll" );
+
+#include "statebits.template"

@@ -1,0 +1,22 @@
+{
+	stateMap "build_floatz";
+
+	vertexShader 3.0 "pimp_shader_sw4_3d_boat_bink_4d098d7a.hlsl"
+	{
+	}
+
+	pixelShader 3.0 "pimp_shader_sw4_3d_boat_bink_4d098d7a.hlsl" 
+	{
+		LetterMap = material.LetterMap;
+	}
+
+	vertex.position = code.position;
+	vertex.texcoord[0] = code.texcoord[0];
+
+	declTypes
+	{
+		packed
+		world
+	}
+}
+

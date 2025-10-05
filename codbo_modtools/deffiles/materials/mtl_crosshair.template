@@ -1,0 +1,23 @@
+#include "commonsetup.template"
+
+techniqueSet( "crosshair" );
+
+textureTable
+{
+	#if "$colorMap00$" == ""
+		#error "Color map is required in crosshair material"
+	#endif
+	"colormap00" = map( "tile both", "nomip bilinear", "$colorMap00$", 1 ) "<auto compression>" : "2d";
+	
+	#if "$colorMap01$" == ""
+		#error "Alpha mask map is required in crosshair material"
+	#endif
+	"colorMap01" = map( "tile both", "nomip bilinear", "$colorMap01$", 1 ) "<auto compression>" : "2d";
+}
+
+constantTable
+{
+	
+}
+
+refImage( "$colorMap$" );

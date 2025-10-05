@@ -1,0 +1,44 @@
+{
+	stateMap "additive";
+
+	vertexShader 3.0 "pimp_shader_sw4_3d_char_cloth_sparkly_bac4653e.hlsl"
+	{
+	}
+
+	pixelShader 3.0 "pimp_shader_sw4_3d_char_cloth_sparkly_bac4653e.hlsl" 
+	{
+		Normal_Map                 = material.Normal_Map;
+  Normal_Detail_Height_Scale = material.Normal_Detail_Height_Scale;
+  Normal_Detail_Map_Scale    = material.Normal_Detail_Map_Scale;
+  Detail_Map                 = material.Detail_Map;
+  Specular_Map               = material.Specular_Map;
+  Sparkle_Spec_Intensity     = material.Sparkle_Spec_Intensity;
+  Sparkle_Swatch_2_Speed     = material.Sparkle_Swatch_2_Speed;
+  Sparkle_Swatch_2_Scale     = material.Sparkle_Swatch_2_Scale;
+  Heat_Map                   = material.Heat_Map;
+  Sparkle_Swatch_1_Speed     = material.Sparkle_Swatch_1_Speed;
+  Sparkle_Swatch_1_Scale     = material.Sparkle_Swatch_1_Scale;
+  Facing_Ratio_Max           = material.Facing_Ratio_Max;
+  Facing_Ratio_Min           = material.Facing_Ratio_Min;
+  Diffuse_MapSampler         = material.Diffuse_MapSampler;
+  Sparkle_Color              = material.Sparkle_Color;
+  Rim_Specular               = material.Rim_Specular;
+  Spotlight_Spec_Multiplier  = material.Spotlight_Spec_Multiplier;
+  Reflection_Amount          = material.Reflection_Amount;
+  Roughness_Map              = material.Roughness_Map;
+  Sparkle_Iridescence        = material.Sparkle_Iridescence;
+	}
+
+	vertex.position = code.position;
+	vertex.normal      = code.normal;
+  vertex.texcoord[2] = code.tangent;
+  vertex.color[0]    = code.color;
+  vertex.texcoord[0] = code.texcoord[0];
+
+	declTypes
+	{
+		packed
+		world
+	}
+}
+

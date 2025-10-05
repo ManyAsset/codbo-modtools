@@ -1,0 +1,16 @@
+{
+	stateMap "wireframe";
+
+	vertexShader 3.0 "pimp_shader_vertcoloruntextured_ddd50a3a.hlsl"
+	{
+	}
+
+	pixelShader 3.0 "pimp_shader_vertcoloruntextured_b9ef6ce0.hlsl" 
+	{
+		specularMapSampler = material.specularMap;
+	}
+
+	vertex.position = code.position;
+
+}
+

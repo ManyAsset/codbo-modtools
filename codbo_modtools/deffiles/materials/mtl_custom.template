@@ -1,0 +1,37 @@
+#include "commonsetup.template"
+
+techniqueSet( "@customString@" );
+
+#if "@noStreamDetail@" == "1"
+#define DETAIL_STREAMABLE
+#else
+#define DETAIL_STREAMABLE streamable
+#endif
+
+textureTable
+{
+	#if "$colorMap$" != ""
+		"colorMap" = map( "@tileColor@", "@filterColor@", "$colorMap$", @nopicmipColor@ ) "@formatColor@" : "colorMap";
+	#endif
+
+        #if "$detailMap$" != ""
+		"detailMap" = DETAIL_STREAMABLE map( "tile both", "@filterDetail@", "$detailMap$", @nopicmipDetail@ ) "@formatDetail@" : "colorMap";
+	#endif
+
+	#if "$cosinePowerMap$" != ""
+	   "specularMap" =  volmap( "@tileSpecular@", "@filterSpecular@", "$cosinePowerMap$", @nopicmipSpecular@ ) "@formatSpecular@" : "colorMap";
+	#endif
+
+	#if "$colorMap14$" != ""
+		"colorMap2D" = map("@texTile14@", "@filterColor14@", "$colorMap14$", @nopicmipColor14@ ) "@textureFormat14@" : "colorMap14";
+	#endif
+
+	#if "$colorMap15$" != ""
+		"colorMap3D" = volmap("@texTile15@", "@filterColor15@", "$colorMap15$", @nopicmipColor15@ ) "@textureFormat15@" : "colorMap15";
+	#endif
+}
+#if "$colorMap$" != ""
+	refImage( "$colorMap$" );
+#else
+	refImage( "$white" );
+#endif

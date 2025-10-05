@@ -1,0 +1,31 @@
+{
+	stateMap "blood";
+
+	vertexShader 3.0 "pimp_shader_sw4_2d_overlay_scanline_a51d4eec.hlsl"
+	{
+	}
+
+	pixelShader 3.0 "pimp_shader_sw4_2d_overlay_scanline_a51d4eec.hlsl" 
+	{
+		Static_Size   = material.Static_Size;
+  StaticMap     = material.StaticMap;
+  Static_amount = material.Static_amount;
+  ScanBias      = material.ScanBias;
+  LineColor     = material.LineColor;
+  ScrollSpeed   = material.ScrollSpeed;
+  LineScale     = material.LineScale;
+  LineMap       = material.LineMap;
+	}
+
+	vertex.position = code.position;
+	vertex.color[0]    = code.color;
+  vertex.texcoord[0] = code.texcoord[0];
+
+	declTypes
+	{
+		packed
+		debug
+		generic
+	}
+}
+

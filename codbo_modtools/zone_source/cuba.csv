@@ -1,0 +1,432 @@
+ignore,code_post_gfx
+ignore,common
+
+col_map_sp,maps/cuba.d3dbsp
+gfx_map,maps/cuba.d3dbsp
+
+sound,spl_cuba
+
+// --------------------------------------------------------------------------------
+// ---- vehicles ----
+// --------------------------------------------------------------------------------
+
+include,vehicle_police
+
+include,vehicle_zpu_antiair
+
+include,vehicle_truck_gaz63_tanker
+include,vehicle_truck_gaz63_troops
+include,vehicle_apc_btr60
+
+//Single50
+include,vehicle_truck_gaz63
+xmodel,t5_veh_gaz66_flatbed
+xmodel,t5_veh_gunner_turret_enemy_50cal
+weapon,sp/btr60_heavy_machinegun_explosive
+
+xanim,ai_50cal_gunner_aim
+xanim,ai_50cal_gunner_aim_up
+xanim,ai_50cal_gunner_aim_down
+
+//Models for truck guys to unload at compound
+xmodel,p_rus_reel_disc
+xmodel,dest_glo_paper_01_d0
+
+
+
+// --------------------------------------------------------------------------------
+// ---- csv's ----
+// --------------------------------------------------------------------------------
+
+include,common_player_us_cuba
+
+//include,ai_anims_mg_arrivals_and_exits
+
+include,cuba_fx
+include,common_civilians
+
+// cuba bar event csv
+include,cuba_bar
+
+// cuba zipline and compound csv
+include,cuba_zipline_compound
+
+//cuba airfield assets,
+include,cuba_airfield
+
+// include patial patrol animations
+xanim,patrol_bored_patrolwalk
+
+// traversals
+include,traverse_stairs_up_8x12
+include,traverse_stairs_down_8x12
+include,traverse_mantle_over_36
+include,traverse_mantle_over_96
+include,traverse_mantle_on_40
+include,traverse_mantle_on_56
+include,traverse_mantle_over_40
+include,traverse_dive_over_40
+include,traverse_jump_down_96
+include,traverse_stairs_up_8x16
+include,traverse_stairs_down_8x16
+
+// --------------------------------------------------------------------------------
+// ---- gsc's ----
+// --------------------------------------------------------------------------------
+
+rawfile,maps/cuba.gsc
+rawfile,maps/cuba_amb.gsc
+rawfile,maps/cuba_anim.gsc
+rawfile,maps/cuba_goatpath.gsc
+rawfile,maps/cuba_fx.gsc
+rawfile,maps/cuba_load.gsc
+rawfile,maps/cuba_util.gsc
+rawfile,maps/createfx/cuba_fx.gsc
+
+rawfile,maps/createart/cuba_art.gsc
+
+rawfile,clientscripts/cuba.csc
+rawfile,clientscripts/cuba_amb.csc
+rawfile,clientscripts/cuba_fx.csc
+rawfile,clientscripts/createfx/cuba_fx.csc
+
+rawfile,maps/_mgturret.gsc
+
+// Event Scripts,
+rawfile,maps/cuba_street.gsc
+rawfile,maps/cuba_mansion.gsc
+rawfile,maps/cuba_mansion_amb.gsc
+rawfile,maps/cuba_assasination.gsc
+rawfile,maps/cuba_escape.gsc
+rawfile,maps/cuba_airfield.gsc
+
+rawfile,maps/cuba_drive.gsc
+
+// audio Scripts
+rawfile,maps/_flyover_audio.gsc
+
+// --------------------------------------------------------------------------------
+// ---- weapons ----
+// --------------------------------------------------------------------------------
+
+weapon,sp/m16_sp
+weapon,sp/m16_acog_sp
+weapon,sp/m16_gl_sp
+weapon,sp/gl_m16_sp
+weapon,sp/m16_acog_gl_sp
+
+weapon,sp/fnfal_sp
+weapon,sp/fnfal_acog_sp
+weapon,sp/fnfal_silencer_sp
+weapon,sp/fnfal_acog_silencer_sp
+
+weapon,sp/rpk_sp
+weapon,sp/rpk_acog_sp
+weapon,sp/rpk_dualclip_sp
+
+
+weapon,sp/skorpion_sp
+weapon,sp/skorpion_extclip_sp
+weapon,sp/skorpion_silencer_sp
+
+weapon,sp/asp_sp
+weapon,sp/asp_sp_bar
+weapon,sp/rpg_player_sp
+weapon,sp/rpg_magic_bullet_sp
+weapon,sp/frag_grenade_sp
+weapon,sp/cuba_player_turret
+weapon,sp/m60_explosive_sp
+weapon,sp/rpk_magicbullet_noflash
+
+// --------------------------------------------------------------------------------
+// ---- Fx's and Fx anims ----
+// --------------------------------------------------------------------------------
+
+fx,bio/player/fx_player_water_waist_ripple
+fx,bio/player/fx_player_water_knee_ripple
+fx,bio/player/fx_footstep_water
+fx,vehicle/vfire/fx_vsmoke_huey_trail
+fx,maps/khe_sanh/fx_ks_ambient_aa_flak
+fx,temp_effects/fx_tmp_exp_vehicle
+fx,maps/creek/fx_glass_heli_break
+fx,env/fire/fx_fire_md_fuel
+fx,env/fire/fx_fire_sm
+fx,temp_effects/fx_tmp_ac130_40mm_ir_impact
+fx,maps/ber2/fx_debris_wood_boards_fire
+fx,env/dirt/fx_concrete_ceiling_impact_md
+fx,vehicle/light/fx_apc_btr60_headlight
+fx,destructibles/fx_cuba_dest_hydrant
+fx,maps/mp_maps/fx_mp_hotel_fountain_splash01
+fx,maps/mp_maps/fx_mp_hotel_fountain_splash02
+fx,vehicle/water/fx_pbr_sampan_wood_break
+fx,vehicle/light/fx_jeep_uaz_headlight
+fx,vehicle/light/fx_jeep_uaz_taillight
+fx,trail/fx_geotrail_jet_contrail
+fx,vehicle/exhaust/fx_exhaust_jet_afterburner
+fx,maps/cuba/fx_cuba_veh_interior_lights
+fx,maps/cuba/fx_cuba_chandelier_lrg
+fx,impacts/flesh_hit_body_fatal_exit
+fx,maps/cuba/fx_cuba_dest_light_pole
+
+fx,env/electrical/fx_elec_wire_sparks
+fx,maps/flashpoint/fx_door_breach_kick
+fx,destructibles/fx_cuba_dest_elec_box
+fx,destructibles/fx_cuba_dest_elec_box_low
+fx,maps/cuba/fx_cuba_veh_explo
+fx,maps/hue_city/fx_huey_spotlight_macv
+fx,maps/cuba/fx_cuba_flood_light
+
+fx,maps/cuba/fx_cuba_btr_door_exp
+
+fx,maps/cuba/fx_cuba_c130_prop_slow
+fx,maps/cuba/fx_cuba_c130_prop_half
+fx,maps/cuba/fx_cuba_c130_prop_full
+fx,maps/cuba/fx_cuba_c130_fail_explo
+fx,maps/cuba/fx_cuba_c130_smk_fly_through
+
+fx,maps/cuba/fx_cuba_car_wind
+fx,maps/cuba/fx_cuba_car_glass_brk_f
+fx,maps/cuba/fx_cuba_car_glass_brk_l
+fx,maps/cuba/fx_cuba_car_glass_brk_r
+fx,maps/cuba/fx_cuba_car_glass_brk_b
+fx,maps/cuba/fx_cuba_car_glass_kick
+
+fx,vehicle/light/fx_cuba_car_brakelight
+fx,maps/cuba/fx_cuba_cig_tip_smk
+
+rawfile,rumble/cuba_peelout
+rawfile,rumble/cuba_peelout_h.rmb
+rawfile,rumble/cuba_peelout_l.rmb
+
+// FXANIMS
+xanim,fxanim_gp_ceiling_fan_old_slow_anim
+xanim,fxanim_gp_ceiling_fan_old_dest_anim
+xanim,fxanim_cuba_curtain_sheer_anim
+xanim,fxanim_cuba_curtain_sheer_hang_anim
+xanim,fxanim_cuba_lamppost_01_hit_anim
+xanim,fxanim_cuba_lamppost_01_fall_anim
+xanim,fxanim_cuba_line_flag01_anim
+xanim,fxanim_cuba_line_flag02_anim
+xanim,fxanim_cuba_radar_tower_anim
+xanim,fxanim_gp_tree_aquilaria_dest02_anim
+xanim,fxanim_gp_tree_palm_coco02_dest02_anim
+xanim,fxanim_cuba_truck_gaz63_flip_anim
+xanim,fxanim_cuba_truck_gaz63_flip_01_anim
+xanim,fxanim_cuba_truck_gaz63_flip_02_anim
+xanim,fxanim_cuba_chandelier_fall_anim
+xanim,fxanim_cuba_chandelier_sway_anim
+xanim,fxanim_cuba_chandelier_boards_anim
+xanim,fxanim_cuba_sign_anim
+xanim,fxanim_cuba_car_anim
+xanim,fxanim_gp_tarp_crate_stack_anim
+xanim,fxanim_cuba_car_fan_anim
+xanim,fxanim_cuba_car_props_anim
+xanim,fxanim_cuba_car_cig_anim
+xanim,fxanim_cuba_rat_01_anim
+xanim,fxanim_cuba_rat_02_anim
+
+// --------------------------------------------------------------------------------
+// ---- Animations ----
+// --------------------------------------------------------------------------------
+
+//Street Civs
+xanim,ch_cuba_b01_street_civ_01
+xanim,ch_cuba_b01_street_civ_01_loop
+
+// xanim,ch_cuba_b01_street_civ_02
+// xanim,ch_cuba_b01_street_civ_02_loop
+
+// Custom Police Car Exits
+xanim,ch_police_exit_car_01
+xanim,ch_police_exit_car_02
+
+xanim,ch_police_intro_pistol_driver
+xanim,ch_police_intro_pistol_pass
+
+xanim,ch_police_out_of_car_B_driver
+xanim,ch_police_out_of_car_B_pass
+
+xanim,ch_police_out_of_car_C_driver
+xanim,ch_police_out_of_car_C_pass
+
+xanim,ch_police_out_of_car_D_driver
+xanim,ch_police_out_of_car_D_pass
+
+xanim,ai_cuba_woods_signal_01
+
+xanim,ai_cuba_woods_police01_kill
+xanim,ai_cuba_police01_struggle
+xanim,ai_cuba_police01_death
+
+xanim,ai_cuba_police02_death
+xanim,ai_cuba_police03_death
+xanim,ai_cuba_police01_passenger_death
+
+//xanim,ai_cuba_woods_leapfrog_01
+//xanim,ai_cuba_bowman_leapfrog_01
+//xanim,ai_cuba_woods_leapfrog_02
+xanim,ai_cuba_bowman_leapfrog_02
+
+xanim,ch_cub_out_of_way_woods
+xanim,ch_cub_out_of_way_bowman
+
+xanim,ch_cub_b01_wave_carlos_intro
+xanim,ch_cub_b01_wave_carlos
+
+xanim,ch_b03_guard_riddled_bowman
+xanim,ch_b03_guard_riddled_guard
+
+xanim,crew_zpu4_fire
+xanim,crew_zpu4_idle
+
+xanim,ch_b03_radio_carlos_woods
+
+xanim,ch_cuba_b02_make_cover_L
+xanim,ch_cuba_b02_make_cover_R
+xanim,ch_cuba_b02_shot_hit_table
+
+xanim,ch_cuba_b02_cuba_door_breach_1_bowman
+xanim,ch_cuba_b02_cuba_door_breach_1_woods
+
+xanim,o_cuba_b02_make_cover_l_cabinet
+xanim,o_cuba_b02_make_cover_r_cabinet
+xanim,o_cuba_b02_shot_hit_table_prop
+
+xanim,ch_scripted_tests_b0_coveralign
+
+//xanim,ch_cuba_b02_castro_stack_up_woods_intro_to_loop
+
+include,ai_anims_pistol
+
+// --------------------------------------------------------------------------------
+// ---- Rumble and shellshocks ----
+// --------------------------------------------------------------------------------
+
+// rumbles
+rawfile,rumble/grenade_rumble
+rawfile,rumble/damage_heavy
+rawfile,rumble/damage_light
+rawfile,rumble/artillery_rumble
+
+// shocks
+rawfile,shock/quagmire_window_break.shock
+
+// --------------------------------------------------------------------------------
+// ---- vision sets, xpo, sun ----
+// --------------------------------------------------------------------------------
+
+rawfile,vision/cuba.vision
+rawfile,vision/cuba_mansion.vision
+rawfile,vision/cuba_courtyard.vision
+rawfile,vision/cuba_compound.vision
+rawfile,vision/cuba_streets.vision
+rawfile,vision/cuba_drive.vision
+rawfile,vision/cuba_streets_floodlights.vision
+rawfile,vision/cuba_sunrise.vision
+rawfile,vision/cuba_zipline.vision
+rawfile,vision/cuba_runway_base.vision   
+rawfile,vision/cuba_runway_vista.vision
+rawfile,vision/cuba_end.vision
+rawfile,vision/cuba_car.vision
+
+
+//rawfile,sun/cuba.sun
+
+rawfile,exposure/cuba.xpo
+
+// --------------------------------------------------------------------------------
+// ---- Models ----
+// --------------------------------------------------------------------------------
+
+//character,c_cub_tropas_drone
+xmodel,p_glo_cuban_cigar01
+
+// --------------------------------------------------------------------------------
+// ---- MISC atr, localization etc ----
+// --------------------------------------------------------------------------------
+
+localize,cuba
+
+rawfile,animtrees/cuba.atr
+
+// Drive anims ////////////////////////////////////////////////////////////////
+xanim,ch_cub_b01_bar_exit_bowman
+xanim,ch_cub_b01_bar_exit_carlos
+xanim,ch_cub_b01_bar_exit_coveridle_woods
+xanim,ch_cub_b01_bar_exit_player
+xanim,ch_cub_b01_bar_exit_policecar_police1
+xanim,ch_cub_b01_bar_exit_policecar_police2
+//xanim,ch_cub_b01_bar_exit_vaultsover_woods
+xanim,ch_cub_b01_bar_exit_woods
+xanim,ch_cub_b01_carsequence_drivebwd_bowman
+xanim,ch_cub_b01_carsequence_drivebwd_player
+xanim,ch_cub_b01_carsequence_drivebwd_woods
+xanim,ch_cub_b01_carsequence_drivefwd_1hand_bowman
+xanim,ch_cub_b01_carsequence_drivefwd_1hand_player
+xanim,ch_cub_b01_carsequence_drivefwd_1hand_woods
+// xanim,ch_cub_b01_carsequence_drivefwd_idle_1hand_bowman
+// xanim,ch_cub_b01_carsequence_drivefwd_idle_1hand_player
+// xanim,ch_cub_b01_carsequence_drivefwd_idle_1hand_woods
+xanim,ch_cub_b01_carsequence_drivefwd_2hands_bowman
+xanim,ch_cub_b01_carsequence_drivefwd_2hands_player
+xanim,ch_cub_b01_carsequence_drivefwd_2hands_woods
+xanim,ch_cub_b01_carsequence_into_bowman
+xanim,ch_cub_b01_carsequence_into_carlos
+xanim,ch_cub_b01_carsequence_into_player
+xanim,ch_cub_b01_carsequence_into_woods
+xanim,ch_cub_b01_carsequence_lookbwd_idle_bowman
+xanim,ch_cub_b01_carsequence_lookbwd_idle2_bowman
+xanim,ch_cub_b01_carsequence_lookbwd_idle_player
+xanim,ch_cub_b01_carsequence_lookbwd_idle_woods
+xanim,ch_cub_b01_carsequence_lookfwd_1hand_idle_bowman
+xanim,ch_cub_b01_carsequence_lookfwd_1hand_idle_player
+xanim,ch_cub_b01_carsequence_lookfwd_1hand_idle_woods
+xanim,ch_cub_b01_carsequence_slowmo_bowman
+xanim,ch_cub_b01_carsequence_slowmo_player
+xanim,ch_cub_b01_carsequence_slowmo_woods
+// xanim,ch_cub_b01_carsequence_turnleft_1hand_bowman
+xanim,ch_cub_b01_carsequence_turnleft_1hand_player
+// xanim,ch_cub_b01_carsequence_turnleft_1hand_woods
+// xanim,ch_cub_b01_carsequence_turnleft_2hands_bowman
+xanim,ch_cub_b01_carsequence_turnleft_2hands_player
+// xanim,ch_cub_b01_carsequence_turnleft_2hands_woods
+// xanim,ch_cub_b01_carsequence_turnright_1hand_bowman
+xanim,ch_cub_b01_carsequence_turnright_1hand_player
+// xanim,ch_cub_b01_carsequence_turnright_1hand_woods
+// xanim,ch_cub_b01_carsequence_turnright_2hands_bowman
+xanim,ch_cub_b01_carsequence_turnright_2hands_player
+// xanim,ch_cub_b01_carsequence_turnright_2hands_woods
+xanim,v_cub_b01_carsequence_drivebwd_car
+xanim,v_cub_b01_carsequence_drivefwd_1hand_car
+//xanim,v_cub_b01_carsequence_drivefwd_2hands_car
+xanim,v_cub_b01_carsequence_into_car
+xanim,v_cub_b01_carsequence_lookbwd_idle_car
+xanim,v_cub_b01_carsequence_lookfwd_1hand_idle_car
+// xanim,v_cub_b01_carsequence_drivefwd_idle_1hand_car
+xanim,v_cub_b01_carsequence_slowmo_car
+xanim,v_cub_b01_carsequence_turnleft_1hand_car
+xanim,v_cub_b01_carsequence_turnleft_2hands_car
+xanim,v_cub_b01_carsequence_turnright_1hand_car
+xanim,v_cub_b01_carsequence_turnright_2hands_car
+
+xanim,ch_cub_b01_carsequence_turnleft_1hand_player_brian
+xanim,ch_cub_b01_carsequence_turnleft_2hands_player_brian
+xanim,ch_cub_b01_carsequence_turnright_1hand_player_brian
+xanim,ch_cub_b01_carsequence_turnright_2hands_player_brian
+
+xanim,v_cub_b01_carsequence_turnleft_1hand_car_brian
+xanim,v_cub_b01_carsequence_turnleft_2hands_car_brian
+xanim,v_cub_b01_carsequence_turnright_1hand_car_brian
+xanim,v_cub_b01_carsequence_turnright_2hands_car_brian
+
+//speedometer
+xanim,v_cub_b01_car_tag_speedometer_additive
+xanim,v_cub_b01_car_tag_speedometer_delta
+
+xanim,ch_cuba_b05_rifle_guy1_reaction
+xanim,ch_cuba_b05_rifle_guy2_reaction
+
+xanim,slide_across_car_2_cover
+
+// initial texture load order list (keep at end)
+texturelist,texturelist/cuba.csv

@@ -1,0 +1,196 @@
+// ABILITIES
+rawfile,maps/_zombiemode_ability.gsc
+rawfile,maps/_zombiemode_ability_airsupport.gsc
+rawfile,maps/_zombiemode_ability_artillery.gsc
+rawfile,maps/_zombiemode_ability_airstrike.gsc
+rawfile,maps/_zombiemode_ability_napalm.gsc
+rawfile,maps/_zombiemode_ability_helicopter.gsc
+rawfile,maps/_zombiemode_ability_turret.gsc
+rawfile,maps/_zombiemode_ability_portal.gsc
+rawfile,maps/_zombiemode_ability_dogs.gsc
+rawfile,maps/_zombiemode_ability_rcbomb.gsc
+rawfile,maps/_zombiemode_ability_cloak.gsc
+rawfile,maps/_zombiemode_ability_endurance.gsc
+
+
+rawfile,clientscripts/_napalm.csc
+rawfile,clientscripts/_airsupport.csc
+rawfile,clientscripts/_zombiemode_ability_rcbomb.csc
+
+// "WEAPONS"
+weapon,sp/zombie_airstrike
+weapon,sp/zombie_artillery
+weapon,sp/zombie_napalm
+weapon,sp/zombie_napalmflare
+weapon,sp/zombie_radar
+weapon,sp/zombie_helicopter
+weapon,sp/zombie_turret
+weapon,sp/zombie_portal
+weapon,sp/zombie_dogs
+weapon,sp/zombie_ability_turret
+weapon,sp/zombie_rcbomb
+weapon,sp/zombie_timedistortion
+weapon,sp/zombie_cloak
+weapon,sp/zombie_endurance
+	
+
+weapon,sp/cobra_FFAR
+weapon,sp/zombie_cobra_20mm
+xmodel,t5_veh_jet_f4_gearup
+
+// VEHICLE GDT
+rawfile,vehicles/zombie_cobra
+
+weapon,sp/zombie_napalmblob
+weapon,sp/zombie_napalmground_lg
+weapon,sp/zombie_napalmground_sm
+
+// Materials
+material,map_artillery_selector
+
+// HUD Assets
+material,zom_ability_airstrike_active
+material,zom_ability_airstrike_not_active
+material,zom_ability_airstrike_busy
+material, hud_icon_air_napalm
+material, hud_icon_airstrike
+material, hud_icon_artillery
+material, hud_icon_dogkill
+material, hud_icon_helicopter
+material, hud_icon_mg42
+material, zom_icon_portal
+material, hud_icon_rcbomb
+material, hud_icon_timedistortion
+material, hud_icon_cloak
+material, hud_icon_endurance
+
+// Airstrike FX
+fx,misc/fx_zombie_ui_airstrike_smk_grn
+fx,misc/fx_zombie_ui_airstrike_smk_yellow
+fx,misc/fx_zombie_ui_airstrike_smk_red
+fx,weapon/clusterbomb/fx_clusterbomb_mp
+fx,weapon/clusterbomb/fx_clusterbomb_exp_mp
+fx,trail/fx_geotrail_jet_contrail,
+fx,vehicle/exhaust/fx_exhaust_jet_afterburner
+//fx,smoke/jet_contrail,,
+
+//Portal fx
+fx,maps/zombie/fx_zombie_portal_core
+fx,maps/zombie/fx_zombie_portal_core_exit
+fx,maps/zombie/fx_zombie_portal_wormhole
+
+// Airstrike Models 
+xmodel,projectile_cbu97_clusterbomb
+xmodel,t5_veh_jet_mig17
+xmodel,aircraft_bomb
+
+// Napalm FX
+fx,weapon/napalm/fx_napalm_air_em_mp
+fx,weapon/napalm/fx_napalm_drop_mp
+fx,weapon/napalm/fx_napalm_trail_em_sm_mp
+fx,weapon/napalm/fx_napalm_trail_em_lg_mp
+fx,weapon/napalm/fx_napalm_ground_burst_mp
+
+// Helicopter assets
+xmodel,t5_veh_helo_huey_heavyhog
+//xanim,bh_rotors
+xmodel,vehicle_cobra_helicopter_fly
+
+// xmodel for the HIND - uses the Cobra's vehicles/ file
+xmodel,vehicle_mi24p_hind_desert
+
+// Helicopter missle
+xmodel,projectile_hellfire_missile
+
+// Helicopter FX
+fx,vehicle/vexplosion/fx_vexplode_helicopter_exp_mp
+fx,trail/fx_trail_heli_black_smoke
+fx,trail/fx_trail_heli_white_smoke
+fx,trail/fx_trail_fire_smoke_black_lg
+fx,vehicle/exhaust/fx_exhaust_jet_afterburner
+fx,vehicle/exhaust/fx_exhaust_huey_engine
+fx,vehicle/treadfx/fx_heli_dust_default
+fx,vehicle/treadfx/fx_heli_dust_concrete
+fx,vehicle/treadfx/fx_heli_snow_spray
+fx,vehicle/treadfx/fx_heli_water_spray
+
+fx,vehicle/props/fx_huey_main_blade_static
+fx,vehicle/props/fx_huey_main_blade_start
+fx,vehicle/props/fx_huey_main_blade_full
+fx,vehicle/props/fx_huey_main_blade_stop
+fx,vehicle/props/fx_huey_small_blade_static
+fx,vehicle/props/fx_huey_small_blade_start
+fx,vehicle/props/fx_huey_small_blade_full
+fx,vehicle/props/fx_huey_small_blade_stop
+
+
+// RC Car Bomb
+xmodel,t5_veh_rcbomb_allies
+xmodel,t5_veh_rcbomb_axis
+
+fx,vehicle/treadfx/fx_treadfx_dust
+fx,vehicle/treadfx/fx_treadfx_rcbomb_dust
+fx,vehicle/treadfx/fx_treadfx_rcbomb_dust_drift	
+fx,vehicle/treadfx/fx_treadfx_rcbomb_dust_peel
+fx,vehicle/light/fx_rcbomb_blinky_light
+fx,vehicle/light/fx_rcbomb_solid_light
+
+
+// Attack Dogs
+xmodel,german_shepherd
+xanim,german_shepherd_death_front
+xanim,german_shepherd_idle
+xanim,german_shepherd_look_down
+xanim,german_shepherd_look_left
+xanim,german_shepherd_look_right
+xanim,german_shepherd_look_up
+xanim,german_shepherd_run
+xanim,german_shepherd_run_lean_L
+xanim,german_shepherd_run_lean_R
+xanim,german_shepherd_run_jump_40
+xanim,german_shepherd_run_jump_window_40
+xanim,german_shepherd_run_pain
+xanim,german_shepherd_run_start
+xanim,german_shepherd_run_stop
+xanim,german_shepherd_run_attack
+xanim,german_shepherd_sitting_idle
+xanim,german_shepherd_sitting_look_down
+xanim,german_shepherd_sitting_look_left
+xanim,german_shepherd_sitting_look_right
+xanim,german_shepherd_sitting_look_up
+xanim,german_shepherd_sitting_looking_idle
+xanim,german_shepherd_attackidle
+xanim,german_shepherd_attackidle_bark
+xanim,german_shepherd_attackidle_growl
+xanim,german_shepherd_attack_look_down
+xanim,german_shepherd_attack_look_left
+xanim,german_shepherd_attack_look_right
+xanim,german_shepherd_attack_look_up
+xanim,german_shepherd_attack_AI_01_start_a
+xanim,german_shepherd_attack_AI_02_idle_a
+xanim,german_shepherd_attack_AI_03_pushed_a
+xanim,german_shepherd_attack_AI_04_middle_a
+xanim,german_shepherd_attack_AI_05_kill_a
+xanim,german_shepherd_attack_player_miss
+xanim,german_shepherd_attack_player_miss_turnL
+xanim,german_shepherd_attack_player_miss_turnR
+xanim,german_shepherd_traverse_down_40
+xanim,german_shepherd_traverse_up_40
+xanim,german_shepherd_traverse_up_80
+xanim,german_shepherd_walk
+xanim,AI_attacked_german_shepherd_01_start_a
+xanim,AI_attacked_german_shepherd_02_idle_a
+xanim,AI_attacked_german_shepherd_02_getup_a
+xanim,AI_attacked_german_shepherd_03_push_a
+xanim,AI_attacked_german_shepherd_04_middle_a
+xanim,AI_attacked_german_shepherd_04_getup_a
+xanim,AI_attacked_german_shepherd_05_death_a
+
+
+// Posters
+xmodel,p_zom_poster_airstrike
+xmodel,p_zom_poster_artillerystrike
+xmodel,p_zom_poster_auto_turret
+xmodel,p_zom_poster_helicopter
+xmodel,p_zom_poster_napalm
+xmodel,p_zom_poster_portal

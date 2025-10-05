@@ -1,0 +1,30 @@
+global proc iwCopyKeys()
+{
+	global string $gPlayBackSlider;
+	float $startTime;
+	float $endTime;
+
+	int $highlightExist = `timeControl -q -rv $gPlayBackSlider`;
+	float $highlightRange[] = `timeControl -q -rangeArray $gPlayBackSlider`;
+		
+	if($highlightExist == 0)
+	{
+		$startTime = `playbackOptions -q -min`;
+		$endTime = `playbackOptions -q -max`;
+	}
+	else
+	{
+		$startTime = $highlightRange[0];
+		$endTime = $highlightRange[1];
+		//$endTime = ($endTime- 1);
+	}
+
+	copyKey -time ($startTime + ":" + $endTime) -float ($startTime + ":" + $endTime) -option area -hierarchy none -controlPoints 0 -shape 0;
+}
+
+
+global proc iwPasteKeys()
+{
+	float $getCurrentTime = `currentTime -q`;
+	pasteKey -time $getCurrentTime -float $getCurrentTime -option insert -copies 1 -connect 0 -timeOffset 0 -floatOffset 0 -valueOffset 0;
+}

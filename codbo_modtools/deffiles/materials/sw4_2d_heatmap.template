@@ -1,0 +1,49 @@
+
+#if ( ( "@blendFunc@"== "Replace" ) && ( "@alphaTest@" == "Always" ) )
+	techniqueSet( "@SW4_MaterialType@" ); 
+#else
+	techniqueSet( "@SW4_MaterialType@_transparent" ); 
+#endif
+
+// -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -
+	
+#include "commonsetup.template" 
+
+// -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -
+	
+#define SPEC_MAP_FORMAT 	 	  "DXT1"
+      	
+#if TARGET_PLATFORM == "xenon"
+            #define NORMAL_MAP_FORMAT     "DXN"
+	    #else
+	        #define NORMAL_MAP_FORMAT     "DXT5"
+	    #endif
+
+
+// -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -
+	
+textureTable
+{
+	"FadeMap" =  map( "no tile", "nomip bilinear", "$colorMap02$", 1 ) "<auto compression>" : "colorMap";
+	"C004_File" =  map( "no tile", "nomip bilinear", "$colorMap00$", 1 ) "<auto compression>" : "colorMap";
+}
+
+// -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -
+	
+constantTable
+{
+	"LineColor" = float4( @cg07_x@, @cg07_y@, @cg07_z@, @cg07_w@ );
+	"HeatmapNightColor" = float4( @cg06_x@, @cg06_y@, @cg06_z@, @cg06_w@ );
+	"HeatmapColor" = float4( @cg05_x@, @cg05_y@, @cg05_z@, @cg05_w@ );
+	"NoiseScale" = float1( @cg04_x@ );
+	"NoiseSpeed" = float1( @cg03_x@ );
+	"Power" = float1( @cg02_x@ );
+}
+	
+// -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -
+	
+allocReflectionProbe();
+
+// -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -
+	
+refImage( "$white" );

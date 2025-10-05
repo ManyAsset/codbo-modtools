@@ -1,0 +1,29 @@
+{
+	stateMap "sw4_default";
+
+	vertexShader 3.0 "pimp_shader_sw4_3d_schematic_screen_c2c91728.hlsl"
+	{
+	}
+
+	pixelShader 3.0 "pimp_shader_sw4_3d_schematic_screen_c2c91728.hlsl" 
+	{
+		Static            = material.Static;
+  StaticScale       = material.StaticScale;
+  Lookup            = material.Lookup;
+  Diffuse_Map       = material.Diffuse_Map;
+  Reflection_Amount = material.Reflection_Amount;
+  PreviewCompID     = material.PreviewCompID;
+	}
+
+	vertex.position = code.position;
+	vertex.normal      = code.normal;
+  vertex.texcoord[2] = code.tangent;
+  vertex.texcoord[0] = code.texcoord[0];
+
+	declTypes
+	{
+		packed
+		world
+	}
+}
+

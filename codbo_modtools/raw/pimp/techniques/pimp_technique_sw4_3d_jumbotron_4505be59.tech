@@ -1,0 +1,27 @@
+{
+	stateMap "build_floatz";
+
+	vertexShader 3.0 "pimp_shader_sw4_3d_jumbotron_8ce90716.hlsl"
+	{
+	}
+
+	pixelShader 3.0 "pimp_shader_sw4_3d_jumbotron_8ce90716.hlsl" 
+	{
+		Intensity          = material.Intensity;
+  FPS                = material.FPS;
+  Grid               = material.Grid;
+  Diffuse_MapSampler = material.Diffuse_MapSampler;
+  Overlay_Offset     = material.Overlay_Offset;
+  Overlay_Scale      = material.Overlay_Scale;
+  Overlay_Map        = material.Overlay_Map;
+	}
+
+	vertex.position = code.position;
+
+	declTypes
+	{
+		packed
+		world
+	}
+}
+

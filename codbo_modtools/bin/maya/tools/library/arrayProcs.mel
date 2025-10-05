@@ -1,0 +1,59 @@
+{
+   // Return the minimum value from an array
+   global proc float sakGetMinFromArray(float $arr[]) {
+      float $sortedArr[] = `sort $arr`;
+      return $sortedArr[0];
+   }
+
+   // Return the maximum value from an array
+   global proc float sakGetMaxFromArray(float $arr[]) {
+      float $sortedArr[] = `sort $arr`;
+      return $sortedArr[size($sortedArr)-1];
+   }
+
+   global proc sakGetFloatArrayOdds(float $arr[]) {
+      float $oldArr[] = $arr;
+      clear($arr);
+
+      for ($i=1; $i<size($oldArr); $i+=2) {
+         $arr[size($arr)] = $oldArr[$i];
+      }
+   }
+
+   global proc sakGetFloatArrayEvens(float $arr[]) {
+      float $oldArr[] = $arr;
+      clear($arr);
+
+      for ($i=0; $i<size($oldArr); $i+=2) {
+         $arr[size($arr)] = $oldArr[$i];
+      }
+   }
+
+   // Return the average of all numbers in an array
+   global proc float sakAverageArray(float $arr[]) {
+      float $total = 0;
+
+      for ($a in $arr) {
+         $total += $a;
+      }
+
+      return ($total / size($arr));
+   }
+
+   global proc sakGetIntArrayIndexesFromValue(int $arr[], int $value, int $idxs[]) {
+      for ($i=0; $i<size($arr); $i++) {
+         if ($arr[$i] == $value) {
+            $idxs[size($idxs)] = $i;
+         }
+      }
+   }
+
+   global proc int sakIsIntInArray(int $arr[], int $value) {
+      for ($a in $arr) {
+         if ($a == $value) {
+            return 1;
+         }
+      }
+      return 0;
+   }
+}

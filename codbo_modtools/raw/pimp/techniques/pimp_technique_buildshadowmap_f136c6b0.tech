@@ -1,0 +1,18 @@
+{
+	stateMap "build_shadowmap_color";
+
+	vertexShader 3.0 "pimp_shader_buildshadowmap_74456a34.hlsl"
+	{
+	}
+
+	pixelShader 3.0 "pimp_shader_buildshadowmap_a0533eb3.hlsl" 
+	{
+		colorMapSampler = material.colorMap;
+	}
+
+	vertex.position = code.position;
+	vertex.texcoord[0] = code.texcoord[0];
+	vertex.color[0] = code.color;
+
+}
+

@@ -1,0 +1,39 @@
+{
+	stateMap "build_floatz";
+
+	vertexShader 3.0 "pimp_shader_sw4_3d_char_skin_gas_a2a91539.hlsl"
+	{
+		RevealMap  = material.RevealMap;
+  BurnOffset = material.BurnOffset;
+  BurnSpeed  = material.BurnSpeed;
+	}
+
+	pixelShader 3.0 "pimp_shader_sw4_3d_char_skin_gas_a2a91539.hlsl" 
+	{
+		RevealMap                 = material.RevealMap;
+  BurnOffset                = material.BurnOffset;
+  BurnSpeed                 = material.BurnSpeed;
+  NormalMapBurnt2           = material.NormalMapBurnt2;
+  NormalMapBurnt1           = material.NormalMapBurnt1;
+  NormalMap                 = material.NormalMap;
+  DiffuseBurnt2             = material.DiffuseBurnt2;
+  DiffuseBurnt1             = material.DiffuseBurnt1;
+  Spotlight_Spec_Multiplier = material.Spotlight_Spec_Multiplier;
+  SpecularMap               = material.SpecularMap;
+  Reflection_Amount         = material.Reflection_Amount;
+  RoughnessMap              = material.RoughnessMap;
+  CookColor                 = material.CookColor;
+  Diffuse                   = material.Diffuse;
+  Rim_Specular_Mask         = material.Rim_Specular_Mask;
+  Rim_Specular              = material.Rim_Specular;
+	}
+
+	vertex.position = code.position;
+
+	declTypes
+	{
+		packed
+		world
+	}
+}
+

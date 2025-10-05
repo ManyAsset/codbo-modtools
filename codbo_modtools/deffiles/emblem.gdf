@@ -1,0 +1,61 @@
+#name "emblem"
+#dll "pc" "emblem"
+#dll "ps3" "emblem"
+#dll "xenon" "emblem_xenon"
+#dll "wii" "emblem_wii"
+#source_dir "texture_assets/"
+#target_dir "images/"
+#file_ext "*"
+#version 11
+
+string emblemMap
+string referencePalette
+float 1.0 0 100 spread
+int 0 0 1 highDetail
+
+vcontainer
+{
+	vcontainer
+	{
+		fileedit( emblemMap )
+		[
+			exec
+			{
+				width( 450 )
+				label( "Emblem Image" )
+			}
+		]
+		fileedit( referencePalette )
+		[
+			exec
+			{
+				width( 450 )
+				label( "Reference Palette" )
+			}
+		]
+		
+		checkbox(highDetail)
+		[
+			exec
+			{
+				label("High Detail")
+				tooltip("Generate a higher detail emblem icon, use sparingly.")
+			}
+		]
+		
+		floatedit( spread, 0.1, 0.2 )
+		[
+			exec
+			{
+				label( "Spread" )
+				width( 300 )
+			}
+		]
+	}
+	[
+		exec
+		{
+			groupBox( "Emblem" )
+		}
+	]
+}

@@ -1,0 +1,134 @@
+{
+   // Procedure to load plugins
+   global proc int sakCatchLoadPlugin(string $plugin) {
+      if (!`pluginInfo -q -l $plugin`) {
+         if ( catch( eval("loadPlugin \"" + $plugin + "\"") ) ) {
+            return false;
+         } else {
+            return true;
+         }
+      } else {
+         return true;
+      }
+   }
+
+   // Procedure to source mel scripts
+   global proc int sakCatchSourceScript(string $melscript) {
+   	if ( exists($melscript) ) {
+         if ( catch( eval("source \"" + $melscript + "\"") ) ) {
+            return false;
+         } else {
+            return true;
+         }
+      } else {
+      	return false;
+      }
+   }
+
+   // Procedure to execute a python script from mel
+   global proc int sakExecPythonFile(string $fileToExec) {
+   	if ( exists($fileToExec) ) {
+         if ( catch( python("execfile(\"" + $fileToExec + "\")") ) ) {
+            return false;
+         } else {
+            return true;
+         }
+      } else {
+         return false;
+      }
+   }
+
+   // Checks to see if all objects in an array exists
+   global proc int sakCheckForAllObjects(string $objs[]) {
+      for ($o in $objs) {
+         if (!`objExists $o`) {
+            return false;
+         }
+      }
+      return true;
+   }
+
+   // Renames all of a scene's shape nodes to ensure there are no duplicate names
+   global proc sakRenameAllShapeNodes() {
+      string $allNodes[] = `ls -type transform`;
+      for ($i=0; $i<size($allNodes); $i++) {
+      	if ($allNodes[$i] != "side" && $allNodes[$i] != "persp" && $allNodes[$i] != "front" && $allNodes[$i] != "top") {
+            if (`referenceQuery -inr $allNodes[$i]` == 0) {
+         		string $tmp[] = `listRelatives -f -s $allNodes[$i]`;
+         		if (size($tmp) > 1) {
+         			for ($x=0; $x<size($tmp); $x++) {
+         				rename $tmp[$x] (shortNameOf($allNodes[$i]) + "Shape" + ($x + 1));
+         			}
+         		} else if (size($tmp) == 1) {
+         			rename $tmp[0] (shortNameOf($allNodes[$i]) + "Shape");
+         		}
+      		}
+      	}
+      }
+   }
+
+   // Returns a node name minus the namespace
+   global proc string noNamespace(string $longname) {
+      string $tmp[];
+      tokenize $longname ":" $tmp;
+      if (size($tmp) > 0)
+         return $tmp[size($tmp)-1];
+      else
+         return $longname;
+   }
+
+   // Checks to see if a given namespace exists
+   // If the namespace is not unique, the proc increments the name until if finds one
+   // that is unique and returns it
+   global proc string nextAvailableNamespace(string $namespace) {
+      string $newNamespace = $namespace;
+      int $ni = 0;
+
+      while (true) {
+         $ni += 1;
+         if (`namespace -ex $newNamespace` == true) {
+            $newNamespace = ($namespace+$ni);
+         } else {
+            return $newNamespace;
+         }
+      }
+   }
+
+   global proc string[] sakGetNodeNamesFromAttributes(string $fullAttrs[]) {
+      string $nodeNames[];
+
+      for ($f in $fullAttrs) {
+         string $tmp[];
+         tokenize $f "." $tmp;
+         if (size($tmp) == 2) {
+            $nodeNames[size($nodeNames)] = $tmp[0];
+         }
+      }
+      
+      return stringArrayRemoveDuplicates($nodeNames);
+   }
+   
+   global proc int sakCheckIncomingConnections(string $objAttrs[], string $filter[]) {
+      for ($a in $objAttrs) {
+         string $conn[] = `listConnections -s 1 -d 0 $a`;
+         if (size($conn) > 0 && size($filter) > 0) {
+            for ($c in $conn) {
+               for ($f in $filter) {
+                  if (!`objectType -isa $f $c`) {
+                     return 0;
+                  }
+               }
+            }
+         } else if (size($conn) > 0) {
+            return 0;
+         }
+      }
+      return 1;
+   }
+
+   global proc string shortNameFromPath(string $fullpath) {
+      string $tmp[];
+      tokenize $fullpath "|" $tmp;
+      return $tmp[size($tmp)-1];
+   }
+}

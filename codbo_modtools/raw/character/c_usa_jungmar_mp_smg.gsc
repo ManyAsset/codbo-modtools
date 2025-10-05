@@ -1,0 +1,13 @@
+
+main()
+{
+	self setModel("c_usa_jungmar_mp_smg_fb");
+	self setViewmodel("viewhands_usmc");
+	self.voice = "american";
+	self.skeleton = "base";
+}
+precache()
+{
+	precacheModel("c_usa_jungmar_mp_smg_fb");
+	precacheModel("viewhands_usmc");
+}  

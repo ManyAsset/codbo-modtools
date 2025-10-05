@@ -1,0 +1,13 @@
+
+main()
+{
+	self setModel("c_rus_spetznaz_mp_cqb_fb");
+	self setViewmodel("viewhands_usmc");
+	self.voice = "russian";
+	self.skeleton = "base";
+}
+precache()
+{
+	precacheModel("c_rus_spetznaz_mp_cqb_fb");
+	precacheModel("viewhands_usmc");
+}  

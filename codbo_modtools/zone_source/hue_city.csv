@@ -1,0 +1,652 @@
+//  HUE_CITY CSV ORGANIZATION
+
+//  PLEASE READ BEFORE MAKING ENTRIES OR CHANGES
+
+// 1 - Things are broken up alphabetically in categories such as animations, models, etc. 
+// 		Please retain this structure and keep files of the same type together.  Please do not mix
+//   files of different types in the same area just because they are used in the same scene or system 
+//  2 - Sub organization of entries within a category is ok.  Please do this chronologically in
+//		the level, by beats for instance.  
+
+//  Thank you!!
+
+screenclearcolor,1,1,1,1
+
+col_map_sp,maps/hue_city.d3dbsp
+gfx_map,maps/hue_city.d3dbsp
+
+//movie
+
+// ANIMATIONS!!!
+
+// Animation - General purpose use
+xanim,patrol_bored_patrolwalk
+xanim,ai_huey_pilot2_idle_loop1
+
+
+// Animation - Beat 1 - MACV repel 
+	
+xanim,ch_quag_b05_sldrrepel_sldr
+	
+xanim,ch_quag_b05_repeltomacv_barnes
+xanim,ch_quag_b05_repeltomacv_player
+xanim,ch_quag_b05_repeltomacv_soldier
+xanim,int_quag_b05_repeltomacv_player
+xanim,p_quag_b05_repeltomacv_gun
+xanim,v_quag_b05_repeltomacv_huey
+xanim,ch_quag_b05_repeltomacv_nva1
+xanim,ch_quag_b05_repeltomacv_nva2
+xanim,ch_quag_b05_repeltomacv_nva3
+xanim,p_quag_b05_repeltomacv_carabiner
+
+
+
+
+// Animation - Beat 1 - MACV guys behind door breach 
+	
+xanim,ch_quag_b05_hallway_huddle_guy1
+xanim,ch_quag_b05_hallway_huddle_guy2
+xanim,ch_quag_b05_moris_code_reaction
+xanim,o_quag_b05_moris_code_chair
+
+
+// civilian Animations
+xanim,ch_hue_b01_1sthallwaymowdown_civ1
+xanim,ch_hue_b01_1sthallwaymowdown_civ2
+
+
+	// civilian animations in civ mowdown room
+xanim,ch_quag_b05_civscowerincorner1_civ2 //– sitting down backing up
+xanim,ch_quag_b05_civscowerincorner2_civ2 // – standing up backing up
+xanim,ch_quag_b05_civsaroundcornersurprisedleft2_civ1 
+xanim,ch_quag_b05_civscowering3_civ2
+
+// small room after mowdown civilians
+xanim,ch_hue_b05_civsaroundcornersurprisedleft_civ2
+xanim,ch_hue_b05_civsaroundcornersurprisedleft_civ2_cowerloop
+
+
+
+// animation for bowman and troop repeling in
+xanim,ch_hue_b01_repelthroughceiling_bowman
+xanim,ch_hue_b01_repelthroughceiling_troop1
+xanim,ch_hue_b01_repelthroughceiling_nva1
+xanim,ch_hue_b01_repelthroughceiling_nva2
+
+// rope models for repel sequence
+xmodel,anim_jun_rappel_rope
+xanim,o_hue_b02_rope_bowman_A
+xanim,o_hue_b02_rope_bowman_B
+xanim,o_hue_b02_rope_troop1_A
+xanim,o_hue_b02_rope_troop1_B
+
+// NVA dying on back in stair room
+xanim,ch_hue_b01_stairtumbledeath_nva_back
+
+// NVA dying on front in war room
+xanim,ch_hue_b01_stairtumbledeath_nva_front
+
+// special death for first rusher
+xanim,ch_hue_b01_shotguntothewall_death
+
+// NVA in chopper mowdown room
+xanim,ch_hue_b01_choppermowdown_death_noragdoll_nva1
+xanim,ch_hue_b01_choppermowdown_loop_nva1
+
+xanim,ch_hue_b01_choppermowdown_death_ragdoll_nva2
+xanim,ch_hue_b01_choppermowdown_loop_nva2
+
+xanim,ch_hue_b01_choppermowdown_loop_nva3
+xanim,ch_hue_b01_choppermowdown_death_ragdoll_nva3
+
+xanim,ch_hue_b01_choppermowdown_loop_nva4
+xanim,ch_hue_b01_choppermowdown_death_ragdoll_nva4
+
+
+// staircase NVA and civilian scene
+xanim,ch_hue_b01_runningawaystairs_civ1
+xanim,ch_hue_b01_runningawaystairs_civ2
+xanim,ch_hue_b01_runningawaystairs_civ3
+xanim,ch_hue_b01_runningawaystairs_nva
+xanim,ch_hue_b01_runningawaystairs_nva2
+
+// Animation - Beat 1 - MACV civilian Mowdown 
+	
+xanim,ch_quag_b05_nvachasingafterncivs_civ1
+xanim,ch_quag_b05_nvachasingafterncivs_civ2
+xanim,ch_quag_b05_nvachasingafterncivs_civ3
+xanim,ch_quag_b05_nvachasingafterncivs_civ4
+xanim,ch_quag_b05_nvachasingafterncivs_civ5
+xanim,ch_quag_b05_nvachasingafterncivs_civ6
+xanim,ch_quag_b05_nvachasingafterncivs_civ7
+xanim,ch_quag_b05_nvachasingafterncivs_civ8
+xanim,ch_quag_b05_nvachasingafterncivs_nva1
+xanim,ch_quag_b05_nvachasingafterncivs_nva2
+
+
+		// kicking animation
+xanim,ch_quag_b05_beatenup_civ_alert
+xanim,ch_quag_b05_beatenup_civ_idle
+xanim,ch_quag_b05_beatenup_civ_loop
+xanim,ch_quag_b05_beatenup_nva_alert
+xanim,ch_quag_b05_beatenup_nva_loop
+
+	// Animation - Beat 1 - reznov hallway breach  
+xanim,ch_hue_b01_reznov_hallway_breach
+xanim,ch_hue_b01_reznov_hallway_breach_idle
+
+
+// Animation - Beat 1 - Reznov Reveal 
+
+xanim,ch_hue_b01_reznov_reveal_nva
+xanim,ch_hue_b01_reznov_reveal_player
+xanim,ch_hue_b01_reznov_reveal_reznov
+xanim,o_hue_b01_reznov_reveal_dossier 
+xanim,ch_hue_b01_reznov_reveal_deadguy
+
+	// Animation - Beat 2 - street intro troops
+	
+//xanim,ch_hue_b02_badlyinjuredtroops_troop1
+//xanim,ch_hue_b02_badlyinjuredtroops_troop2
+xanim,ch_hue_b02_badlyinjuredtroops_troop3
+//xanim,ch_hue_b02_badlyinjuredtroops_troop4
+xanim,ch_hue_b02_badlyinjuredtroops_troop5
+xanim,ch_hue_b02_badlyinjuredtroops_troop5_idle
+xanim,ch_hue_b02_badlyinjuredtroops_troop7
+xanim,ch_hue_b02_badlyinjuredtroops_troop7_idle
+xanim,ch_hue_b02_badlyinjuredtroops_troop8
+//xanim,ch_hue_b02_badlyinjuredtroops_troop9
+
+//xanim,ch_hue_b02_badlyinjuredtroops_medic1
+xanim,ch_hue_b02_badlyinjuredtroops_medic2
+xanim,ch_hue_b02_badlyinjuredtroops_medic3
+xanim,ch_hue_b02_badlyinjuredtroops_medic3_idle
+xanim,ch_hue_b02_badlyinjuredtroops_medic4
+xanim,ch_hue_b02_badlyinjuredtroops_medic4_idle
+
+		// Animation - Beat 2 - grab radio vignette
+		
+xanim,ch_hue_b02_commandeerradio_a_crosby
+xanim,ch_hue_b02_commandeerradio_a_idle1_crosby
+xanim,ch_hue_b02_commandeerradio_a_idle2_crosby
+xanim,ch_hue_b02_commandeerradio_a_player
+xanim,ch_hue_b02_commandeerradio_a_redshirt
+xanim,ch_hue_b02_commandeerradio_b_crosby
+//xanim,ch_hue_b02_commandeerradio_c_crosby
+xanim,ch_hue_b02_commandeerradio_idle1_crosby
+xanim,ch_hue_b02_commandeerradio_idle2_crosby
+xanim,ch_hue_b02_commandeerradio_idle3_crosby
+xanim,ch_hue_b02_commandeerradio_idle4_crosby
+
+	// Animation - Beat 2 - Alley playboy tankblast
+	
+xanim,ch_hue_b02_tankblast_player_explosion
+xanim,ch_hue_b02_tankblast_player_ohshit
+//xanim,ch_hue_b02_tankblast_redshirt1_coveridle
+xanim,ch_hue_b02_tankblast_redshirt1_explosion
+xanim,ch_hue_b02_tankblast_redshirt1_idle1
+//xanim,ch_hue_b02_tankblast_redshirt1_intoposition
+xanim,ch_hue_b02_tankblast_redshirt1_ohshit
+//xanim,ch_hue_b02_tankblast_redshirt2_coveridle
+xanim,ch_hue_b02_tankblast_redshirt2_death
+xanim,ch_hue_b02_tankblast_redshirt2_idle1
+//xanim,ch_hue_b02_tankblast_redshirt2_intoposition
+xanim,ch_hue_b02_tankblast_woods_explosion
+xanim,ch_hue_b02_tankblast_woods_helpmemason
+xanim,ch_hue_b02_tankblast_woods_idle1
+xanim,ch_hue_b02_tankblast_woods_intoposition
+//xanim,ch_hue_b02_tankblast_woods_ohshit
+xanim,ch_hue_b02_tankblast_woods_pushloop
+xanim,v_hue_b02_tankblast_tank
+//xanim,v_hue_b02_tankblast_car 
+
+
+	// Animation - Beat 2 civilian "brutalized"
+	
+//xanim,ch_hue_b02_killingcivilians1_chair
+//xanim,ch_hue_b02_killingcivilians1_civ1
+//xanim,ch_hue_b02_killingcivilians1_nva1
+
+//xanim,ch_hue_b02_killingcivilians1_chair_idle TEMP COMMENT FAVOR FOR YANICK 
+//xanim,ch_hue_b02_killingcivilians1_civ1_idle TEMP COMMENT FAVOR FOR YANICK 
+//xanim,ch_hue_b02_killingcivilians1_nva1_idle TEMP COMMENT FAVOR FOR YANICK 
+
+	// animation - crosby radio anims
+			
+xanim,ch_hue_b02_commandeerradio_a_idle1_crosby
+xanim,ch_hue_b02_commandeerradio_a_crosby
+xanim,ch_hue_b02_commandeerradio_a_idle2_crosby
+xanim,ch_hue_b02_commandeerradio_a_player
+
+
+		// Animation - Beat 2 - Civ executions
+		
+xanim,ch_hue_b02_killingcivilians2_nva1
+xanim,ch_hue_b02_killingcivilians2_nva2
+xanim,ch_hue_b02_killingcivilians2_civ1
+xanim,ch_hue_b02_killingcivilians2_civ2
+xanim,ch_hue_b02_killingcivilians2_civ3
+xanim,ch_hue_b02_killingcivilians2_civ4 
+
+		// Animation - Beat 2 - Crushed by tank
+		
+//xanim,ch_hue_b02_crushedbytank_nva1
+//xanim,ch_hue_b02_crushedbytank_nva2
+
+		// Animation - Beat 2 - Alley civ anims  
+		
+xanim,ch_hue_b02_mourndead_civ1
+xanim,ch_hue_b02_mourndead_civ2
+
+
+		// Animation - Beat 2 - Destroy AA gun plant
+xanim,int_huecity_aa_building_c4_plant
+
+
+	// Animation - Beat 3 - Defend
+xanim,ai_spawning_radio_crouched
+
+	// Animation - Beat 3 - Wounded onto chopper
+	
+xanim,ch_hue_b02_loading_wounded_b_troop1
+xanim,ch_hue_b02_loading_wounded_b_troop2
+xanim,ch_hue_b02_loading_wounded_b_troop3
+xanim,ch_hue_b02_loading_wounded_idle1_troop1
+xanim,ch_hue_b02_loading_wounded_idle1_troop2
+xanim,ch_hue_b02_loading_wounded_idle1_troop3
+xanim,ch_hue_b02_loading_wounded_idle2_troop1
+xanim,ch_hue_b02_loading_wounded_idle2_troop2
+xanim,ch_hue_b02_loading_wounded_idle2_troop3
+
+	// Animation - Beat 3 - mortar spotters
+xanim,ch_hue_b02_mortar_spotters_a
+xanim,ch_hue_b02_mortar_spotters_b
+xanim,ch_hue_b02_mortar_spotters_c
+
+	// Animation - Beat 3 - nva on roof shooting at passing choppers
+xanim,ch_hue_b02_nva_shoot_at_heli_a
+//xanim,ch_hue_b02_nva_shoot_at_heli_b
+
+	// Animation - Beat 3 - boat jump
+xanim,ch_hue_b02_jumponboat_bowman
+xanim,ch_hue_b02_jumponboat_player
+xanim,ch_hue_b02_jumponboat_reznov
+xanim,ch_hue_b02_jumponboat_woods
+xanim,v_hue_b02_jumponboat_boat 
+
+
+//   COMMON STUFF  
+
+ignore,code_post_gfx
+ignore,common
+include,common_door_breach
+include,common_civilians
+
+//   CHARACTERS!!  
+
+character,c_usa_jungmar_tanker
+character,c_usa_jungmar_assault
+character,c_vtn_nva1
+character,c_vtn_nva2
+character,c_vtn_nva3
+
+
+//   EFFECTS!! 
+include,hue_city_fx
+
+	// FX - Scripted FX
+	
+	
+	// not sure if I need these or if they are included elsewhere
+// fx,weapon/grenade/fx_smoke_willy_pete 
+
+
+	// these were temp and should be replaced post demo
+
+
+fx,maps/sandbox_modules/module_2/fx_mod2_hand_radio_light
+fx,explosions/fx_default_explosion
+fx,weapon/napalm/fx_napalm_drop_bombs_only
+fx,maps/quagmire/fx_quag_glass_rappel
+fx,trail/fx_geotrail_jet_contrail
+fx,vehicle/props/fx_huey_main_blade_full
+fx,vehicle/vfire/fx_vsmoke_huey_trail
+fx,maps/hue_city/fx_exp_hue_huey
+fx,misc/fx_heli_ui_airstrike_grn
+fx,misc/fx_heli_ui_airstrike_red
+fx,misc/fx_heli_ui_airstrike_yellow
+fx,destructibles/fx_dest_door
+fx,vehicle/light/fx_huey_spotlight
+fx,vehicle/light/fx_huey_spotlight_target
+fx,weapon/napalm/fx_napalm_drop_dist_sp
+fx,maps/hue_city/fx_impact_hue_huey
+fx,maps/hue_city/fx_huey_minigun_strafe_single 
+fx,maps/hue_city/fx_tank1_top_trail
+fx,weapon/claymore/fx_claymore_laser
+
+// Adding flamethrower effects for molotove throw, We might not need all these 
+fx,misc/fx_fire_manager1
+fx,misc/fx_fire_manager2
+fx,misc/fx_fire_manager3
+fx,misc/fx_fire_manager4
+fx,misc/fx_fire_manager5
+fx,misc/fx_fire_manager6
+fx,misc/fx_fire_manager7
+fx,misc/fx_fire_manager8
+fx,misc/fx_fire_manager9
+fx,misc/fx_fire_manager10
+fx,weapon/molotov/fx_molotov_burn_trail2
+fx,weapon/molotov/fx_molotov_wick
+// fx,misc/fx_fire_fthrow_vert_short
+// fx,destructibles/fx_dest_fire_trail_sm
+// fx,destructibles/fx_dest_fire_trail_med
+
+fx,weapon/claymore/fx_claymore_laser
+fx,misc/fx_fire_manager1_2sec
+fx,misc/fx_fire_manager2_2sec
+fx,misc/fx_fire_manager3_2sec
+// fx,explosions/fx_exp_bomb_huge
+// fx,env/smoke/fx_smk_column_xlg_blk
+fx,weapon/napalm/fx_napalm_streak_geotrail_lod1
+fx,impacts/fx_water_hit_lg
+
+// fx,env/electrical/fx_elec_burst_heavy_os_int // in hue_city_fx.csv
+
+
+// FX -   FXANIMS
+rawfile,animtrees/fxanim_props.atr
+xanim,fxanim_quag_rappelcrash01_anim
+xanim,fxanim_quag_rappelfix_anim
+xanim,fxanim_quag_rappelcrash02_anim
+//xanim,fxanim_gp_distant_rappel_anim
+xanim,fxanim_gp_wirespark_long_anim
+xanim,fxanim_gp_wirespark_med_anim
+xanim,fxanim_hue_benches01_anim
+xanim,fxanim_gp_blind_pulse01_full_anim
+xanim,fxanim_gp_blind_pulse01_short_anim
+xanim,fxanim_gp_blind_pulse01_torn_anim
+xanim,fxanim_gp_blind_pulse01_open_anim
+xanim,fxanim_hue_wallshoot_anim
+xanim,fxanim_hue_tile_broke_01_anim
+xanim,fxanim_hue_tile_broke_03_anim
+xanim,fxanim_hue_tile_broke_04_anim
+xanim,fxanim_hue_tile_whole_01_anim
+xanim,fxanim_hue_tile_whole_02_anim
+xanim,fxanim_gp_ceiling_light_swing_anim
+xanim,fxanim_hue_ceiling_light_fall_anim
+xanim,fxanim_hue_tank01_entrance_anim
+xanim,fxanim_hue_tank01_death_anim
+xanim,fxanim_hue_sign_leyna_anim
+xanim,fxanim_hue_tank01_explode_anim
+xanim,fxanim_hue_hatchback_anim
+xanim,fxanim_hue_tank01_shake_anim
+xanim,fxanim_hue_door_office_anim
+xanim,fxanim_hue_balcony_anim
+xanim,fxanim_gp_streamer01_anim
+xanim,fxanim_gp_streamer02_anim
+xanim,fxanim_hue_aagun_bldg_anim
+xanim,fxanim_hue_aagun_anim
+xanim,fxanim_hue_gate_kick_anim
+xanim,fxanim_hue_gate_swing_anim
+xanim,fxanim_hue_tank01_turret_anim
+
+//		rumble
+
+rawfile,rumble/artillery_rumble_h.rmb
+rawfile,rumble/melee_garrote_h.rmb
+rawfile,rumble/assault_fire_h.rmb
+rawfile,rumble/barrel_explosion_h.rmb
+rawfile,rumble/damage_heavy_h.rmb
+rawfile,rumble/damage_light_h.rmb
+rawfile,rumble/defaultweapon_fire_h.rmb
+rawfile,rumble/explosion_generic_h.rmb
+rawfile,rumble/grenade_rumble_h.rmb
+rawfile,rumble/heavygun_fire_h.rmb
+rawfile,rumble/pistol_fire_h.rmb
+
+rawfile,rumble/artillery_rumble_l.rmb
+rawfile,rumble/melee_garrote_l.rmb
+rawfile,rumble/assault_fire_l.rmb
+rawfile,rumble/barrel_explosion_l.rmb
+rawfile,rumble/damage_heavy_l.rmb
+rawfile,rumble/damage_light_l.rmb
+rawfile,rumble/defaultweapon_fire_l.rmb
+rawfile,rumble/explosion_generic_l.rmb
+rawfile,rumble/grenade_rumble_l.rmb
+rawfile,rumble/heavygun_fire_l.rmb
+rawfile,rumble/pistol_fire_l.rmb
+
+//   traversals
+		
+include,traverse_jump_across_72
+include,traverse_jump_down_40
+include,traverse_jump_down_56
+include,traverse_jump_down_96
+include,traverse_jump_down_36
+include,traverse_mantle_over_40
+include,traverse_mantle_over_36
+include,traverse_mantle_on_40
+include,traverse_jump_across_120
+include,traverse_slide_across_car
+include,traverse_mantle_window_36
+
+//    MODELS !!!
+xmodel,viewmodel_usa_jungmar_player
+xmodel,viewmodel_usa_jungmar_arms
+xmodel,t5_knife_sog
+xmodel,tag_origin
+// xmodel,rope
+xmodel,t5_veh_jet_f4_gearup_lowres 
+xmodel,p_glo_metal_chair
+xmodel,viewmodel_usa_jungmar_player_fullbody
+// xmodel,t5_knife_animate 
+xmodel,anim_jun_carabiner
+xmodel,t5_weapon_spas_world
+xmodel,p_glo_plainchair
+xmodel,t5_weapon_radio_viewmodel
+xmodel,fxanim_hue_aagun_mod
+xmodel,fxanim_creek_junk1_mod
+xmodel,weapon_c4_obj
+xmodel,weapon_c4
+xmodel,weapon_claymore
+xmodel,weapon_claymore_objective
+
+xmodel,mortar_shell
+xmodel,p_pent_manila_folder_1
+
+xmodel,t5_veh_boat_pbr_sugarfree
+//xmodel,t5_veh_boat_pbr_set01
+//xmodel,t5_veh_boat_pbr_revision
+
+//   SCRIPTS!!! 
+
+rawfile,maps/hue_city.gsc
+rawfile,maps/hue_city_event1.gsc
+//rawfile,maps/hue_city_event1_post_skydemon.gsc
+rawfile,maps/hue_city_event1_reznov.gsc
+rawfile,maps/hue_city_event2.gsc
+rawfile,maps/hue_city_event3.gsc
+rawfile,maps/createart/hue_city_art.gsc
+rawfile,maps/hue_city_anim.gsc
+rawfile,maps/hue_city_amb.gsc
+rawfile,maps/hue_city_ai_spawnfuncs.gsc
+rawfile,maps/flamer_util.gsc
+rawfile,maps/_clientfaceanim.gsc
+rawfile,maps/_color_manager.gsc
+rawfile,maps/_chopper_support.gsc
+
+
+
+
+
+
+
+// fx scripts
+rawfile,maps/hue_city_fx.gsc
+rawfile,maps/createfx/hue_city_fx.gsc
+	
+	// clientscripts
+rawfile,clientscripts/hue_city_fx.csc	 
+rawfile,clientscripts/createfx/hue_city_fx.csc	
+rawfile,clientscripts/hue_city.csc		
+rawfile,clientscripts/hue_city_amb.csc
+rawfile,clientscripts/_clientfaceanim.csc
+rawfile,maps/createart/hue_city_art.gsc
+
+
+// other 
+
+localize,hue_city
+rawfile,animtrees/generic_human.atr
+rawfile,animtrees/animated_props.atr
+rawfile,exposure/hue_city.xpo
+rawfile,shock/explosion.shock
+rawfile,shock/tankblast.shock
+
+// SOUNDS!!
+sound,spl_hue_city
+
+// TRAVERSALS!!  
+include,traverse_mantle_over_40
+include,traverse_mantle_on_52
+include,traverse_jump_across_120
+include,traverse_stairs_up_8x12
+include,traverse_stairs_down_8x12
+
+//VEHICLES!! 
+include,hue_city_vehicles
+
+
+//VISION!  
+rawfile,vision/hue_city.vision
+rawfile,vision/macv_stairwell.vision
+rawfile,vision/macv_main.vision
+rawfile,vision/hue_city_streets.vision
+rawfile,sun/hue_city.sun
+
+// WEAPONS!!!
+ignore,default_weapons
+weapon,sp/rpk_sp
+weapon,sp/rpg_player_sp
+weapon,sp/commando_sp
+weapon,sp/m1911_sp
+weapon,sp/frag_grenade_sp
+include,heavy_machine_gunners
+weapon,sp/spas_sp
+weapon,sp/rocket_barrage_sp
+weapon,sp/spas_sog_sp
+weapon,sp/spas_db_sp
+weapon,sp/molotov_sp
+weapon,sp/napalmblob_sp
+weapon,sp/satchel_charge_sp
+weapon,sp/claymore_sp
+weapon,sp/fnfal_sp
+
+rawfile,maps/_mgturret.gsc
+rawfile,rumble/heavygun_fire_h.rmb
+rawfile,rumble/heavygun_fire_l.rmb
+xmodel,t5_weapon_m60e3_MG
+weapon,sp/rpk_bipod_stand
+
+
+
+
+
+// Animations  
+
+//xanim,uaz_driver_idle_drive
+//xanim,uaz_passenger_idle_drive
+//xanim,uaz_passenger_idle_drive
+//xanim,uaz_passenger_idle_drive
+
+include,common_mg42
+
+
+// REZNOV ROOM BREACH ANIMS
+//xanim,ch_quag_b06_doorbreach_dead_guy_1
+//xanim,ch_quag_b06_doorbreach_guy1_wave
+//xanim,ch_quag_b06_doorbreach_guy2
+xanim,ch_quag_b06_doorbreach_guy1
+
+
+
+
+// cinematicmaxsize,1024,1024,    let me know when we need this again!
+// rawfile,bik/quagmire_screens.bik 
+
+
+//CLEAN UP, TESTMAP CSV 
+material,black
+// material,ac130_overlay_grain
+// material,ac130_overlay_105mm
+// xmodel,test_sphere_silver
+
+
+include,common_player_us_vietnam
+
+//  ************ WATER STUFF  ************
+fx,bio/player/fx_footstep_water
+//fx,bio/player/fx_player_water_waist_ripple
+//fx,bio/player/fx_player_water_knee_ripple
+// ******** END WATER STUFF ************
+
+xmodel,tag_origin
+xmodel,c_usa_jungmar_fieldagent_fb
+
+
+
+// ---------------------------------------------------------------------------------
+// ---- SUMEET SECTION ----
+// ---------------------------------------------------------------------------------
+
+// including this csv as the game is looking for dead truck
+//include, vehicle_truck_gaz63_quad50
+
+
+// new interior for macv hue
+fx,vehicle/light/fx_huey_interior_emergency_light 
+
+// neck stab
+fx,maps/hue_city/fx_vc_neck_stab
+
+// spotlight effect for hue in MACV
+fx,maps/hue_city/fx_huey_spotlight_macv
+
+// fx for guys killed by spas_db_sp
+fx,env/fire/fx_fire_player_torso_dragons	
+
+// fx for guys in heli mowdown room
+fx,maps/hue_city/fx_mowdown_blood_geyser 
+fx,maps/hue_city/fx_mowdown_blood_multihit 
+fx,trail/fx_trail_blood_streak
+
+// fx for guys killed by woods in rappel room
+fx,impacts/fx_flesh_hit_body_fatal_exit
+
+
+//WEAPON ATTACHMENT WEAPONS
+weapon,sp/commando_acog_sp
+weapon,sp/commando_dualclip_sp
+weapon,sp/commando_gl_sp
+weapon,sp/gl_commando_sp
+weapon,sp/commando_acog_dualclip_sp
+weapon,sp/commando_gl_dualclip_sp
+weapon,sp/commando_acog_gl_dualclip_sp
+	
+	
+weapon,sp/fnfal_acog_sp
+weapon,sp/fnfal_acog_extclip_sp
+weapon,sp/fnfal_acog_gl_extclip_sp
+weapon,sp/fnfal_acog_dualclip_sp
+weapon,sp/fnfal_acog_gl_dualclip_sp	
+weapon,sp/fnfal_gl_sp
+weapon,sp/gl_fnfal_sp
+weapon,sp/fnfal_gl_extclip_sp
+weapon,sp/fnfal_gl_dualclip_sp
+weapon,sp/fnfal_acog_gl_sp
+	
+weapon,sp/rpk_acog_sp
+weapon,sp/rpk_extclip_sp
+weapon,sp/rpk_acog_extclip_sp
+
+material,cinematic

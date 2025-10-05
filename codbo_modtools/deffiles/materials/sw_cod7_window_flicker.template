@@ -1,0 +1,30 @@
+#if "@blendFunc@" == "Blend" || ("@blendFunc@" == "Replace" && "@alphaTest@" != "Always")
+techniqueSet( "sw_cod7_window_flicker" ); 
+#else
+techniqueSet( "sw_cod7_window_flicker_noalpha" ); 
+#endif
+
+#include "commonsetup.template" 
+
+cgfxTextureTableRefImage
+{
+	"Room_Flicker_MaskSampler" = streamable map( "tile both", "mip (1x trilinear)", "texture_assets\shaderworks\window_flicker_mask.tga", 0 ) "<auto compression>" : "colorMap"; 
+	"Flicker_MapSampler" = streamable map( "tile both", "mip (1x trilinear)", "", 0 ) "<auto compression>" : "colorMap"; 
+	"Room_MapSampler" = streamable map( "no tile", "mip most expensive (4x trilinear)", "", 0 ) "<auto compression>" : "colorMap"; 
+	"Normal_MapSampler" = streamable normalMap( "tile both", "mip (1x trilinear)", "texture_assets\shaderworks\window_fake_int_01_n.tga", 0 ) "<auto compression>" : "normalMap"; 
+	"Diffuse_MapSampler" = streamable map( "tile both", "mip (1x trilinear)", "texture_assets\shaderworks\window_fake_int_01_c.tga", 0 ) "<auto compression>" : "colorMap"; 
+}
+
+cgfxConstantTable
+{
+	"EnvBlurLevel" = float4( 0, 0, 0, 0 );
+	"Room_Scale" = float4( 1, 1, 1, 1 );
+	"Flicker_Rotation" = float4( 0, 0, 0, 0 );
+	"Flicker_Speed" = float4( 0.5, 0, 0, 0 );
+	"Diming_Factor" = float4( 0.67, 0, 0, 0 );
+	"Brightness" = float4( 5, 0, 0, 0 );
+	"Lod_Bias" = float4( 2.95, 0, 0, 0 );
+	"Window_Tint" = float4( 1.45306, 1.77811, 1.79, 1 );
+}
+allocReflectionProbe();
+

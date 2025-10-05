@@ -1,0 +1,18 @@
+{
+	stateMap "default2d";
+
+	vertexShader 3.0 "pimp_shader_trivial_c21e6a57.hlsl"
+	{
+	}
+
+	pixelShader 3.0 "pimp_shader_trivial_c21e6a57.hlsl" 
+	{
+		colorMapSampler = sampler.feedback;
+		skySampler = sampler.sky;
+	}
+
+	vertex.position = code.position;
+	vertex.texcoord[0] = code.texcoord[0];
+
+}
+

@@ -1,0 +1,172 @@
+ignore,code_post_gfx
+ignore,common
+//ignore,dev
+
+// Dept. zone_source
+
+include,vorkuta_fx
+include,vorkuta_animation
+include,vorkuta_vehicles
+include,vorkuta_characters
+include,vorkuta_lighting
+include,vorkuta_weapons
+include,common_player_rus_prisoner
+include,motorcycle_ride
+include,vehicle_motorcycle
+
+menufile,ui/hud_vorkuta.txt
+
+//AI includes
+include,rusher
+include,prisoners
+include,sergei
+include,juggernaut
+include,ai_rappel
+
+// Level zone_source
+col_map_sp,maps/vorkuta.d3dbsp
+gfx_map,maps/vorkuta.d3dbsp
+
+// skybox
+xmodel,skybox_sp_vorkuta
+rawfile,sun/vorkuta.sun
+
+// Scripts
+rawfile,maps/vorkuta.gsc
+rawfile,maps/vorkuta_mine.gsc
+rawfile,maps/vorkuta_surface.gsc
+rawfile,maps/vorkuta_armory.gsc
+rawfile,maps/vorkuta_minigun_alley.gsc
+rawfile,maps/vorkuta_event7.gsc
+
+rawfile,maps/vorkuta_util.gsc
+rawfile,maps/vorkuta_slingshot_util.gsc
+rawfile,maps/vorkuta_anim.gsc
+rawfile,maps/vorkuta_amb.gsc
+rawfile,maps/vorkuta_fx.gsc
+rawfile,maps/createfx/vorkuta_fx.gsc
+
+rawfile,clientscripts/vorkuta.csc
+rawfile,clientscripts/vorkuta_amb.csc
+rawfile,clientscripts/vorkuta_fx.csc
+rawfile,clientscripts/createfx/vorkuta_fx.csc
+
+//traversals
+include,traverse_stairs_up_8x12
+include,traverse_stairs_down_8x12
+include,traverse_stairs_up_8x16
+include,traverse_stairs_down_8x16
+include,traverse_mantle_over_36
+include,traverse_mantle_over_96
+include,traverse_mantle_over_40
+include,traverse_mantle_on_56
+include,traverse_mantle_on_48
+include,traverse_mantle_window_dive_36
+include,traverse_mantle_window_36
+include,traverse_mantle_over_40_down_80
+include,traverse_jump_down_96
+include,traverse_jump_down_36
+
+//rope for repel guy
+xmodel,rope
+
+//shellshocks
+rawfile,shock/explosion.shock
+rawfile,shock/vorkuta_gas.shock
+
+localize,vorkuta
+
+//sound,DEFAULT_SP
+sound,spl_vorkuta
+
+// FX for bloody death
+fx,impacts/flesh_hit_body_fatal_lg_exit
+fx,impacts/flesh_hit_body_fatal_exit
+fx,impacts/flesh_hit_extreme
+
+//lighting stuff
+rawfile,exposure/vorkuta.xpo
+rawfile,maps/createart/vorkuta_art.gsc
+rawfile,vision/vorkuta_mines.vision
+rawfile,vision/vorkuta_inclinator.vision
+rawfile,vision/vorkuta_exterior.vision
+rawfile,vision/vorkuta_interior.vision
+rawfile,vision/vorkuta_slingshot.vision
+rawfile,vision/vorkuta_warehouse.vision
+rawfile,vision/vorkuta_bike.vision
+
+// FXANIMS,
+xanim,fxanim_gp_chain_650_anim
+xanim,fxanim_gp_chain01_anim
+xanim,fxanim_gp_chain02_anim
+xanim,fxanim_gp_chain03_anim
+xanim,fxanim_gp_tarp1_anim
+xanim,fxanim_vorkuta_towers_anim
+xanim,fxanim_vorkuta_heli_crash_anim
+xanim,fxanim_vorkuta_elevator_wires_loop_anim
+xanim,fxanim_vorkuta_elevator_wires_stop_anim
+xanim,fxanim_vorkuta_doorblast_anim
+xanim,fxanim_vorkuta_bridge01_anim
+xanim,fxanim_vorkuta_bridge02_anim
+xanim,fxanim_vorkuta_armory_anim
+xanim,fxanim_vorkuta_canister_anim
+xanim,fxanim_vorkuta_gate_locked_anim
+xanim,fxanim_gp_lantern_hang_on_anim
+xanim,fxanim_vorkuta_bike_tarp_anim
+
+//in game movies
+material,cinematic
+
+// drones
+character,c_rus_prisoner_drone
+
+// dirt in your face
+rawfile,clientscripts/_driving_fx.csc
+material,fullscreen_dirt_bottom
+material,fullscreen_dirt_bottom_b
+material,fullscreen_dirt_left
+material,fullscreen_dirt_right
+
+// intro fight
+xmodel,p_rus_vork_single_rock
+xmodel,p_rus_vork_pickaxe_sergei
+xmodel,anim_rus_inclinator_keys
+
+// slingshot
+xmodel,anim_rus_vork_slingshot_far
+xmodel,anim_rus_vork_slingshot_ammo
+fx,misc/fx_fire_manager1
+fx,misc/fx_fire_manager2
+fx,misc/fx_fire_manager3
+fx,misc/fx_fire_manager4
+fx,misc/fx_fire_manager5
+fx,misc/fx_fire_manager6
+fx,misc/fx_fire_manager7
+fx,misc/fx_fire_manager8
+fx,misc/fx_fire_manager9
+fx,misc/fx_fire_manager10
+
+// memory per glass, extra glass memory (KB)
+glassparams,64,0
+
+//LIGHTING
+xmodel,undr_wall_light_red
+xmodel,undr_wall_light_on_red_rotate
+
+//torch
+xmodel,anim_rus_torch_backpack
+xmodel,anim_rus_torch_backpack_stowed
+xmodel,anim_rus_torch
+
+// initial texture load order list (keep at end)
+texturelist,texturelist/vorkuta.csv
+
+//lights
+xmodel,p_rus_rb_lab_warning_light_01
+xmodel,p_rus_rb_lab_warning_light_01_off
+xmodel,p_rus_rb_lab_light_core_on
+xmodel,p_rus_rb_lab_light_core_off
+fx,env/light/fx_light_warning
+
+
+

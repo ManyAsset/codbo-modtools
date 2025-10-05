@@ -1,0 +1,173 @@
+// --------------------------------------
+// ANIMS
+
+// traverse
+include,traverse_jump_down_40
+include,traverse_mantle_on_40
+//include,traverse_stairs_down_8x12
+include,traverse_stairs_down_8x8
+//include,traverse_stairs_up_8x12
+include,traverse_stairs_up_8x8
+
+include,rusher_pistol
+
+// Helicopter Player Anims
+xanim,int_pow_b03_cockpit_hand_down
+xanim,int_pow_b03_cockpit_hand_left
+xanim,int_pow_b03_cockpit_hand_neutral
+xanim,int_pow_b03_cockpit_hand_right
+xanim,int_pow_b03_cockpit_hand_up
+xanim,int_pow_b03_cockpit_handsoff
+
+// Crash
+xanim,ch_pow_b03_cockpit_crash_barnes
+xanim,int_pow_b03_cockpit_crash
+
+// Various scripted crashes
+xanim,ch_under_b01_playerheli_crash_hudson
+xanim,ch_under_b01_Huey_Hudson_loop
+xanim,ch_under_b01_Huey_Hudson_loop_02
+xanim,int_under_b01_playerheli_crash
+xanim,v_under_b01_playerheli_crash_huey
+xanim,v_uwb_b01_weavers_heli_crash
+
+//xanim,int_pow_b03_cockpit_hand_firemissile
+//xanim,int_pow_b03_cockpit_takeoff
+//xanim,int_pow_b03_cockpit_inandup
+
+// rappel
+include,ai_rappel
+
+//xanim,ai_flame_death_h // TEMP
+
+//include,common_mg42
+
+// Helicopter Crashes...from POW
+xanim,v_pow_b03_hind_crash_left1
+xanim,v_pow_b03_hind_crash_left2
+xanim,v_pow_b03_hind_crash_right1
+xanim,v_pow_b03_hind_crash_right2
+xanim,v_pow_b03_hip_crash_left
+xanim,v_pow_b03_hip_crash_right
+
+// Helicopter Crashes...UWB
+xanim,v_uwb_b01_huey_01_hit_by_missle
+xanim,v_uwb_b01_huey_02_hit_by_missle
+xanim,v_under_b02_huey_hit_by_hind
+xanim,v_uwb_b01_huey_crash_spin_left_loop
+xanim,v_uwb_b01_huey_crash_spin_right_loop
+
+// scripted sequences
+// xanim,ch_under_b06_hudson_climbup
+// xanim,ch_under_b06_hudson_startloop
+// xanim,ch_under_b06_hudson_swim2hatch
+// xanim,ch_under_b06_hudson_treadwater
+// xanim,ch_under_b07_hudson_ladderclimb
+
+//	UMBILICAL ROOM
+xanim,ch_under_b04_numbers_station_below_hudson
+xanim,ch_under_b04_numbers_station_below_redshirt_01
+xanim,ch_under_b04_numbers_station_below_redshirt_02
+xanim,ch_under_b04_numbers_station_below_redshirt_03
+xanim,ch_under_b04_numbers_station_below_redshirt_04
+xanim,ch_under_b04_numbers_station_below_weaver
+
+//	DIVE TO BASE
+xanim,ch_uwb_b04_hudson_dive
+xanim,ch_uwb_b04_player_dive
+xanim,ch_uwb_b04_solder1_dive
+xanim,ch_uwb_b04_solder1_treadloop
+xanim,ch_uwb_b04_solder2_dive
+xanim,ch_uwb_b04_solder2_treadloop
+xanim,ch_uwb_b04_solder3_dive
+xanim,ch_uwb_b04_solder3_treadloop
+
+
+//	ENTER BASE
+xanim,int_base_jump_goggles
+xanim,ch_under_b05_moon_pool_door_entry
+xanim,ch_under_b05_moon_pool_door_entry_soldier
+xanim,o_under_b05_moon_pool_door_entry_airlock_door
+
+// BIG FLOOD
+xanim,int_uwb_b06_player_knock_out		// player gets blasted by water
+xanim,ch_uwb_b06_hudson_swim			// Hudson swims over and then leaves
+
+// BROADCAST CENTER
+xanim,ch_under_b07_frantic_engineer_01
+xanim,ch_under_b07_frantic_engineer_02
+xanim,ch_under_b07_frantic_engineer_03
+
+// DRAGOVICH FIGHT
+xanim,ai_pow_meatshield_hostage_dead_drop	// temp hudson knockout
+
+// ESCAPE
+xanim,ch_under_b08_hudson_stumbling
+
+xanim,int_uwb_b08_react_explosion					// player looks down at the console, but as he’s about to interact… explosion knocks him back and he ends up hanging off the edge.
+xanim,int_uwb_b08_finest_agent_player				// players animation; just him idling and looking at dragovich as he’s walking over giving his speech
+xanim,ch_uwb_b08_finest_agent_drago					// Dragovich’s animation; pairs with players animation
+
+xanim,int_uwb_b08_drago_fight_player_enter			// start of the fight sequence
+xanim,ch_uwb_b08_drago_fight_dragovich_enter		// start of the fight sequence for drago
+xanim,ch_uwb_b08_drago_fight_hudson					// Hudson comes to players aid and shoots drago
+
+xanim,int_uwb_b08_drago_fight_player_grab_pause		// loop for player prompt to grab drago
+xanim,ch_uwb_b08_drago_fight_dragovich_grab_pause	// loop for drago for grab prompt
+
+xanim,int_uwb_b08_drago_fight_player_fail_grab		// fail animation for when the player doesn’t hit prompt in time
+xanim,ch_uwb_b08_drago_fight_dragovich_kill_player	// drago turns and kills player if he doesn’t hit prompt in time
+
+xanim,int_uwb_b08_drago_fight_player_fall			// success animation: player grabs drago and they fall together. Player lands on him and slams him around.. punches him, etc then waits for prompt
+xanim,ch_uwb_b08_drago_fight_dragovich_fall			// success animation for dragovich when player grabs. 
+
+xanim,int_uwb_b08_drago_fight_player_choke_pause	// player loop, waiting for player to hit the shoulder buttons to kill drago
+xanim,ch_uwb_b08_drago_fight_dragovich_choke_pause	// drago loop, waiting for player to choke him
+
+xanim,int_uwb_b08_drago_fight_player_kill_drago		// final kill animation: drowns drago then gets up and gives control back to player
+xanim,ch_uwb_b08_drago_fight_dragovich_death		// he dead.
+
+// TOW moment
+xanim,ch_under_b02_portable_tow_soldier
+
+// Finale
+xanim,int_uwb_b09_hero_boat_player
+xanim,int_uwb_b09_player_ascends_swimCycle
+xanim,ch_uwb_b09_diver_entries_diver1
+xanim,ch_uwb_b09_diver_entries_diver2
+xanim,ch_uwb_b09_diver_entries_diver3
+xanim,ch_uwb_b09_diver_entries_diver4
+xanim,ch_uwb_b09_diver_entries_diver5
+xanim,ch_uwb_b09_diver_entries_diver6
+xanim,ch_uwb_b09_hero_boat_redshirt1
+xanim,ch_uwb_b09_hero_boat_redshirt2
+xanim,ch_uwb_b09_hero_boat_weaver		
+xanim,ch_uwb_b09_hero_boat_hudson
+xanim,ch_uwb_b09_hudson_surfaces_swimCycle
+xanim,ch_uwb_b09_boat_activity_gatherRope_loop
+xanim,ch_uwb_b09_boat_activity_guy1_loop1
+xanim,ch_uwb_b09_boat_activity_guy1_loop2
+xanim,ch_uwb_b09_boat_activity_guy1_loop3
+xanim,ch_uwb_b09_boat_activity_guy1_loop4
+xanim,ch_uwb_b09_boat_activity_guy2_loop1
+xanim,ch_uwb_b09_boat_activity_guy2_loop2
+xanim,ch_uwb_b09_boat_activity_guy2_loop3
+xanim,ch_uwb_b09_boat_activity_megaphone_loop1
+xanim,ch_uwb_b09_boat_activity_megaphone_loop2
+xanim,ch_uwb_b09_boat_activity_megaphone_loop3
+//xanim,ch_uwb_b09_boat_activity_swabDeck_loop
+xanim,ch_uwb_b09_pointing_guns_redshirt1_loop
+xanim,ch_uwb_b09_pointing_guns_redshirt2_loop
+xanim,ch_uwb_b09_pointing_guns_redshirt3_loop
+
+xanim,v_under_b09_F4_flyby_jet01
+xanim,v_under_b09_F4_flyby_jet02
+xanim,v_under_b09_F4_flyby_jet03
+xanim,v_under_b09_F4_flyby_jet04
+xanim,v_under_b09_F4_flyby_jet05
+xanim,v_under_b09_F4_flyby_jet06
+
+xanim,v_under_b01_playerheli_crash_huey_rotor_hub
+xanim,v_under_b01_playerheli_crash_huey_rotor_blade
+xanim,v_under_b01_playerheli_crash_huey_door
+

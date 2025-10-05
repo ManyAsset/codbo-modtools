@@ -1,0 +1,11 @@
+
+#if @objectiveColorsEnabled@ || "@materialType@" == "objective"
+
+	#define OBJ_COLORS_SUFFIX "_objclr"
+ 	#define OBJ_COLORS_CONSTANTS  "colorObjMin" = float4( @,colorObjMin@ ); "colorObjMinBaseBlend" = float1( @colorObjMinBaseBlend@ ); "colorObjMax" = float4( @,colorObjMax@ ); "colorObjMaxBaseBlend" = float1( @colorObjMaxBaseBlend@ ); 
+
+#else
+	#define OBJ_COLORS_SUFFIX ""
+	#define OBJ_COLORS_CONSTANTS
+#endif
+

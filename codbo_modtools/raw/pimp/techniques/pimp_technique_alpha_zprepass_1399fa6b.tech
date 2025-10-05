@@ -1,0 +1,17 @@
+{
+	stateMap "zprepass";
+
+	vertexShader 3.0 "pimp_shader_vertcolorsimple_5423b81.hlsl"
+	{
+	}
+
+	pixelShader 3.0 "pimp_shader_vertcolorsimple_a2327e9e.hlsl" 
+	{
+		colorMapSampler = material.colorMap;
+	}
+
+	vertex.position = code.position;
+	vertex.texcoord[0] = code.texcoord[0];
+
+}
+

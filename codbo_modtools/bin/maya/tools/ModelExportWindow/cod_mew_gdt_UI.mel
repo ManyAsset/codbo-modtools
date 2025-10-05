@@ -1,0 +1,805 @@
+{
+   global int $COD_MEW_MODELEXPORT_GROUP[];
+
+   global string $GAME_PROJECT_DIR;
+   global string $GAME_MODELEXPORT_DIR;
+
+   // UI proc called from Right Click menus to set values for an intField
+   global proc COD_MEW_setLodDistValue(string $control, int $value) {
+      if (`window -ex codMewCreateGdtWindow` || `window -ex codMewUpdateGdtWindow`) {
+         intField -e -v $value $control;
+      }
+   }
+
+   // Takes an absolute path and chops the game model_export directory from the beginning
+   global proc string trimModelExportDirFromPath(string $path) {
+      return substitute($GAME_MODELEXPORT_DIR, $path, "");
+   }
+
+   // Get a set of up to four export file names based on the provided group index
+   // The IWGlobalNode model export indexes are read from the 
+   // $COD_MEW_MODELEXPORT_GROUP global variable which holds the grouping information
+   // The file extension ".XMODEL_EXPORT" is added to each filename
+   proc getModelExportFiles(int $groupIndex, string $exportFiles[]) {
+      // Arrays are passed by reference automatically in MEL, so we start by clearing the array
+      clear($exportFiles);
+      // This array will store the indexes we're going to get files for
+      // The maximum size should be 4 since there are 4 LODs
+      int $indexes[];
+      // Get the indexes to be read off the IWGlobalNode
+      // The $exportFiles array will contain up to 4 consecutive indexes after calling this proc
+      sakGetIntArrayIndexesFromValue $COD_MEW_MODELEXPORT_GROUP $groupIndex $indexes;
+
+      // Now we read the filenames from the IWGlobalNode
+      for ($i in $indexes) {
+         string $tmpFileName = trimModelExportDirFromPath(`getAttr ("IWGlobalNode.ModelFileName"+$i)`);
+
+         // Add the file extension if we don't already have it
+         if (`endsWith $tmpFileName ".XMODEL_EXPORT"` == 0) {
+            $tmpFileName = ($tmpFileName + ".XMODEL_EXPORT");
+         }
+
+         // Add the filename to the $exportFiles array
+         $exportFiles[size($exportFiles)] = $tmpFileName;
+      }
+   }
+
+   // This proc will gather the necessary information needed to send to the command which creates
+   // the actual GDT entries
+   // The user is given a popup with the results of the entries created
+   global proc COD_MEW_createGdtEntires(string $listName, string $gdtFile) {
+      // We get our information from these two window so we make sure they exist
+      if (`window -ex codMewCreateGdtWindow` && `window -ex codModelExport_window`) {
+         // Gdt entry names are based on the group names, so we need to make sure we're in
+         // GDT layout mode
+         if (`checkBox -q -v MEWuseLodGrouping_chk` == 0) {
+            return;
+         }
+
+         // Get the names of the selected entries
+         string $selectedEntries[] = `textScrollList -q -si $listName`;
+         // Get the indexes of the selected entries
+         int $selectedEntryIdxs[] = `textScrollList -q -sii $listName`;
+
+         // If nothing is selected tell the user
+         if (size($selectedEntries) == 0) {
+            confirmDialog -t "Select Entry" -m "Select at least one entry to create" -b "OK";
+            // Then quit
+            return;
+         }
+
+         // This string will tell the user which entries were created
+         string $reportStr = "";
+         // The four LOD distance values
+         int $lodDistances[];
+         // The export file paths
+         string $files[];
+         // Get the collision LOD from the UI
+         string $collision = strip(`optionMenu -q -v codMewCreateGdtCollision_opt`);
+         // Get the model type from the UI
+         string $type = strip(`optionMenu -q -v codMewCreateGdtType_opt`);
+         // The GDT entry names
+         string $entryNames[];
+
+         // Read the LOD distance values from the UI
+         $lodDistances[0] = `intField -q -v codMewCreateGdtHighDist_int`;
+         $lodDistances[1] = `intField -q -v codMewCreateGdtMedDist_int`;
+         $lodDistances[2] = `intField -q -v codMewCreateGdtLowDist_int`;
+         $lodDistances[3] = `intField -q -v codMewCreateGdtLowestDist_int`;
+
+         // Make sure the GDT if for real
+         if (`filetest -r $gdtFile` == 0) {
+            error "Gdt file does not exist.";
+         }
+
+         // See if the GDT file is writable
+         if (`filetest -w $gdtFile` == 0) {
+            // If it is not then offer to open for edit in P4
+            if (`confirmDialog -t "Read Only File"
+               -m "The Gdt file is Read Only.\nDo you want to Open for Edit in P4?"
+               -b "Yes" -b "No" -db "Yes" -cb "No" -ds "No"` == "Yes") {
+               // Open for edit
+               system("p4 edit \"" + $gdtFile + "\"");
+            } else {
+               return;
+            }
+         }
+
+         // Get the name of the GDT entry
+         // The $entryNames will be the entire file path, so we get the basename
+         for ($j=0; $j<size($selectedEntries); $j++) {
+            $entryNames[$j] = basenameEx( $selectedEntries[$j] );
+         }
+
+         // Find entires that already exist and put them into an array
+         string $skip[] = `COD_MEW_checkForGdtEntries $entryNames`;
+
+         // If the user cancels while the gdts are being scanned for dups, a cancel string
+         // is returned as the first item in the skip array
+         if (size($skip) > 0) {
+            // If we find that cancel string we quit
+            if ($skip[0] == "GDT CHECK CANCELED BY USER") {
+               return;
+            }
+         }
+
+         // Make a message to give the user in the event that gdt entries already exist
+         string $skipMessage = "The following selected entries already exist\n\n    ";
+         // Add the names of the existing entries to the message
+         $skipMessage += stringArrayToString($skip, "\n    ");
+         $skipMessage += "\n\nThey can be located using Find Selected Entry in the GDT menu";
+         $skipMessage += "\nDo you want to skip them or cancel?";
+
+         // Report to the user the entries that already exist and give them the option to cancel
+         // Otherwise the existing entries will be skipped to avoid duplicates
+         if (size($skip) > 0) {
+            if (`confirmDialog -t "Existing Entries"
+               -m $skipMessage
+               -b "Skip" -b "Cancel" -db "Skip" -cb "Cancel" -ds "Cancel"` == "Cancel") {
+               // If the user cancels, then quit
+               return;
+            }
+         }
+
+         for ($i=0; $i<size($selectedEntries); $i++) {
+            // Proceed to creating the entry only if the entry name is not found if the list of names to skip
+            if (`stringArrayCount $entryNames[$i] $skip` == 0) {
+               // Get the file names to use for the xmodel from the IWGlobalNode
+               getModelExportFiles $selectedEntryIdxs[$i] $files;
+
+               // Copy the LOD distances array because we'll have to modify the contents if there are
+               // Missing export files
+               int $lodArrCopy[] = $lodDistances;
+               string $colCopy = $collision;
+
+               // If an export file is not provided set the LOD distance to zero
+               if (size($files) < 4) {
+                  // Set the last available export file to the farthest LOD distance
+                  $lodArrCopy[size($files)-1] = $lodDistances[3];
+
+                  for ($j=size($files); $j<5; $j++) {
+                     // Set missing file LOD distances to zero
+                     $lodArrCopy[$j] = 0;
+                  }
+
+                  // Set the collision LOD to the last available file
+                  if (size($files) == 3) {
+                     if ($collision == "Lowest") {
+                        $colCopy = "Low";
+                     }
+                  } else if (size($files) == 2) {
+                     if ($collision == "Lowest" || $collision == "Low") {
+                        $colCopy = "Medium";
+                     }
+                  } else if (size($files) == 1) {
+                     if ($collision == "Medium" || $collision == "Low" || $collision == "Lowest") {
+                        $colCopy = "High";
+                     }
+                  }
+               }
+
+               // Send all our data to the proc which runs the command "COD_MEW_createXmodelsInGdt"
+               int $result = COD_MEW_createXmodelsInGdt($gdtFile, $lodArrCopy, $entryNames[$i], $colCopy, $files, $type);
+
+               if ($result == 0) {
+                  // This Fail message will only show if the exporter plugin returns a failure
+                  // Hopefully noone ever sees this
+                  $reportStr += ("Failed to create ----- "+$entryNames[$i]+"\n");
+               } else {
+                  $reportStr += ("Successfully created ----- "+$entryNames[$i]+"\n");
+               }
+            }
+         }
+
+         // Destroy the Create GDT window
+         if (`window -ex codMewCreateGdtWindow`) deleteUI codMewCreateGdtWindow;
+
+         // Tell the user how things went
+         if ($reportStr != "") {
+            confirmDialog -t ("Added to "+basename($gdtFile,"")) -m $reportStr -b "OK";
+         } else {
+            confirmDialog -t "Nothing Created" -m "No GDT entries were created" -b "OK";
+         }
+      }
+   }
+
+   global proc COD_MEW_updateGdtEntires(string $listName, string $gdtFile, string $entryName) {
+      // We get our information from these two window so we make sure they exist
+      if (!`window -ex codMewUpdateGdtWindow` || !`window -ex codModelExport_window`) {
+         return;
+      }
+
+      // Gdt entry names are based on the group names, so we need to make sure we're in
+      // GDT layout mode
+      if (`checkBox -q -v MEWuseLodGrouping_chk` == 0) {
+         return;
+      }
+
+      // Get the names of the selected entries
+      string $selectedEntries[] = `textScrollList -q -si $listName`;
+      // Get the indexes of the selected entries
+      int $selectedEntryIdxs[] = `textScrollList -q -sii $listName`;
+
+      // If nothing is selected tell the user
+      if (size($selectedEntries) == 0) {
+         confirmDialog -t "Select Entry" -m "Select at least one entry to create" -b "OK";
+         // Then quit
+         return;
+      }
+
+      // This string will tell the user which entries were created
+      string $reportStr = "";
+      // The four LOD distance values
+      int $lodDistances[];
+      // The export file paths
+      string $files[];
+      // Get the collision LOD from the UI
+      string $collision = strip(`optionMenu -q -v codMewUpdateGdtCollision_opt`);
+      // Get the model type from the UI
+      string $type = strip(`optionMenu -q -v codMewUpdateGdtType_opt`);
+
+      // Read the LOD distance values from the UI
+      $lodDistances[0] = `intField -q -v codMewUpdateGdtHighDist_int`;
+      $lodDistances[1] = `intField -q -v codMewUpdateGdtMedDist_int`;
+      $lodDistances[2] = `intField -q -v codMewUpdateGdtLowDist_int`;
+      $lodDistances[3] = `intField -q -v codMewUpdateGdtLowestDist_int`;
+
+      if (basenameEx($selectedEntries[0]) != $entryName) {
+         error "Selection has changed in the Model Export Window";
+      }
+
+      // Get the file names to use for the xmodel from the IWGlobalNode
+      getModelExportFiles $selectedEntryIdxs[0] $files;
+
+      // Copy the LOD distances array because we'll have to modify the contents if there are
+      // Missing export files
+      int $lodArrCopy[] = $lodDistances;
+      string $colCopy = $collision;
+
+      // If an export file is not provided set the LOD distance to zero
+      if (size($files) < 4) {
+         // Set the last available export file to the farthest LOD distance
+         $lodArrCopy[size($files)-1] = $lodDistances[3];
+
+         for ($j=size($files); $j<5; $j++) {
+            // Set missing file LOD distances to zero
+            $lodArrCopy[$j] = 0;
+         }
+
+         // Set the collision LOD to the last available file
+         if (size($files) == 3) {
+            if ($collision == "Lowest") {
+               $colCopy = "Low";
+            }
+         } else if (size($files) == 2) {
+            if ($collision == "Lowest" || $collision == "Low") {
+               $colCopy = "Medium";
+            }
+         } else if (size($files) == 1) {
+            if ($collision == "Medium" || $collision == "Low" || $collision == "Lowest") {
+               $colCopy = "High";
+            }
+         }
+      }
+
+      // Make sure the GDT if for real
+      if (`filetest -r $gdtFile` == 0) {
+         error "Gdt file does not exist.";
+      }
+
+      // See if the GDT file is writable
+      if (`filetest -w $gdtFile` == 0) {
+         // If it is not then offer to open for edit in P4
+         if (`confirmDialog -t "Read Only File"
+            -m "The Gdt file is Read Only.\nDo you want to Open for Edit in P4?"
+            -b "Yes" -b "No" -db "Yes" -cb "No" -ds "No"` == "Yes") {
+            // Open for edit
+            system("p4 edit \"" + $gdtFile + "\"");
+         } else {
+            return;
+         }
+      }
+
+      // Send all our data to the proc which runs the command "COD_MEW_createXmodelsInGdt"
+      int $result = COD_MEW_updateXmodelsInGdt($gdtFile, $lodArrCopy, $entryName, $colCopy, $files, $type);
+
+      if ($result == 0) {
+         // This Fail message will only show if the exporter plugin returns a failure
+         // Hopefully noone ever sees this
+         $reportStr += ("Failed to update ----- "+$entryName+"\n");
+      } else {
+         $reportStr += ("Successfully updated ----- "+$entryName+"\n");
+      }
+
+      // Destroy the Create GDT window
+      if (`window -ex codMewUpdateGdtWindow`) deleteUI codMewUpdateGdtWindow;
+
+      // Tell the user how things went
+      if ($reportStr != "") {
+         confirmDialog -t ("Updated "+basename($gdtFile,"")) -m $reportStr -b "OK";
+      } else {
+         confirmDialog -t "Nothing Updated" -m $reportStr -b "OK";
+      }
+   }
+
+   global proc COD_MEW_createMaterialGdtEntry(string $listName, string $gdtFile) {
+      // Make sure both windows exits because we need information from each
+      if (!`window -ex codMewCreateMaterialWindow` || !`window -ex codModelExport_window`) {
+         return;
+      }
+
+      // See if the GDT file is writable
+      if (`filetest -w $gdtFile` == 0) {
+         // If it is not then offer to open for edit in P4
+         if (`confirmDialog -t "Read Only File"
+            -m "The Gdt file is Read Only.\nDo you want to Open for Edit in P4?"
+            -b "Yes" -b "No" -db "Yes" -cb "No" -ds "No"` == "Yes") {
+            // Open for edit
+            system("p4 edit \"" + $gdtFile + "\"");
+         } else {
+            return;
+         }
+      }
+
+      // This array will hold all meshes that are in selected exports
+      string $allMeshes[];
+      // Get the Material type set in the UI
+      string $materialType = strip(`optionMenu -q -v codMewMaterialType_opt`);
+      // Get the Surface type set in the UI
+      string $surfaceType = strip(`optionMenu -q -v codMewSurfaceType_opt`);
+
+      if (`checkBox -q -v MEWuseLodGrouping_chk` == 1) {
+         // Get entries selected in the export window
+         int $selIndex[] = `textScrollList -q -sii $listName`;
+
+         // For each selected entry
+         for ($s in $selIndex) {
+            // These will be the indexes we read from the IWGlobalNode
+            int $indexes[];
+            // Get the indexes to be read off the IWGlobalNode
+            // The $exportFiles array will contain up to 4 consecutive indexes after calling this proc
+            sakGetIntArrayIndexesFromValue $COD_MEW_MODELEXPORT_GROUP $s $indexes;
+
+            for ($i in $indexes) {
+               string $exportMeshes[];
+               // Get the meshes from its export nodes
+               COD_MEW_getMeshesFromExportIndex($exportMeshes, $i);
+               // And add them to the array which will hold all meshes
+               $allMeshes = stringArrayCatenate($allMeshes, $exportMeshes);
+            }
+         }
+      } else {
+         // Get entries selected in the export window
+         int $selIndex[] = `textScrollList -q -sii $listName`;
+
+         // For each selected entry
+         for ($s in $selIndex) {
+            string $exportMeshes[];
+            // Get the meshes from its export nodes
+            COD_MEW_getMeshesFromExportIndex($exportMeshes, $s);
+            // And add them to the array which will hold all meshes
+            $allMeshes = stringArrayCatenate($allMeshes, $exportMeshes);
+         }
+      }
+
+      // Select the mesh objects
+      select -r $allMeshes;
+
+      // Find materials applied to selected meshes
+      hyperShade -shaderNetworksSelectMaterialNodes;
+      string $selMaterials[] = `ls -sl`;
+
+      select -cl;
+
+      if (size($selMaterials) > 0) {
+         // Find entires that already exist and put them into an array
+         string $skip[] = `COD_MEW_checkForGdtEntries $selMaterials`;
+
+         // If the user cancels while the gdts are being scanned for dups, a cancel string
+         // is returned as the first item in the skip array
+         if (size($skip) > 0) {
+            // If we find that cancel string we quit
+            if ($skip[0] == "GDT CHECK CANCELED BY USER") {
+               return;
+            }
+         }
+
+         // This string will be reported to the user via popup at the end
+         string $reportStr = "";
+         // Make a message to give the user in the event that gdt entries already exist
+         string $skipMessage = "The following selected materials already exist\n\n    ";
+         // Add the names of the existing entries to the message
+         $skipMessage += stringArrayToString($skip, "\n    ");
+         $skipMessage += "\n\nThey can be located using Find Selected Material in the GDT menu";
+         $skipMessage += "\nDo you want to skip them or cancel?";
+
+         // Report to the user the entries that already exist and give them the option to cancel
+         // Otherwise the existing entries will be skipped to avoid duplicates
+         if (size($skip) > 0) {
+            if (`confirmDialog -t "Existing Entries"
+               -m $skipMessage
+               -b "Skip" -b "Cancel" -db "Skip" -cb "Cancel" -ds "Cancel"` == "Cancel") {
+               // If the user cancels, then quit
+               return;
+            }
+         }
+
+         int $prog = 0;
+         int $step = (100 / size($selMaterials));
+
+         progressWindow -t "Creating Materials" -pr $prog -st "" -ii true;
+
+         for ($mat in $selMaterials) {
+            if (`progressWindow -q -ic` != 1) {
+               $prog += $step;
+               // Proceed to creating the material only if the name is not found if the list of names to skip
+               if (`stringArrayCount $mat $skip` == 0) {
+   
+                  // Get the textures plugged into the material
+                  string $allMaps[] = `COD_MEW_getShaderMaps $mat`;
+                  int $mapsFound = true;
+   
+                  // Chop everything before "model_export"
+                  for ($i=0; $i<size($allMaps); $i++) {
+                     string $newMapName = substitute( ".*model_export", $allMaps[$i], "model_export" );
+                     $allMaps[$i] = $newMapName;
+                  }
+   
+                  // Check the files and add them to Perforce
+                  for ($tga in $allMaps) {
+                     if ($tga != "") {
+                        string $fullFilePath = toNativePath($GAME_PROJECT_DIR+"\\"+$tga);
+   
+//                        if (`COD_MEW_addFileToPerforce $fullFilePath` == 1) {
+//                        	system("p4 add \"" + $fullFilePath + "\"");
+//                        } else {
+                           $mapsFound = false;
+//                        }
+                     }
+                  }
+   
+                  // This will tell us if the plugin successfully creates the GDT entry
+                  int $result = 0;
+   
+                  if ($mapsFound == false) {
+                     $reportStr += ("Skipping this Material, missing textures ----- "+$mat+"\n");
+                  } else {
+                     // Make the entry
+                     $result = COD_MEW_createMaterialsInGdt($gdtFile, $mat, $allMaps, $materialType, $surfaceType);
+                  }
+   
+                  if ($mapsFound == true) {
+                     if ($result == 0) {
+                        // This Fail message will only show if the exporter plugin returns a failure
+                        $reportStr += ("Failed to create ----- "+$mat+"\n");
+                     } else {
+                        $reportStr += ("Successfully created ----- "+$mat+"\n");
+                     }
+                  }
+               }
+               progressWindow -e -pr $prog;
+            } else {
+               break;
+            }
+         }
+
+         progressWindow -endProgress;
+
+         // Destroy the Create Material window
+         if (`window -ex codMewCreateMaterialWindow`) deleteUI codMewCreateMaterialWindow;
+
+         // Tell the user how things went
+         if ($reportStr != "") {
+            confirmDialog -t ("Added to "+basename($gdtFile,"")) -m $reportStr -b "OK";
+         } else {
+            confirmDialog -t "Nothing Created" -m "No Materials created" -b "OK";
+         }
+      } else {
+         // Destroy the Create Material window
+         if (`window -ex codMewCreateMaterialWindow`) deleteUI codMewCreateMaterialWindow;
+
+         confirmDialog -t "No Materials Created" -m "Cannot find any materials to create" -b "OK";
+      }
+   }
+
+   // Make a popup menu
+   // The proc called for each item is "COD_MEW_setLodDistValue" plus the control name and a value
+   proc setLodDistPopupMenu(string $controlName) {
+      popupMenu;
+         menuItem -l "100" -c ("COD_MEW_setLodDistValue "+$controlName+" 100");
+         menuItem -l "200" -c ("COD_MEW_setLodDistValue "+$controlName+" 200");
+         menuItem -l "300" -c ("COD_MEW_setLodDistValue "+$controlName+" 300");
+         menuItem -l "400" -c ("COD_MEW_setLodDistValue "+$controlName+" 400");
+         menuItem -l "500" -c ("COD_MEW_setLodDistValue "+$controlName+" 500");
+         menuItem -l "600" -c ("COD_MEW_setLodDistValue "+$controlName+" 600");
+         menuItem -l "700" -c ("COD_MEW_setLodDistValue "+$controlName+" 700");
+         menuItem -l "800" -c ("COD_MEW_setLodDistValue "+$controlName+" 800");
+         menuItem -l "900" -c ("COD_MEW_setLodDistValue "+$controlName+" 900");
+         menuItem -divider true;
+         menuItem -l "1000" -c ("COD_MEW_setLodDistValue "+$controlName+" 1000");
+         menuItem -l "2000" -c ("COD_MEW_setLodDistValue "+$controlName+" 2000");
+         menuItem -l "3000" -c ("COD_MEW_setLodDistValue "+$controlName+" 3000");
+         menuItem -l "4000" -c ("COD_MEW_setLodDistValue "+$controlName+" 4000");
+         menuItem -l "5000" -c ("COD_MEW_setLodDistValue "+$controlName+" 5000");
+         menuItem -l "6000" -c ("COD_MEW_setLodDistValue "+$controlName+" 6000");
+         menuItem -l "7000" -c ("COD_MEW_setLodDistValue "+$controlName+" 7000");
+         menuItem -l "8000" -c ("COD_MEW_setLodDistValue "+$controlName+" 8000");
+         menuItem -l "9000" -c ("COD_MEW_setLodDistValue "+$controlName+" 9000");
+         menuItem -l "10000" -c ("COD_MEW_setLodDistValue "+$controlName+" 10000");
+   }
+
+   global proc COD_MEW_createMaterialGdtEntry_UI(string $listName) {
+      if (`window -ex codMewCreateMaterialWindow`) deleteUI codMewCreateMaterialWindow;
+
+      // Get the GDT file where we're going to add the materials from the user
+      string $fileToLoad = `fileDialog -m 0 -dm ($GAME_MODELEXPORT_DIR+"\\*.gdt")`;
+
+      // If the user picked a file we contiue
+      if ($fileToLoad != "") {
+         // If the GDT picked is valid then create the window
+         if (`filetest -f $fileToLoad` == 1) {
+            string $titleStr = ("Add Materials to -> "+basename($fileToLoad, ""));
+
+            window -title $titleStr -s 0 -mxb 0 codMewCreateMaterialWindow;
+   
+            columnLayout -rs 20;
+               rowColumnLayout -nc 2 -cw 1 110 -cw 2 150;
+                  text -l "Material Type  " -al "right";
+                  optionMenu codMewMaterialType_opt;
+                     menuItem -l "world phong";
+                     menuItem -l "model phong";
+                     menuItem -l "model ambient";
+                     menuItem -l "world unlit";
+                     menuItem -l "model unlit";
+                     menuItem -l "unlit";
+                     menuItem -l "2d";
+                     menuItem -l "impact mark";
+                     menuItem -l "effect";
+                     menuItem -l "distortion";
+                     menuItem -l "particle cloud";
+                     menuItem -l "tools";
+                     menuItem -l "sky";
+                     menuItem -l "sky noncubemap";
+                     menuItem -l "sky noncubemap transition       ";
+                     menuItem -l "water";
+                     menuItem -l "ocean";
+                     menuItem -l "objective";
+                     menuItem -l "tree canopy";
+                     menuItem -l "dynamic foliage";
+                     menuItem -l "cloud";
+                     menuItem -l "custom";
+                     menuItem -l "CGFX";
+                     menuItem -l "CGFXmodel";
+                     menuItem -l "projected decal";
+                     menuItem -l "model cook-torrance";
+                     menuItem -l "rope";
+               setParent..;
+               rowColumnLayout -nc 2 -cw 1 110 -cw 2 150;
+                  text -l "Surface Type  " -al "right";
+                  optionMenu codMewSurfaceType_opt;
+                     menuItem -l "<error>                             ";
+                     menuItem -l "<none>";
+                     menuItem -l "asphalt";
+                     menuItem -l "brick";
+                     menuItem -l "carpet";
+                     menuItem -l "ceramic";
+                     menuItem -l "cloth";
+                     menuItem -l "concrete";
+                     menuItem -l "dirt";
+                     menuItem -l "flesh";
+                     menuItem -l "foliage";
+                     menuItem -l "glass";
+                     menuItem -l "grass";
+                     menuItem -l "gravel";
+                     menuItem -l "ice";
+                     menuItem -l "metal";
+                     menuItem -l "mud";
+                     menuItem -l "paper";
+                     menuItem -l "plaster";
+                     menuItem -l "plastic";
+                     menuItem -l "rock";
+                     menuItem -l "rubber";
+                     menuItem -l "sand";
+                     menuItem -l "snow";
+                     menuItem -l "water";
+                     menuItem -l "wood";
+                     menuItem -l "cushion";
+                     menuItem -l "fruit";
+                     menuItem -l "paintedmetal";
+                     menuItem -l "tallgrass";
+               setParent..;
+
+               rowColumnLayout -nc 2 -cw 1 20 -cw 2 305;
+                  text -l "";
+                  button -l "Create Materials for Selected Entries" -c ("COD_MEW_createMaterialGdtEntry "+$listName+" \""+$fileToLoad+"\"");
+               setParent..;
+            setParent..;
+
+            window -e -wh 350 180 codMewCreateMaterialWindow;
+            showWindow codMewCreateMaterialWindow;
+         }
+      }
+   }
+
+   global proc COD_MEW_createGdtEntry_UI(string $listName) {
+      if (`window -ex codMewCreateGdtWindow`) deleteUI codMewCreateGdtWindow;
+      if (`window -ex codMewUpdateGdtWindow`) deleteUI codMewUpdateGdtWindow;
+
+      // Get the GDT file where we're going to add the xmodels from the user
+      string $fileToLoad = `fileDialog -m 0 -dm ($GAME_MODELEXPORT_DIR+"\\*.gdt")`;
+
+      // If the user picked a file we contiue
+      if ($fileToLoad != "") {
+         // If the GDT picked is valid then create the window
+         if (`filetest -f $fileToLoad` == 1) {
+            string $titleStr = ("Add Xmodels to -> "+basename($fileToLoad, ""));
+
+            window -title $titleStr -s 0 -mxb 0 codMewCreateGdtWindow;
+   
+            columnLayout -rs 10;
+               rowColumnLayout -nc 2 -cw 1 150 -cw 2 110;
+                  text -l "Type  " -al "right";
+                  optionMenu codMewCreateGdtType_opt;
+                     menuItem -l "rigid";
+                     menuItem -l "animated";
+                     menuItem -l "multiplayer body   ";
+                     menuItem -l "pieces";
+                     menuItem -l "viewhands";
+               setParent..;
+               rowColumnLayout -nc 2 -cw 1 150 -cw 2 110;
+                  text -l "High LOD Distance  " -al "right";
+                  intField -min 0 -max 1000000 -step 100 -v 500 codMewCreateGdtHighDist_int;
+                  setLodDistPopupMenu "codMewCreateGdtHighDist_int";
+               setParent..;
+               rowColumnLayout -nc 2 -cw 1 150 -cw 2 110;
+                  text -l "Medium LOD Distance  " -al "right";
+                  intField -min 0 -max 1000000 -step 100 -v 1000 codMewCreateGdtMedDist_int;
+                  setLodDistPopupMenu "codMewCreateGdtMedDist_int";
+               setParent..;
+               rowColumnLayout -nc 2 -cw 1 150 -cw 2 110;
+                  text -l "Low LOD Distance  " -al "right";
+                  intField -min 0 -max 1000000 -step 100 -v 2000 codMewCreateGdtLowDist_int;
+                  setLodDistPopupMenu "codMewCreateGdtLowDist_int";
+               setParent..;
+               rowColumnLayout -nc 2 -cw 1 150 -cw 2 110;
+                  text -l "Lowest LOD Distance  " -al "right";
+                  intField -min 0 -max 1000000 -step 100 codMewCreateGdtLowestDist_int;
+                  setLodDistPopupMenu "codMewCreateGdtLowestDist_int";
+               setParent..;
+               rowColumnLayout -nc 2 -cw 1 150 -cw 2 110;
+                  text -l "Collision LOD  " -al "right";
+                  optionMenu -w 100 codMewCreateGdtCollision_opt;
+                     menuItem -l "None                   ";
+                     menuItem -l "High";
+                     menuItem -l "Medium";
+                     menuItem -l "Low";
+                     menuItem -l "Lowest";
+               setParent..;
+
+               rowColumnLayout -nc 2 -cw 1 20 -cw 2 305;
+                  text -l "";
+                  button -l "Create Entries" -c ("COD_MEW_createGdtEntires "+$listName+" \""+$fileToLoad+"\"");
+               setParent..;
+            setParent..;
+
+            window -e -wh 350 270 codMewCreateGdtWindow;
+            showWindow codMewCreateGdtWindow;
+         }
+      }
+   }
+
+   global proc COD_MEW_updateGdtEntry_UI(string $listName) {
+      if (`window -ex codMewUpdateGdtWindow`) deleteUI codMewUpdateGdtWindow;
+      if (`window -ex codMewCreateGdtWindow`) deleteUI codMewCreateGdtWindow;
+
+      string $selectedEntries[] = `textScrollList -q -si $listName`;
+      string $assetToUpdate;
+
+      // Make sure only one entry is selected
+      if (size($selectedEntries) == 1) {
+         // Read the name of the xmodel to update from the selected entry in the listbox
+         $assetToUpdate = basenameEx($selectedEntries[0]);
+      } else {
+         confirmDialog -t "Too Many Selected" -m "You can only update one xmodel at a time" -b "OK";
+         return;
+      }
+
+      // Get the GDT file where we're going to add the xmodels from the user
+      string $gdtFile = `gdtFindEntry -f $GAME_MODELEXPORT_DIR -n $assetToUpdate -t "xmodel"`;
+
+      // If the user picked a file we contiue
+      if ($gdtFile != "") {
+         // If the GDT picked is valid then create the window
+         if (`filetest -f ($GAME_MODELEXPORT_DIR+$gdtFile)` == 1) {
+            string $titleStr = ("Update Xmodel in -> "+$gdtFile);
+            string $currentSettings[] = stringToStringArray(`gdtGetXmodelEntry -f ($GAME_MODELEXPORT_DIR+$gdtFile) -n $assetToUpdate`, "|");
+
+            // Make sure we got the correct number of results from the gdtGetXmodelEntry command
+            if (size($currentSettings) != 6) {
+               // If we didn't get 6 back, then the given entry is not an xmodel
+               error ("Selected entry "+$assetToUpdate+" is not an xmodel");
+            }
+
+            // The strings for the LOD distance values must be converted to integers
+            int $highdist = $currentSettings[2];
+            int $meddist = $currentSettings[3];
+            int $lowdist = $currentSettings[4];
+            int $lowestdist = $currentSettings[5];
+
+            window -title $titleStr -s 0 -mxb 0 codMewUpdateGdtWindow;
+   
+            columnLayout -rs 10;
+               rowColumnLayout -nc 2 -cw 1 150 -cw 2 110;
+                  text -l "Type  " -al "right";
+                  optionMenu codMewUpdateGdtType_opt;
+                     menuItem -l "rigid";
+                     menuItem -l "animated";
+                     menuItem -l "multiplayer body";
+                     menuItem -l "pieces";
+                     menuItem -l "viewhands";
+               setParent..;
+               rowColumnLayout -nc 2 -cw 1 150 -cw 2 110;
+                  text -l "High LOD Distance  " -al "right";
+                  intField -min 0 -max 1000000 -step 100 -v $highdist codMewUpdateGdtHighDist_int;
+                  setLodDistPopupMenu "codMewUpdateGdtHighDist_int";
+               setParent..;
+               rowColumnLayout -nc 2 -cw 1 150 -cw 2 110;
+                  text -l "Medium LOD Distance  " -al "right";
+                  intField -min 0 -max 1000000 -step 100 -v $meddist codMewUpdateGdtMedDist_int;
+                  setLodDistPopupMenu "codMewUpdateGdtMedDist_int";
+               setParent..;
+               rowColumnLayout -nc 2 -cw 1 150 -cw 2 110;
+                  text -l "Low LOD Distance  " -al "right";
+                  intField -min 0 -max 1000000 -step 100 -v $lowdist codMewUpdateGdtLowDist_int;
+                  setLodDistPopupMenu "codMewUpdateGdtLowDist_int";
+               setParent..;
+               rowColumnLayout -nc 2 -cw 1 150 -cw 2 110;
+                  text -l "Lowest LOD Distance  " -al "right";
+                  intField -min 0 -max 1000000 -step 100 -v $lowestdist codMewUpdateGdtLowestDist_int;
+                  setLodDistPopupMenu "codMewUpdateGdtLowestDist_int";
+               setParent..;
+               rowColumnLayout -nc 2 -cw 1 150 -cw 2 110;
+                  text -l "Collision LOD  " -al "right";
+                  optionMenu -w 100 codMewUpdateGdtCollision_opt;
+                     menuItem -l "None                   ";
+                     menuItem -l "High";
+                     menuItem -l "Medium";
+                     menuItem -l "Low";
+                     menuItem -l "Lowest";
+               setParent..;
+
+               rowColumnLayout -nc 2 -cw 1 20 -cw 2 305;
+                  text -l "";
+                  button -l "Update Entry" -c ("COD_MEW_updateGdtEntires "+$listName+" \""+($GAME_MODELEXPORT_DIR+$gdtFile)+"\" \""+$assetToUpdate+"\"");
+               setParent..;
+            setParent..;
+
+            // Set the values for the option drop down menus
+            if ($currentSettings[0] == "animated") {
+               optionMenu -e -v "animated" codMewUpdateGdtType_opt;
+            } else if ($currentSettings[0] == "multiplayer body") {
+               optionMenu -e -v "multiplayer body" codMewUpdateGdtType_opt;
+            } else if ($currentSettings[0] == "pieces") {
+               optionMenu -e -v "pieces" codMewUpdateGdtType_opt;
+            } else if ($currentSettings[0] == "viewhands") {
+               optionMenu -e -v "viewhands" codMewUpdateGdtType_opt;
+            }
+
+            if ($currentSettings[1] == "High") {
+               optionMenu -e -v "High" codMewUpdateGdtCollision_opt;
+            } else if ($currentSettings[1] == "Medium") {
+               optionMenu -e -v "Medium" codMewUpdateGdtCollision_opt;
+            } else if ($currentSettings[1] == "Low") {
+               optionMenu -e -v "Low" codMewUpdateGdtCollision_opt;
+            } else if ($currentSettings[1] == "Lowest") {
+               optionMenu -e -v "Lowest" codMewUpdateGdtCollision_opt;
+            }
+
+            window -e -wh 350 270 codMewUpdateGdtWindow;
+            showWindow codMewUpdateGdtWindow;
+         }
+      } else {
+         confirmDialog -t "Not Found" -m "Cannot find xmodel in any GDT" -b "OK";
+      }
+   }
+}

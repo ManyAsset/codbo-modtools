@@ -1,0 +1,169 @@
+#name "mphead"
+#dll "all" "mphead"
+#target_dir "mphead/"
+#file_ext "*.gsc"
+#version 10
+
+string comments
+
+float 0 -1 1 armorBullet
+float 0 -1 1 armorExplosive
+float 0 -1 1 moveSpeed
+
+string specialty1
+string specialty2
+string specialty3
+string specialty4
+string specialty5
+
+string headModel
+string hatModel
+
+// add additional team factions here
+string "usa_sog, vtn_nva, usa_cia, usa_ciawin, rus_spet, rus_spetwin, cub_rebels, cub_tropas" factions
+
+vcontainer
+{
+	vcontainer
+	{
+		multiedit(comments)
+		[
+			exec
+			{
+				label("")
+				labelwidth(1)
+				width(712)
+				height(64)
+			}
+		]
+	}
+	[
+		exec
+		{
+			groupBox("Script Comments")
+		}
+	]
+	
+	vcontainer
+	{
+		floatedit(moveSpeed, 0.1, 0.1)
+		[
+			exec
+			{
+				label("Mobility")
+				labelwidth(130)
+				width(250)
+			}
+		]
+		
+		floatedit(armorBullet, 0.1, 0.1)
+		[
+			exec
+			{
+				label("Armor - Bullet")
+				labelwidth(130)
+				width(250)
+			}
+		]
+	
+		floatedit(armorExplosive, 0.1, 0.1)
+		[
+			exec
+			{
+				label("Armor - Explosive")
+				labelwidth(130)
+				width(250)
+			}
+		]
+	}
+	[
+		exec
+		{
+			groupBox("Head Attributes")
+		}
+	]
+	
+	vcontainer
+	{
+		edit(specialty1)
+		[
+			exec
+			{
+				label("Specialty 1")
+				width(400)
+			}
+		]
+		
+		edit(specialty2)
+		[
+			exec
+			{
+				label("Specialty 2")
+				width(400)
+			}
+		]
+		
+		edit(specialty3)
+		[
+			exec
+			{
+				label("Specialty 3")
+				width(400)
+			}
+		]
+		
+		edit(specialty4)
+		[
+			exec
+			{
+				label("Specialty 4")
+				width(400)
+			}
+		]
+		
+		edit(specialty5)
+		[
+			exec
+			{
+				label("Specialty 5")
+				width(400)
+			}
+		]
+	}
+	[
+		exec
+		{
+			groupBox("Head Specialties")
+		}
+	]
+	
+	vcontainer
+	{
+		fileedit(headModel)
+		[
+			exec
+			{
+				reldir("raw/xmodel/")
+				labelwidth(200)
+				label("Head Model")
+			}
+		]
+		
+		fileedit(hatModel)
+		[
+			exec
+			{
+				reldir("raw/xmodel/")
+				labelwidth(200)
+				label("Hat Model")
+			}
+		]
+	}
+	[
+		exec
+		{
+			groupBox("Models")
+		}
+	]
+	
+}

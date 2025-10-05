@@ -1,0 +1,24 @@
+{
+	stateMap "passthrough";
+
+	vertexShader 3.0 "pimp_shader_sw4_3d_glass_cheaper_500b9935.hlsl"
+	{
+	}
+
+	pixelShader 3.0 "pimp_shader_sw4_3d_glass_cheaper_500b9935.hlsl" 
+	{
+		Reflection_Amount = material.Reflection_Amount;
+  Diffuse           = material.Diffuse;
+	}
+
+	vertex.position = code.position;
+	vertex.normal      = code.normal;
+  vertex.texcoord[0] = code.texcoord[0];
+
+	declTypes
+	{
+		packed
+		world
+	}
+}
+

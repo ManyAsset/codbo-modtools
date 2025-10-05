@@ -1,0 +1,28 @@
+{
+	stateMap "sw4_default";
+
+	vertexShader 3.0 "pimp_shader_sw4_3d_interrogation_animated_window_a4e3b3ce.hlsl"
+	{
+	}
+
+	pixelShader 3.0 "pimp_shader_sw4_3d_interrogation_animated_window_2cafaaed.hlsl" 
+	{
+		SpecularMap     = material.SpecularMap;
+  VideoAlpha      = material.VideoAlpha;
+  VideoBrightness = material.VideoBrightness;
+  DiffuseMap      = material.DiffuseMap;
+  RoughnessMap    = material.RoughnessMap;
+	}
+
+	vertex.position = code.position;
+	vertex.normal      = code.normal;
+  vertex.texcoord[2] = code.tangent;
+  vertex.texcoord[0] = code.texcoord[0];
+
+	declTypes
+	{
+		packed
+		world
+	}
+}
+

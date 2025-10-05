@@ -1,0 +1,29 @@
+{
+	stateMap "default2d";
+
+	vertexShader 3.0 "pimp_shader_sw4_2d_binoculars_489af346.hlsl"
+	{
+	}
+
+	pixelShader 3.0 "pimp_shader_sw4_2d_binoculars_489af346.hlsl" 
+	{
+		OverlayMap                  = material.OverlayMap;
+  ScratchStrength             = material.ScratchStrength;
+  WarpAmount                  = material.WarpAmount;
+  DispersionAmount            = material.DispersionAmount;
+  WarpMap                     = material.WarpMap;
+  ResolvedScene_Sampler_C4_P0 = sampler.resolvedScene;
+	}
+
+	vertex.position = code.position;
+	vertex.color[0]    = code.color;
+  vertex.texcoord[0] = code.texcoord[0];
+
+	declTypes
+	{
+		packed
+		debug
+		generic
+	}
+}
+

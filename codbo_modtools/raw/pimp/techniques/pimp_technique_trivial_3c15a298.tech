@@ -1,0 +1,17 @@
+{
+	stateMap "default2d";
+
+	vertexShader 3.0 "pimp_shader_trivial_95180cbb.hlsl"
+	{
+	}
+
+	pixelShader 3.0 "pimp_shader_trivial_95180cbb.hlsl" 
+	{
+		colorMapSampler = sampler.resolvedScene;
+	}
+
+	vertex.position = code.position;
+	vertex.texcoord[0] = code.texcoord[0];
+
+}
+

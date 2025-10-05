@@ -1,0 +1,23 @@
+#if "@blendFunc@" == "Blend" || ("@blendFunc@" == "Replace" && "@alphaTest@" != "Always")
+techniqueSet( "sw_cod7_room_dissolver" ); 
+#else
+techniqueSet( "sw_cod7_room_dissolver_noalpha" ); 
+#endif
+
+#include "commonsetup.template" 
+
+cgfxTextureTableRefImage
+{
+	"Normal_MapSampler" = streamable normalMap( "tile both", "mip (1x trilinear)", "texture_assets\env_russia_artificial\rus_art_asphalt_cracked01_n.tga", 0 ) "<auto compression>" : "normalMap"; 
+	"Roughness_MapSampler" = streamable map( "tile both", "mip (1x trilinear)", "texture_assets\env_russia_artificial\rus_art_asphalt_cracked01_g.tga", 0 ) "<auto compression>" : "colorMap"; 
+	"Diffuse_MapSampler" = streamable map( "tile both", "mip (1x trilinear)", "texture_assets\env_russia_artificial\rus_art_asphalt_cracked01_c.tga", 0 ) "<auto compression>" : "colorMap"; 
+	"Dissolve_MapSampler" = streamable map( "tile both", "mip (1x trilinear)", "texture_assets\shaderworks\glowcycle_random_03_c.tga", 0 ) "<auto compression>" : "colorMap"; 
+}
+
+cgfxConstantTable
+{
+	"EnvBlurLevel" = float4( 0, 0, 0, 0 );
+	"Dissolve_Scale" = float4( 0.7, 0, 0, 0 );
+}
+allocReflectionProbe();
+

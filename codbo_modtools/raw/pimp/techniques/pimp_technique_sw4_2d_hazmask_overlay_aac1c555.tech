@@ -1,0 +1,23 @@
+{
+	stateMap "default2d";
+
+	vertexShader 3.0 "pimp_shader_sw4_2d_hazmask_overlay_619e083c.hlsl"
+	{
+	}
+
+	pixelShader 3.0 "pimp_shader_sw4_2d_hazmask_overlay_619e083c.hlsl" 
+	{
+		Diffuse = material.Diffuse;
+	}
+
+	vertex.position = code.position;
+	vertex.texcoord[0] = code.texcoord[0];
+
+	declTypes
+	{
+		packed
+		debug
+		generic
+	}
+}
+

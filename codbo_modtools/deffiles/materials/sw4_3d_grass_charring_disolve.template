@@ -1,0 +1,52 @@
+
+#if ( ( "@blendFunc@"== "Replace" ) && ( "@alphaTest@" == "Always" ) )
+	techniqueSet( "@SW4_MaterialType@" ); 
+#else
+	techniqueSet( "@SW4_MaterialType@_transparent" ); 
+#endif
+
+// -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -
+	
+#include "commonsetup.template" 
+
+// -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -
+	
+#define SPEC_MAP_FORMAT 	 	  "DXT1"
+      	
+#if TARGET_PLATFORM == "xenon"
+            #define NORMAL_MAP_FORMAT     "DXN"
+	    #else
+	        #define NORMAL_MAP_FORMAT     "DXT5"
+	    #endif
+
+
+// -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -
+	
+textureTable
+{
+	"EmberMap" =  map( "tile both", "mip standard (2x bilinear)", "$colorMap06$", 0 ) "<auto compression>" : "colorMap";
+	"FireMap" = streamable map( "tile both", "mip (1x bilinear)", "$colorMap08$", 0 ) "<auto compression>" : "colorMap";
+	"DiffuseMap" = streamable map( "tile both", "mip standard (2x bilinear)", "$colorMap02$", 0 ) "<auto compression>" : "colorMap";
+	"Mask" = streamable map( "tile both", "mip standard (2x bilinear)", "$colorMap04$", 0 ) "<auto compression>" : "colorMap";
+	"RadiantDiffuse" = map( "tile both", "mip (1x bilinear)", "sw4\textures\sw4.tga", 1 ) "Uncompressed" : "colorMap";
+}
+
+// -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -
+	
+constantTable
+{
+	"Flexibility" = float1( @cg14_x@ );
+	"Ember_Direction" = float2( @cg05_x@, @cg05_y@ );
+	"Ember_Scale" = float1( @cg02_x@ );
+	"EmberBrightness" = float1( @cg13_x@ );
+	"RevealScale" = float1( @cg16_x@ );
+	"MaxCharThreshold" = float1( @cg23_x@ );
+}
+	
+// -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -
+	
+allocReflectionProbe();
+
+// -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -
+	
+refImage( "$colorMap08$" );

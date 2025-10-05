@@ -1,0 +1,20 @@
+#include "commonsetup.template"
+
+techniqueSet( "binoculars" );
+
+textureTable
+{
+	#if "$colorMap00$" == ""
+		#error "Binocular map is required"
+	#endif
+	"binocularMap" = map( "tile both", "nomip bilinear", "$colorMap00$", 1 ) "<auto compression>" : "colorMap00";
+}
+
+constantTable
+{
+	"warpAmount"       = float4( @cg00_x@, @cg00_y@, 0,        0 );
+	"scratchStrength"  = float4( @cg01_x@, 0,		 0,		   0 );
+	"dispersionAmount" = float4( @cg02_x@, @cg02_y@, @cg02_z@, 0 );
+}
+
+refImage( "$colorMap00$" );

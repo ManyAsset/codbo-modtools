@@ -1,0 +1,790 @@
+{
+   global int $COD_MEW_MODELEXPORT_GROUP[];
+   global int $COD_MEW_MODELEXPORT_OFFSET[];
+
+   global string $GAME_PROJECT_DIR;
+   global string $GAME_MODELEXPORT_DIR;
+
+   // Checks the current selection for vertex colors
+   // If vertex colors are missing user will be prompted to set them to white
+   global proc int COD_MEW_checkVertexColor(int $yesToAll) {
+      string $objectsWithoutColor[];
+      // -1 indicate we skip this procedure
+      if ($yesToAll == -1) {
+         return $yesToAll;
+      }
+
+      // This procedure will return true if any of the currently selected mesh objects does not have vertex colors
+      if (`sak_checkSelectedForColors $objectsWithoutColor` == true) {
+         if ($yesToAll == true) {
+            for ($o in $objectsWithoutColor) {
+               sak_applyWhiteVertexColors($o);
+            }
+         } else {
+            string $messageStr = "There are models in the current export with missing vertex colors\nDo you want to set them to all white?";
+            string $result = `confirmDialog -t "Missing Colors?" -m $messageStr -b "Yes to All" -b "Yes" -b "No" -b "No to All" -db "Yes" -cb "No" -ds "No"`;
+
+            if ($result == "Yes") {
+               for ($o in $objectsWithoutColor) {
+                  // For some reason if a mesh has no verts this script will fail here without throwing
+                  // an error or warning, so I have to check the vert count and let the exporter
+                  // throw the error
+                  if (size(`ls ($o+".vtx[*]")`) == 0) {
+                     continue;
+                  }
+
+                  sak_applyWhiteVertexColors($o);
+               }
+            } else if ($result == "Yes to All") {
+               for ($o in $objectsWithoutColor) {
+                  // For some reason if a mesh has no verts this script will fail here without throwing
+                  // an error or warning, so I have to check the vert count and let the exporter
+                  // throw the error
+                  if (size(`ls ($o+".vtx[*]")`) == 0) {
+                     continue;
+                  }
+
+                  sak_applyWhiteVertexColors($o);
+               }
+
+               $yesToAll = 1;
+            } else if ($result == "No to All") {
+               $yesToAll = -1;
+            }
+         }
+      }
+
+      return $yesToAll;
+   }
+
+   // Create an IWGlobalNode, which is a renderLayer node with some custom attributes
+   global proc COD_MEW_createIWglobalNode() {
+      string $newGlobalNode = `createNode "renderLayer" -n "IWGlobalNode"`;
+      addAttr -ln ModelCount -at byte $newGlobalNode;
+      setAttr ($newGlobalNode+".ModelCount") 0;
+      select -cl;
+   }
+
+   global proc COD_MEW_MoveModelEntry( string $direction, int $index ) {
+      // This proc is a modified version of the old COD Export Model Window procedure
+      int $modelCount;
+      int $swapIndex;
+
+      $modelCount = `getAttr IWGlobalNode.ModelCount`;
+
+      if ( $direction == "Up" ) {
+         if ( $index == 1 ) {
+            return;
+         }
+
+         $swapIndex = $index - 1;
+      }
+
+      if ( $direction == "Down" ) {
+         if ( $index == $modelCount ) {
+            return;
+         }
+
+         $swapIndex = $index + 1;
+      }
+
+      string $fileName1 = `getAttr ("IWGlobalNode.ModelFileName" + $index)`;
+      string $exportNode1 = `getAttr ("IWGlobalNode.ExportModelNodes" + $index)`;
+      int $doNotExportChildren1 = `getAttr ("IWGlobalNode.DoNotExportChildren" + $index)`;
+      int $forceExportSelectedJoints1 = `getAttr ("IWGlobalNode.ForceExportSelectedJoints" + $index)`;
+      string $groupColor1 = `getAttr ("IWGlobalNode.ModelGroupColor" + $index)`;
+      
+      string $fileName2 = `getAttr ("IWGlobalNode.ModelFileName" + $swapIndex)`;
+      string $exportNode2 = `getAttr ("IWGlobalNode.ExportModelNodes" + $swapIndex)`;
+      int $doNotExportChildren2 = `getAttr ("IWGlobalNode.DoNotExportChildren" + $swapIndex)`;
+      int $forceExportSelectedJoints2 = `getAttr ("IWGlobalNode.ForceExportSelectedJoints" + $swapIndex)`;
+      string $groupColor2 = `getAttr ("IWGlobalNode.ModelGroupColor" + $swapIndex)`;
+      
+      setAttr -type "string" ("IWGlobalNode.ModelFileName" + $swapIndex) $fileName1;
+      setAttr -type "string" ("IWGlobalNode.ExportModelNodes" + $swapIndex) $exportNode1;
+      setAttr -type "string" ("IWGlobalNode.ModelGroupColor" + $swapIndex) $groupColor1;
+      setAttr ("IWGlobalNode.DoNotExportChildren" + $swapIndex) $doNotExportChildren1;
+      setAttr ("IWGlobalNode.ForceExportSelectedJoints" + $swapIndex) $forceExportSelectedJoints1;
+
+      setAttr -type "string" ("IWGlobalNode.ModelFileName" + $index) $fileName2;
+      setAttr -type "string" ("IWGlobalNode.ExportModelNodes" + $index) $exportNode2;
+      setAttr -type "string" ("IWGlobalNode.ModelGroupColor" + $index) $groupColor2;
+      setAttr ("IWGlobalNode.DoNotExportChildren" + $index) $doNotExportChildren2;
+      setAttr ("IWGlobalNode.ForceExportSelectedJoints" + $index) $forceExportSelectedJoints2;
+   }
+
+   global proc COD_MEW_AddModel(string $listName, int $sel, int $increment) {
+      // This proc is a modified version of the old COD Export Model Window procedure
+      int $numEntries = `textScrollList -q -ni $listName`;
+      string $newEntryValue = "< New Entry - Enter Model Export File Path >";
+      int $childsState = 0;
+      int $jointsState = 0;
+
+      if ( $increment == 1 ) {
+         string $allEntries[] = `textScrollList -q -ai $listName`;
+         string $pattern = "[0-9]$";
+
+         if (size($allEntries) > 0) {
+            string $strIndex = match( $pattern, $allEntries[size($allEntries)-1] );
+            $childsState = `getAttr ("IWGlobalNode.DoNotExportChildren" + size($allEntries))`;
+            $jointsState = `getAttr ("IWGlobalNode.ForceExportSelectedJoints" + size($allEntries))`;
+
+            if ( $strIndex != "" ) {
+               int $newIndex = $strIndex;
+               $newIndex += 1;
+               $strIndex = $newIndex;
+               $newEntryValue = substitute( $pattern, $allEntries[size($allEntries)-1], $strIndex );
+            }
+         }
+      }
+
+      textScrollList -e -a $newEntryValue $listName;
+      $numEntries = `textScrollList -q -ni $listName`;
+
+      // Unlock the node to add an attribute
+      lockNode -lock off IWGlobalNode;
+
+      // Add 1 to the Model count attribute
+      int $ModelCount = `getAttr IWGlobalNode.ModelCount`;
+
+      $ModelCount++;
+
+      setAttr "IWGlobalNode.ModelCount" $ModelCount;
+
+      // Add all the extra attributes to the IWGlobalNode for the new Model
+      COD_MEW_AddModelAttributes $ModelCount;
+
+      setAttr -type "string" ("IWGlobalNode.ModelFileName"+$ModelCount) ($GAME_MODELEXPORT_DIR+$newEntryValue);
+      setAttr ("IWGlobalNode.DoNotExportChildren" + $ModelCount) $childsState;
+      setAttr ("IWGlobalNode.ForceExportSelectedJoints" + $ModelCount) $jointsState;
+
+      COD_MEW_updateWindow $listName $numEntries;
+
+      // Relock the node to protect it
+      lockNode IWGlobalNode;
+   }
+
+   global proc COD_MEW_DeleteModelEntry(string $listName, int $ModelNum) {
+      // This proc is a modified version of the old COD Export Model Window procedure
+      int $ModelCount = `getAttr IWGlobalNode.ModelCount`;
+      int $DelLoop;
+
+      for ($DelLoop=$ModelNum; $DelLoop<$ModelCount; $DelLoop++) {
+         setAttr -type "string" ("IWGlobalNode.ModelFileName" + $DelLoop) (`getAttr ("IWGlobalNode.ModelFileName" + ($DelLoop + 1))`);
+         setAttr -type "string" ("IWGlobalNode.ExportModelNodes" + $DelLoop) (`getAttr  ("IWGlobalNode.ExportModelNodes" + ($DelLoop + 1))`);
+      }
+
+      // Delete the last Model entry's attributes
+      COD_MEW_RemoveModelAttributes $ModelCount;
+
+      $ModelCount--;
+
+      setAttr IWGlobalNode.ModelCount $ModelCount;
+   }
+
+   global proc COD_MEW_RemoveModelAttributes(int $AnimNumber) {
+      // This proc is a modified version of the old COD Export Model Window procedure
+      deleteAttr ("IWGlobalNode.ModelFileName" + $AnimNumber);
+      deleteAttr ("IWGlobalNode.ExportModelNodes" + $AnimNumber);
+      deleteAttr ("IWGlobalNode.ModelGroupColor" + $AnimNumber);
+
+      if ( `attributeExists ("DoNotExportChildren" + $AnimNumber) "IWGlobalNode"`) {
+         deleteAttr ("IWGlobalNode.DoNotExportChildren" + $AnimNumber);
+      }
+
+      if ( `attributeExists ("ForceExportSelectedJoints" + $AnimNumber) "IWGlobalNode"`) {
+         deleteAttr ("IWGlobalNode.ForceExportSelectedJoints" + $AnimNumber);
+      }
+   }
+
+   global proc COD_MEW_AddModelAttributes(int $AnimNumber) {
+      // This proc is a modified version of the old COD Export Model Window procedure
+      addAttr -ln ("ModelFileName" + $AnimNumber) -dt "string" IWGlobalNode;
+
+      setAttr -type "string" ("IWGlobalNode.ModelFileName" + $AnimNumber) "";
+
+      addAttr -ln ("ExportModelNodes" + $AnimNumber) -dt "string" IWGlobalNode;
+      addAttr -ln ("DoNotExportChildren" + $AnimNumber) -at byte IWGlobalNode;
+      setAttr ("IWGlobalNode.DoNotExportChildren" + $AnimNumber) 0;
+      addAttr -ln ("ForceExportSelectedJoints" + $AnimNumber) -at byte IWGlobalNode;
+      setAttr ("IWGlobalNode.ForceExportSelectedJoints" + $AnimNumber) 0;
+
+      addAttr -ln ("ModelGroupColor" + $AnimNumber) -dt "string" IWGlobalNode;
+      setAttr -type "string" ("IWGlobalNode.ModelGroupColor" + $AnimNumber) ("Red");
+   }
+
+   global proc COD_MEW_SetMultiExportNodes(string $listName, int $index) {
+      // This proc is a modified version of the old COD Export Model Window procedure
+      int $exportIndex[];
+      int $FileNumber;
+
+      if (!`objExists IWGlobalNode`) {
+         return;
+      }
+
+      if (`checkBox -q -v MEWuseLodGrouping_chk` == 1) {
+         $exportIndex = `textScrollList -q -sii $listName`;
+      } else {
+         return;
+      }
+
+      if (size($exportIndex) > 0) {
+         for ($i=1; $i<=size($COD_MEW_MODELEXPORT_GROUP); $i++) {
+            if ($exportIndex[0] == $COD_MEW_MODELEXPORT_GROUP[$i]) {
+               $FileNumber = ($i+$index);
+               break;
+            }
+         }
+      } else {
+         return;
+      }
+
+      string $Sel[] = `ls -sl`;
+      string $Each;
+      string $ExportNodes;
+
+      for ($Each in $Sel) {
+         $ExportNodes = $ExportNodes + $Each + " ";
+      }
+
+      // Check the export nodes list to update the status line
+      if (`size $ExportNodes`) {
+         //text -e -bgc 0.9 0.9 0.9 -e -label "Ready" ("ExportNodeCheck" + $FileNumber);
+         setAttr -type "string" ("IWGlobalNode.ExportModelNodes" + $FileNumber) $ExportNodes;
+      } else {
+         //text -e -bgc 1 0 0.7 -label "NO EXPORT NODES" ("ExportNodeCheck" + $FileNumber);
+         setAttr -type "string" ("IWGlobalNode.ExportModelNodes" + $FileNumber) "";
+      }
+   }
+
+   global proc COD_MEW_SetExportNodes(string $listName) {
+      // This proc is a modified version of the old COD Export Model Window procedure
+      if (!`objExists IWGlobalNode`) {
+         return;
+      }
+
+      int $exportIndex[] = `textScrollList -q -sii $listName`;
+      int $FileNumber;
+
+      if (size($exportIndex) != 1) {
+         confirmDialog -t "Too Many Entries Selected" -m "Select only one entry to set exports for" -b "OK";
+         return;
+      } else {
+         $FileNumber = $exportIndex[0];
+      }
+
+      string $Sel[] = `ls -sl`;
+      string $Each;
+      string $ExportNodes;
+
+      for ($Each in $Sel) {
+         $ExportNodes = $ExportNodes + $Each + " ";
+      }
+
+      // Check the export nodes list to update the status line
+      if (`size $ExportNodes`) {
+         //text -e -bgc 0.9 0.9 0.9 -e -label "Ready" ("ExportNodeCheck" + $FileNumber);
+         setAttr -type "string" ("IWGlobalNode.ExportModelNodes" + $FileNumber) $ExportNodes;
+      } else {
+         //text -e -bgc 1 0 0.7 -label "NO EXPORT NODES" ("ExportNodeCheck" + $FileNumber);
+         setAttr -type "string" ("IWGlobalNode.ExportModelNodes" + $FileNumber) "";
+      }
+
+      COD_MEW_updateNodeLister $FileNumber;
+   }
+
+   global proc int COD_MEW_ExportModel(int $AnimNumber, int $wiiExport) {
+      // This proc is copied from the old COD Export Model Window procedure
+   	string $progressWindowTitle;
+   	int $doNotExportChildren = 0;
+   	int $forceExportSelectedJoints = 0;
+   	int $catchError = 0;
+   	string $FileNameArray[];
+   	int $FileNameArraySize;
+   	int $FileNameArrayIndex;
+   	string $command;
+   	string $upperCaseFileName;
+//   	global int $skipPerforceEdit;
+   	string $dirPath;
+   	string $wiiExportFile;
+   
+   	string $Parts = `getAttr ("IWGlobalNode.ExportModelNodes" + $AnimNumber)`;
+   	string $FileName = `getAttr ("IWGlobalNode.ModelFileName" + $AnimNumber)`;
+
+   	$FileNameArraySize = `tokenize $FileName "\\" $FileNameArray`;
+   	$FileName = "";
+
+   	if ( $FileNameArraySize > 1 ) {
+   		for ( $FileNameArrayIndex = 0; $FileNameArrayIndex < $FileNameArraySize; $FileNameArrayIndex++ ) {
+   			$FileName += $FileNameArray[$FileNameArrayIndex];
+   			if ( $FileNameArrayIndex < $FileNameArraySize-1 )
+   				$FileName += "/";
+   		}
+   	} else {
+   		$FileName = `getAttr ("IWGlobalNode.ModelFileName" + $AnimNumber)`;
+   	}
+
+   	// change forward slashes to backslashes so we could pass it into "dirname"
+   	$FileName = `substituteAllString $FileName "/" "\\"`;
+   
+   	// get the directory name, but it's going to give it to us in forward slashes
+   	$dirPath = `dirname $FileName`;
+   
+   	// change forward slashes to backslashes because "mkdir" accepts only backslashes
+   	$dirPath = `substituteAllString $dirPath "/" "\\"`;
+   	system ( "mkdir " + $dirPath );
+   		
+   	// change backslashes to forward slash for writing the file
+   	$FileName = `substituteAllString $FileName "\\" "/"`;
+
+   	// periodCount and periods are used to tokenize the periods in the file name so that
+   	// if an extension exists then it can be stripped out automatically and updated to a clean
+   	// extension-less name in the exporter.
+   	string $periods[];
+   	int $periodCount = `tokenize $FileName "." $periods`;
+   	
+   	if ($periodCount < 3) {
+   		$FileName = $periods[0];
+   	} else {
+   		$FileName = $periods[0] + ".";	
+   		
+   		for($i=1; $i<$periodCount-1; $i++) {
+   			if ($i == $periodCount-2) {
+   				$FileName += $periods[$i];
+   			}
+
+   			else {
+   				$FileName += $periods[$i] + ".";
+   			}
+   		}
+   	}
+   	
+   	setAttr -type "string" ("IWGlobalNode.ModelFileName" + $AnimNumber) $FileName;
+   			
+   	$upperCaseFileName = `toupper $FileName`;
+   	if ( `match ".XMODEL_EXPORT" $upperCaseFileName` == "" )
+   		$FileName += ".XMODEL_EXPORT";
+
+      // Add a prefix to the filename if this is as Wii export
+      if ($wiiExport) {
+         string $dir = `dirname $FileName`;
+         string $basename = `basename $FileName ""`;
+         $wiiExportFile = ($dir + "/w" + $basename);
+      }
+
+//   	if ( $skipPerforceEdit == 0 ) {
+//         if ($wiiExport) {
+//      		PerforceEdit $wiiExportFile;
+//   		} else {
+//      		PerforceEdit $FileName;
+//   		}
+//   	}
+   	
+   	if ( `attributeExists ("DoNotExportChildren" + $AnimNumber) "IWGlobalNode"`)
+   		$doNotExportChildren = `getAttr ("IWGlobalNode.DoNotExportChildren" + $AnimNumber)`;
+   
+   	if ( `attributeExists ("ForceExportSelectedJoints" + $AnimNumber) "IWGlobalNode"`)
+   		$forceExportSelectedJoints = `getAttr ("IWGlobalNode.ForceExportSelectedJoints" + $AnimNumber)`;
+   
+   	$progressWindowTitle = ("Exporting Entry " + $AnimNumber );
+   	
+   	progressWindow -title $progressWindowTitle -progress 5 -status "Exporting: 5%" -isInterruptable false;
+
+      if ($wiiExport) {
+      	$command = "ExportXModel \"" + $Parts + "\" \"" + $wiiExportFile + "\"";
+      } else {
+      	$command = "ExportXModel \"" + $Parts + "\" \"" + $FileName + "\"";
+   	}
+
+   	if ( $doNotExportChildren )
+   		$command += " -doNotExportChildren";
+   	if ( $forceExportSelectedJoints )
+   		$command += " -forceExportSelectedJoints";
+
+   	// Export the Model
+   	$catchError = catch ( $errorMsg = eval( $command ) );
+
+      if ($wiiExport) {
+         XmodelFingerReskin -f $wiiExportFile;
+      }
+
+   	if ( $catchError ) {
+   		progressWindow -endProgress;
+   		error ( "Internal failure: " + $FileName );
+   		return 0;
+   	} else {
+   		progressWindow -edit -progress 100 -status "Exporting: 100%";
+   		pause -sec 1;
+   		progressWindow -endProgress;
+   	}
+
+   	return 1;
+   }
+
+   global proc COD_MEW_SetExportNodesME (int $FileNumber) {
+      // This proc is copied from the old COD Export Model Window procedure
+      string $Sel[] = `ls -sl`;
+      string $Each;
+      string $ExportNodes;
+      
+      for ($Each in $Sel) {
+         $ExportNodes = $ExportNodes + $Each + " ";
+      }
+      
+      // Check the export nodes list to update the status line
+      if (`size $ExportNodes`) {
+         //text -e -bgc 0.9 0.9 0.9 -e -label "Ready" ("ExportNodeCheck" + $FileNumber);
+         setAttr -type "string" ("IWGlobalNode.ExportModelNodes" + $FileNumber) $ExportNodes;
+
+         if (`window -exists CODModelExportWindow`) {
+            button -edit -enable true ("SelectExportButton"+$FileNumber);
+         }
+      } else {
+         //text -e -bgc 1 0 0.7 -label "NO EXPORT NODES" ("ExportNodeCheck" + $FileNumber);
+         setAttr -type "string" ("IWGlobalNode.ExportModelNodes" + $FileNumber) "";
+
+         return;
+      }
+   }
+
+   global proc COD_MEW_SelectExportNodesME(int $FileNumber) {
+      // This proc is copied from the old COD Export Model Window procedure
+      string $exportNodeArray[];
+      int $exportNodeSize;
+      int $exportNodeIndex;
+      string $SelEval;
+
+      string $ExportNodes = `getAttr  ("IWGlobalNode.ExportModelNodes " + $FileNumber)`;
+      string $newExportNodes;
+      string $deletedNodes;
+
+      $exportNodeSize = `tokenize $ExportNodes " " $exportNodeArray`;
+
+      $newExportNodes = "";
+      $deletedNodes = "";
+
+      // for each export objects, check its existance.  If it no longer exists, append its name in a string
+      if ( $exportNodeSize > 1 ) {
+         for ( $exportNodeIndex = 0; $exportNodeIndex < $exportNodeSize; $exportNodeIndex++ ) {
+            if ( `objExists $exportNodeArray[$exportNodeIndex]` )
+               $newExportNodes += $exportNodeArray[$exportNodeIndex] + " ";
+            else
+               $deletedNodes += $exportNodeArray[$exportNodeIndex] + " ";
+         }
+      } else {
+         $newExportNodes = $ExportNodes;
+      }
+
+      // select only the objects that exist.
+      $SelEval = ("select -r " + $newExportNodes);
+      //print ( $SelEval + "...\n" );
+      eval $SelEval;
+
+
+      if ($newExportNodes == "") {
+         select -cl;
+      }
+
+      // if objects are deleted, pop a messagebox asking if the export list should be updated.
+      if ( $deletedNodes != "" ) {
+         string $confirmMessage;
+         string $deletedNodesString = "";
+         string $delNodesArr[] = stringToStringArray($deletedNodes, " ");
+
+         for ($i=0; $i<size($delNodesArr); $i++) {
+            $deletedNodesString += ($delNodesArr[$i] + " ");
+
+            if ($i % 10 == 0 && $i != 0) {
+               $deletedNodesString += "\n";
+            }
+         }
+
+         $confirmMessage = "[ " + $deletedNodesString + " ] no longer exist.\n\nWould you like to remove these object references from the export list?";
+
+         if ( "Yes" == `confirmDialog -title "Missing Objects?" -message $confirmMessage -button "Yes" -button "No" -defaultButton "Yes" -cancelButton "No" -dismissString "No"` ) {
+            COD_MEW_SetExportNodesME $FileNumber;
+         }
+      }
+   }
+
+   global proc COD_MEW_StartTheExport(int $Selected, string $listName) {
+      int $wiiExport = 0;
+
+      // This proc is a modified version of the old COD Export Model Window procedure
+      if (!`objExists IWGlobalNode`) {
+         return;
+      }
+
+      if (`attributeQuery -n IWGlobalNode -ex "IsWiiExportScene"` == 1) {
+         $wiiExport = `getAttr "IWGlobalNode.IsWiiExportScene"`;
+      }
+
+      // Rename all shape nodes in scene to prevent duplicates which confuse the exporter
+      catch( eval("sakRenameAllShapeNodes") );
+
+      int $loop;
+      int $CheckBox;
+      int $ModelCount;
+      int $pluginLoaded;
+      string $currentSceneName;
+//      int $perforceResult;
+      string $confirmResult;
+//      global string $perforceOptionGlobal;
+//      global int $skipPerforceEdit;
+      string $saveMessage;
+      string $saveConfirmResult;
+      int $postConvert;
+
+      // Find out if any Models are selected.
+      // Get the Model list number
+      $ModelCount = `getAttr IWGlobalNode.ModelCount`;
+
+      if ($ModelCount < 1) {
+         return;
+      }
+
+      $currentSceneName = `file -q -sn`;
+//      $skipPerforceEdit = 0;
+
+//      $perforceResult = `PerforceEdit $currentSceneName`;
+
+      if ( `file -q -anyModified` > 0 ) {
+         $saveMessage = "Save changes to " + $currentSceneName + " ?";
+         $saveConfirmResult = `confirmDialog -title "Save Changes" -message $saveMessage -button "Yes" -button "No" -button "Cancel Export" -defaultButton "Yes" -cancelButton "Yes" -dismissString "No"`;
+
+         if ( $saveConfirmResult == "Yes" ) {
+            file -save;
+         }
+         if ( $saveConfirmResult == "Cancel Export" ) {
+            return;
+         }
+      }
+
+      // check if the plugin is loaded.  If not, load it.  If that fails, error out
+      $pluginLoaded = `pluginInfo -q -loaded XModelExport`;
+      if ( $pluginLoaded == 0 ) {
+         loadPlugin XModelExport;
+      }
+
+      $pluginLoaded = `pluginInfo -q -loaded XModelExport`;
+      if ( $pluginLoaded == 0 ) {
+         error ("XModelExport plugin is not loaded");
+      }
+
+//      $perforceOptionGlobal = "";
+      $postConvert = 1;
+      // This is passed to the proc to check vertex colors, if it is set to true the vertex
+      // colors will automatically be set to white if they are missing
+      int $vertexColorsYesToAll = 0;
+
+      if ($Selected == 0) {
+         for ($loop=1; $loop<=$ModelCount ;$loop++) {
+            // FIX FOR MAYA 7 REFERENCING PROBLEM.  SHOULD BE, BUT NOT NECESSARILY REMOVED IN MAYA 8+
+            COD_MEW_SelectExportNodesME $loop;
+            COD_MEW_SetExportNodesME $loop;
+
+               // Call the proc to check each of the selected exports for vertex colors
+            $vertexColorsYesToAll = COD_MEW_checkVertexColor($vertexColorsYesToAll);
+
+            // Just export it because we don't care if it's selected or not
+            COD_MEW_ExportModel $loop $wiiExport;
+         }
+      } else {
+         if (`checkBox -q -v MEWuseLodGrouping_chk` == 0) {
+            int $selExports[] = `textScrollList -q -sii $listName`;
+
+            for ($idx in $selExports) {
+               // FIX FOR MAYA 7 REFERENCING PROBLEM.  SHOULD BE, BUT NOT NECESSARILY REMOVED IN MAYA 8+
+               COD_MEW_SelectExportNodesME $idx;
+               COD_MEW_SetExportNodesME $idx;
+
+               // Call the proc to check each of the selected exports for vertex colors
+               $vertexColorsYesToAll = COD_MEW_checkVertexColor($vertexColorsYesToAll);
+
+               // Just export it because we don't care if it's selected or not
+               COD_MEW_ExportModel $idx $wiiExport;
+            }
+         } else {
+            int $selExports[] = `textScrollList -q -sii $listName`;
+            int $exportMe[];
+
+            for ($idx in $selExports) {
+               for ($i=1; $i<=size($COD_MEW_MODELEXPORT_GROUP); $i++) {
+                  if ($idx == $COD_MEW_MODELEXPORT_GROUP[$i]) {
+                     $exportMe[size($exportMe)] = $i;
+                  }
+               }
+            }
+
+            for ($export in $exportMe) {
+               // FIX FOR MAYA 7 REFERENCING PROBLEM.  SHOULD BE, BUT NOT NECESSARILY REMOVED IN MAYA 8+
+               COD_MEW_SelectExportNodesME $export;
+               COD_MEW_SetExportNodesME $export;
+
+               // Call the proc to check each of the selected exports for vertex colors
+               $vertexColorsYesToAll = COD_MEW_checkVertexColor($vertexColorsYesToAll);
+   
+               // Just export it because we don't care if it's selected or not
+               COD_MEW_ExportModel $export $wiiExport;
+            }
+         }
+      }
+   }
+
+   global proc COD_MEW_SelectMultiExportNodes( string $listName, int $index ) {
+      // This proc is a modified version of the old COD Export Model Window procedure
+      int $exportIndex[];
+      int $FileNumber;
+
+      if (`checkBox -q -v MEWuseLodGrouping_chk` == 1) {
+         $exportIndex = `textScrollList -q -sii $listName`;
+      } else {
+         return;
+      }
+
+      if (size($exportIndex) > 0) {
+         for ($i=1; $i<=size($COD_MEW_MODELEXPORT_GROUP); $i++) {
+            if ($exportIndex[0] == $COD_MEW_MODELEXPORT_GROUP[$i]) {
+               $FileNumber = ($i+$index);
+               break;
+            }
+         }
+      } else {
+         return;
+      }
+
+      string $exportNodeArray[];
+      int $exportNodeSize;
+      int $exportNodeIndex;
+      string $SelEval;
+
+      string $ExportNodes = `getAttr  ("IWGlobalNode.ExportModelNodes " + $FileNumber)`;
+      string $newExportNodes;
+      string $deletedNodes;
+
+      $exportNodeSize = `tokenize $ExportNodes " " $exportNodeArray`;
+
+      $newExportNodes = "";
+      $deletedNodes = "";
+
+      // for each export objects, check its existance.  If it no longer exists, append its name in a string
+      if ( $exportNodeSize > 1 ) {
+         for ( $exportNodeIndex=0; $exportNodeIndex<$exportNodeSize; $exportNodeIndex++ ) {
+            if ( `objExists $exportNodeArray[$exportNodeIndex]` )
+               $newExportNodes += $exportNodeArray[$exportNodeIndex] + " ";
+            else
+               $deletedNodes += $exportNodeArray[$exportNodeIndex] + " ";
+         }
+      } else {
+         $newExportNodes = $ExportNodes;
+      }
+
+      // select only the objects that exist.
+      $SelEval = ("select -r " + $newExportNodes);
+
+      eval $SelEval;
+
+      if ($newExportNodes == "") {
+         select -cl;
+      }
+
+      // if objects are deleted, pop a messagebox asking if the export list should be updated.
+      if ( $deletedNodes != "" ) {
+         string $confirmMessage;
+         string $deletedNodesString = "";
+         string $delNodesArr[] = stringToStringArray($deletedNodes, " ");
+
+         for ($i=0; $i<size($delNodesArr); $i++) {
+            $deletedNodesString += ($delNodesArr[$i] + " ");
+
+            if ($i % 10 == 0 && $i != 0) {
+               $deletedNodesString += "\n";
+            }
+         }
+
+         $confirmMessage = "[ " + $deletedNodesString + " ] no longer exist.\n\nWould you like to remove these object references from the export list?";
+
+         if ( "Yes" == `confirmDialog -title "Missing Objects?" -message $confirmMessage -button "Yes" -button "No" -defaultButton "Yes" -cancelButton "No" -dismissString "No"` ) {
+            COD_MEW_SetExportNodesME $FileNumber;
+         }
+      }
+   }
+
+   // This version of the select export nodes proc is used by the UI
+   // Another version of the same proc is used upon export and takes an export index
+   // Rather than querying the selected UI export
+   global proc COD_MEW_SelectExportNodes( string $listName ) {
+      // This proc is a modified version of the old COD Export Model Window procedure
+      int $exportIndex[];
+      int $FileNumber;
+
+      if (`checkBox -q -v MEWuseLodGrouping_chk` == 0) {
+         $exportIndex = `textScrollList -q -sii $listName`;
+      } else {
+         return;
+      }
+
+      if (size($exportIndex) > 0) {
+         $FileNumber = $exportIndex[0];
+      } else {
+         return;
+      }
+
+      string $exportNodeArray[];
+      int $exportNodeSize;
+      int $exportNodeIndex;
+      string $SelEval;
+
+      string $ExportNodes = `getAttr  ("IWGlobalNode.ExportModelNodes " + $FileNumber)`;
+      string $newExportNodes;
+      string $deletedNodes;
+
+      $exportNodeSize = `tokenize $ExportNodes " " $exportNodeArray`;
+
+      $newExportNodes = "";
+      $deletedNodes = "";
+
+      // for each export objects, check its existance.  If it no longer exists, append its name in a string
+      if ( $exportNodeSize > 1 ) {
+         for ( $exportNodeIndex=0; $exportNodeIndex<$exportNodeSize; $exportNodeIndex++ ) {
+            if ( `objExists $exportNodeArray[$exportNodeIndex]` )
+            $newExportNodes += $exportNodeArray[$exportNodeIndex] + " ";
+            else
+            $deletedNodes += $exportNodeArray[$exportNodeIndex] + " ";
+         }
+      } else {
+         $newExportNodes = $ExportNodes;
+      }
+
+      // select only the objects that exist.
+      $SelEval = ("select -r " + $newExportNodes);
+
+      eval $SelEval;
+
+      if ($newExportNodes == "") {
+         select -cl;
+      }
+
+      // if objects are deleted, pop a messagebox asking if the export list should be updated.
+      if ( $deletedNodes != "" ) {
+         string $confirmMessage;
+         string $deletedNodesString = "";
+         string $delNodesArr[] = stringToStringArray($deletedNodes, " ");
+
+         for ($i=0; $i<size($delNodesArr); $i++) {
+            $deletedNodesString += ($delNodesArr[$i] + " ");
+
+            if ($i % 10 == 0 && $i != 0) {
+               $deletedNodesString += "\n";
+            }
+         }
+
+         $confirmMessage = "[ " + $deletedNodesString + " ] no longer exist.\n\nWould you like to remove these object references from the export list?";
+
+         if ( "Yes" == `confirmDialog -title "Missing Objects?" -message $confirmMessage -button "Yes" -button "No" -defaultButton "Yes" -cancelButton "No" -dismissString "No"` ) {
+            COD_MEW_SetExportNodesME $FileNumber;
+            COD_MEW_updateNodeLister $FileNumber;
+         }
+      }
+   }
+}

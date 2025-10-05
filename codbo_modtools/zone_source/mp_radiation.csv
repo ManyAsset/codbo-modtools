@@ -1,0 +1,51 @@
+ignore,code_post_gfx_mp
+ignore,common_mp
+include_console,mp_configStrings
+,
+col_map_mp,maps/mp/mp_radiation.d3dbsp
+gfx_map,maps/mp/mp_radiation.d3dbsp
+,
+rawfile,maps/mp/mp_radiation.gsc
+rawfile,maps/mp/mp_radiation_amb.gsc
+rawfile,maps/mp/mp_radiation_fx.gsc
+rawfile,maps/mp/createfx/mp_radiation_fx.gsc
+,
+// Dept. zone_source,
+,
+include,mp_radiation_fx
+include,mp_radiation_animation
+include,mp_radiation_vehicles
+include,mp_radiation_characters
+include,mp_radiation_lighting
+include,mp_radiation_weapons
+// water,
+fx,bio/player/fx_player_water_waist_ripple
+fx,bio/player/fx_player_water_knee_ripple
+fx,impacts/fx_water_hit_sm
+fx,impacts/fx_water_hit_md
+fx,impacts/fx_water_hit_lg
+fx,impacts/fx_water_object_ripple
+fx,bio/player/fx_footstep_water
+,
+// Level zone_source,
+,
+rawfile,clientscripts/mp/mp_radiation.csc
+rawfile,clientscripts/mp/mp_radiation_amb.csc
+rawfile,clientscripts/mp/mp_radiation_fx.csc
+rawfile,clientscripts/mp/createfx/mp_radiation_fx.csc
+,
+,
+,
+// lighting section,
+xmodel,skybox_mp_radiation_v2
+rawfile,maps/mp/createart/mp_radiation_art.gsc
+rawfile,exposure/mp_radiation.xpo
+rawfile,vision/mp_radiation.vision
+rawfile,sun/mp_radiation.sun
+,
+sound,mpl_radiation
+,
+include,mptypes_urbanspecops
+,
+// initial texture load order list (keep at end)
+texturelist,texturelist/mp_radiation.csv

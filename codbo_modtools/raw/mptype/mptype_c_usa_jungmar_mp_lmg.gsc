@@ -1,0 +1,9 @@
+
+main()
+{
+	character\c_usa_jungmar_mp_lmg::main();
+}
+precache()
+{
+	character\c_usa_jungmar_mp_lmg::precache();
+} 

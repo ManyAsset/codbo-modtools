@@ -1,0 +1,24 @@
+{
+	stateMap "default2d";
+
+	vertexShader 3.0 "pimp_shader_sw4_2d_pentagon_blowout_1d46b236.hlsl"
+	{
+	}
+
+	pixelShader 3.0 "pimp_shader_sw4_2d_pentagon_blowout_1d46b236.hlsl" 
+	{
+		RevealMap                   = material.RevealMap;
+  ResolvedScene_Sampler_C2_P0 = sampler.resolvedScene;
+	}
+
+	vertex.position = code.position;
+	vertex.texcoord[0] = code.texcoord[0];
+
+	declTypes
+	{
+		packed
+		debug
+		generic
+	}
+}
+

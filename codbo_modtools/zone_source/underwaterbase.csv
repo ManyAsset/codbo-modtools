@@ -1,0 +1,186 @@
+ignore,code_post_gfx
+ignore,common
+//ignore,dev
+
+screenclearcolor,1,1,1,1
+
+col_map_sp,maps/underwaterbase.d3dbsp
+gfx_map,maps/underwaterbase.d3dbsp
+
+// --------------------------------------
+// DEPT ZONE_SOURCE
+
+include,underwaterbase_fx
+include,underwaterbase_animation
+include,underwaterbase_vehicles
+include,underwaterbase_characters
+include,underwaterbase_lighting
+include,underwaterbase_weapons
+
+// --------------------------------------
+
+// Memory Slug
+include_xenon,underwaterbase_memory
+
+// --------------------------------------
+// SCRIPTS
+
+// level scripts
+rawfile,maps/underwaterbase.gsc
+rawfile,maps/underwaterbase_anim.gsc
+rawfile,maps/underwaterbase_amb.gsc
+rawfile,maps/underwaterbase_fx.gsc
+
+rawfile,maps/underwaterbase_introigc.gsc
+rawfile,maps/underwaterbase_airsupport.gsc
+rawfile,maps/underwaterbase_snipe.gsc
+rawfile,maps/underwaterbase_rendezvous.gsc
+rawfile,maps/underwaterbase_bigigc.gsc
+rawfile,maps/underwaterbase_divetobase.gsc
+rawfile,maps/underwaterbase_enterbase.gsc
+rawfile,maps/underwaterbase_bigflood.gsc
+rawfile,maps/underwaterbase_upshaft.gsc
+rawfile,maps/underwaterbase_broadcastcenter.gsc
+rawfile,maps/underwaterbase_deactivatecode.gsc
+rawfile,maps/underwaterbase_escape.gsc
+rawfile,maps/underwaterbase_thesurface.gsc
+rawfile,maps/underwaterbase_util.gsc
+rawfile,maps/underwaterbase_huey.gsc
+rawfile,maps/underwaterbase_drones.gsc
+//rawfile,maps/underwaterbase_ambient_fight.gsc
+//rawfile,maps/underwaterbase_pipes.gsc
+rawfile,maps/createfx/underwaterbase_fx.gsc
+
+// utility scripts
+rawfile,maps/_flyover_audio.gsc
+rawfile,maps/_rusher.gsc
+rawfile,maps/_tvguidedmissile.gsc
+
+//clientscripts
+rawfile,clientscripts/underwaterbase.csc
+rawfile,clientscripts/underwaterbase_amb.csc
+rawfile,clientscripts/underwaterbase_fx.csc
+rawfile,clientscripts/createfx/underwaterbase_fx.csc
+
+
+// --------------------------------------
+// ART
+
+// scripts
+rawfile,maps/createart/underwaterbase_art.gsc
+
+// exposure file
+rawfile,exposure/underwaterbase.xpo
+
+// vision sets
+rawfile,vision/underwaterbase.vision
+rawfile,vision/uwb_bigigc.vision
+rawfile,vision/uwb_broadcastcenter.vision
+rawfile,vision/uwb_chopper.vision
+rawfile,vision/uwb_corridor_01.vision
+rawfile,vision/uwb_corridor_02.vision
+rawfile,vision/uwb_dive.vision
+rawfile,vision/uwb_dragofight.vision
+rawfile,vision/uwb_end.vision
+rawfile,vision/uwb_escape.vision
+rawfile,vision/uwb_moonpool.vision
+rawfile,vision/uwb_shipdeck.vision
+rawfile,vision/uwb_shipint.vision
+rawfile,vision/uwb_swimtosurface.vision
+
+// --------------------------------------
+// MISC
+
+localize,underwaterbase
+sound,spl_underwaterbase
+
+// filters/overlays
+//	material,generic_filter_helmet
+//	material,generic_overlay_helmet
+material,generic_filter_superflare
+
+// rumble
+rawfile,rumble/damage_heavy
+rawfile,rumble/damage_heavy_h.rmb
+rawfile,rumble/damage_heavy_l.rmb
+rawfile,rumble/damage_light
+rawfile,rumble/damage_light_h.rmb
+rawfile,rumble/damage_light_l.rmb
+rawfile,shock/explosion.shock
+rawfile,shock/tankblast.shock
+
+// bullet cam
+//include,bulletcam
+
+// Heli flight stick
+xmodel,t5_veh_helo_hind_cockpit_control
+
+cinematicmaxsize,1024,1024
+rawfile,bik/int_number_flash_1.bik
+
+material,flamethrowerfx_color_distort_overlay_bloom
+
+// --------------------------------------
+// VIEWMODELS
+include,common_player_us_dive
+
+// --------------------------------------
+// FXANIMS,
+xanim,fxanim_gp_windsock_anim
+xanim,fxanim_gp_tarp_crate_stack_anim
+xanim,fxanim_creek_fish1_anim
+xanim,fxanim_creek_fish2_anim
+xanim,fxanim_creek_fish3_anim
+xanim,fxanim_uwb_fwd_crows_nest_anim
+xanim,fxanim_uwb_aft_crane_fall_anim
+xanim,fxanim_uwb_aft_crane_fall_idle_anim
+xanim,fxanim_uwb_aft_crane_idle_anim
+xanim,fxanim_uwb_aft_railing_anim
+xanim,fxanim_uwb_dbl_mast01_anim
+xanim,fxanim_uwb_dbl_mast02_anim
+xanim,fxanim_uwb_dbl_mast_platform_anim
+xanim,fxanim_uwb_aft_radio_tower_anim
+xanim,fxanim_uwb_aft_radio_flag_rail_anim
+xanim,fxanim_uwb_fwd_radio_tower_anim
+xanim,fxanim_uwb_fwd_radio_mast_anim
+xanim,fxanim_uwb_fwd_wire_tower_b_anim
+xanim,fxanim_uwb_shiprope_sway_anim
+xanim,fxanim_uwb_door_burst_anim
+xanim,fxanim_uwb_sub_drop_anim
+xanim,fxanim_uwb_sub_hoist_drop01_anim
+xanim,fxanim_uwb_broadcast_pipe01_a_anim
+xanim,fxanim_uwb_broadcast_pipe01_b_anim
+xanim,fxanim_uwb_broadcast_pipe02_a_anim
+xanim,fxanim_uwb_broadcast_pipe02_b_anim
+xanim,fxanim_uwb_sub_hoist_drop02_anim
+xanim,fxanim_uwb_sub_hoist_idle_anim
+xanim,fxanim_uwb_sub_hoist_rise01_anim
+xanim,fxanim_uwb_sub_hoist_rise02_anim
+xanim,fxanim_uwb_sub_rise_anim
+xanim,fxanim_gp_huey_int_idle_anim
+xanim,fxanim_gp_huey_int_dmg_break_anim
+xanim,fxanim_gp_huey_int_dmg_idle_anim
+xanim,fxanim_gp_huey_uwb_necklace_idle_anim
+xanim,fxanim_uwb_aft_wire_tower_anim
+xanim,fxanim_uwb_umbilical_wires_amb_loop_anim
+xanim,fxanim_uwb_umbilical_wires_pistons_loop_anim
+xanim,fxanim_uwb_umbilical_wires_pistons_stop_anim
+xanim,fxanim_uwb_umbilical_wires_spool_loop_anim
+xanim,fxanim_uwb_umbilical_wires_spool_stop_anim
+xanim,fxanim_uwb_umbilical_wires_taught_loop_anim
+xanim,fxanim_uwb_umbilical_wires_taught_slack_anim
+xanim,fxanim_uwb_umbilical_wires_taught_slack_loop_anim
+xanim,fxanim_uwb_moon_pool_wires_anim
+xanim,fxanim_gp_chain03_anim
+xanim,fxanim_gp_chain02_anim
+xanim,fxanim_gp_wire_sway_01_slow_anim
+xanim,fxanim_gp_wire_sway_04_slow_anim
+xanim,fxanim_uwb_panel_anim
+xanim,fxanim_uwb_preserver_anim
+xanim,fxanim_uwb_ropes_anim
+xanim,fxanim_uwb_hallway1_anim
+xanim,fxanim_uwb_hallway2_anim
+xanim,fxanim_uwb_broadcast_wires_anim
+xanim,fxanim_gp_wirespark_long_anim
+xanim,fxanim_gp_wirespark_med_anim
+xanim,fxanim_escape_int_room_wires_multi_anim

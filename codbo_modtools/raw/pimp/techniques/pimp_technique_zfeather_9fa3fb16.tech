@@ -1,0 +1,22 @@
+{
+	stateMap "zfeather_add";
+
+	vertexShader 3.0 "pimp_shader_zfeather_fe1d3e0.hlsl"
+	{
+		featherParms = material.featherParms;
+		falloffParms = material.falloffParms;
+		falloffBeginColor = material.falloffBeginColor;
+		falloffEndColor = material.falloffEndColor;
+	}
+
+	pixelShader 3.0 "pimp_shader_zfeather_935e64dd.hlsl" 
+	{
+		colorMapSampler = material.colorMap;
+		featherParms = material.featherParms;
+	}
+
+	vertex.position = code.position;
+	vertex.normal = code.normal;
+
+}
+

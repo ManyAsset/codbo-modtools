@@ -1,0 +1,31 @@
+{
+	stateMap "passthrough";
+
+	vertexShader 3.0 "pimp_shader_cod7water_517b644a.hlsl"
+	{
+		waterNormalPositionScale = material.waterNormalPositionScale;
+		waterLoNormalScroll = material.waterLoNormalScroll;
+		waterHiNormalScroll = material.waterHiNormalScroll;
+		waterNormalScrollSpeed = material.waterNormalScrollSpeed;
+	}
+
+	pixelShader 3.0 "pimp_shader_cod7water_517b644a.hlsl" 
+	{
+		normalMap00 = material.normalMap00;
+		normalMap01 = material.normalMap01;
+		waterControlVar0 = material.waterControlVar0;
+		waterControlVar1 = material.waterControlVar1;
+		refractMap = sampler.resolvedPostSun;
+		specularBaseColor = material.specularBaseColor;
+		waterColorN = material.waterColorN;
+		waterColorS = material.waterColorS;
+		waterColorF = material.waterColorF;
+		waterNormalScale = material.waterNormalScale;
+	}
+
+	vertex.position = code.position;
+	vertex.texcoord[0] = code.texcoord[0];
+	vertex.color[0] = code.color;
+
+}
+

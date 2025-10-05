@@ -1,0 +1,28 @@
+#if "@blendFunc@" == "Blend" || ("@blendFunc@" == "Replace" && "@alphaTest@" != "Always")
+techniqueSet( "sw_phong_lit" ); 
+#else
+techniqueSet( "sw_phong_lit_noalpha" ); 
+#endif
+
+#include "commonsetup.template" 
+
+cgfxTextureTableRefImage
+{
+	"Normal_MapSampler" = streamable normalMap( "tile both", "mip (1x trilinear)", "model_export\characters\bond\textures\bond_miami_body_n_new.tga", 0 ) "<auto compression>" : "normalMap"; 
+	"Cloth_Detail_NormalSampler" = streamable normalMap( "tile both", "mip (1x trilinear)", "model_export\characters\base_character\textures\base_leather_tile_2_n.tga", 0 ) "<auto compression>" : "normalMap"; 
+	"Diffuse_MapSampler" = streamable map( "tile both", "mip (1x trilinear)", "model_export\characters\bond\textures\bond_miami_body_c.tga", 0 ) "<auto compression>" : "colorMap"; 
+	"_30Sampler" = streamable map( "tile both", "mip (1x trilinear)", "model_export\characters\bond\textures\bond_miami_body_s.tga", 0 ) "<auto compression>" : "colorMap"; 
+}
+
+cgfxConstantTable
+{
+	"v_Angle" = float4( 90, 0, 0, 0 );
+	"EnvBlurLevel" = float4( 0, 0, 0, 0 );
+	"Kick_Specular_Power" = float4( 15, 15, 15, 0 );
+	"Kick_Light_Value" = float4( 0.48, 0.68, 1, 0 );
+	"Detail_Amount" = float4( 0.7, 0, 0, 0 );
+	"Specular_Power" = float4( 200, 0, 0, 0 );
+	"Spec_tint" = float4( 3, 3, 3, 1 );
+}
+allocReflectionProbe();
+

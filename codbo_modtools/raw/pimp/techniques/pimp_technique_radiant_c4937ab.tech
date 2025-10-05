@@ -1,0 +1,18 @@
+{
+	stateMap "wireframe";
+
+	vertexShader 3.0 "pimp_shader_radiant_cab5e44f.hlsl"
+	{
+	}
+
+	pixelShader 3.0 "pimp_shader_radiant_cab5e44f.hlsl" 
+	{
+		Diffuse_MapSampler = material.Facepaint_Mask;
+	}
+
+	vertex.position = code.position;
+	vertex.texcoord[0] = code.texcoord[0];
+	vertex.color[0] = code.color;
+
+}
+

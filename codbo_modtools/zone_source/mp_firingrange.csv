@@ -1,0 +1,41 @@
+ignore,code_post_gfx_mp
+ignore,common_mp
+include_console,mp_configStrings
+
+col_map_mp,maps/mp/mp_firingrange.d3dbsp
+gfx_map,maps/mp/mp_firingrange.d3dbsp
+,
+rawfile,maps/mp/mp_firingrange.gsc
+rawfile,maps/mp/mp_firingrange_amb.gsc
+rawfile,maps/mp/mp_firingrange_fx.gsc
+rawfile,maps/mp/createfx/mp_firingrange_fx.gsc
+,
+rawfile,clientscripts/mp/mp_firingrange.csc
+rawfile,clientscripts/mp/mp_firingrange_amb.csc
+rawfile,clientscripts/mp/mp_firingrange_fx.csc
+rawfile,clientscripts/mp/createfx/mp_firingrange_fx.csc
+,
+,
+sound,mpl_firingrange
+,
+include,mptypes_cubans
+include,mp_firingrange_fx
+,
+// water,
+fx,bio/player/fx_player_water_waist_ripple
+fx,bio/player/fx_player_water_knee_ripple
+fx,impacts/fx_water_hit_sm
+fx,impacts/fx_water_hit_md
+fx,impacts/fx_water_hit_lg
+fx,impacts/fx_water_object_ripple
+fx,bio/player/fx_footstep_water
+
+// Lighting Dept
+xmodel,skybox_mp_firingrange
+rawfile,maps/mp/createart/mp_firingrange_art.gsc
+rawfile,vision/mp_firingrange.vision
+rawfile,exposure/mp_firingrange.xpo
+
+
+// initial texture load order list (keep at end)
+texturelist,texturelist/mp_firingrange.csv

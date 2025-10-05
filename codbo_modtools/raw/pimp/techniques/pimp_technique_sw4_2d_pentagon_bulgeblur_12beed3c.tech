@@ -1,0 +1,25 @@
+{
+	stateMap "default2d";
+
+	vertexShader 3.0 "pimp_shader_sw4_2d_pentagon_bulgeblur_7d2f784b.hlsl"
+	{
+	}
+
+	pixelShader 3.0 "pimp_shader_sw4_2d_pentagon_bulgeblur_7d2f784b.hlsl" 
+	{
+		BlurryScale                 = material.BlurryScale;
+  Mask                        = material.Mask;
+  ResolvedScene_Sampler_C2_P0 = sampler.resolvedScene;
+	}
+
+	vertex.position = code.position;
+	vertex.texcoord[0] = code.texcoord[0];
+
+	declTypes
+	{
+		packed
+		debug
+		generic
+	}
+}
+

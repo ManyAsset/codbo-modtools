@@ -1,0 +1,314 @@
+{
+   global int $COD_MEW_MODELEXPORT_GROUP[];
+
+   global string $GAME_PROJECT_DIR;
+   global string $GAME_MODELEXPORT_DIR;
+
+   // Add each file in the array to perfoce
+   // Return false if files are not found
+//   global proc int COD_MEW_addFileToPerforce(string $file) {
+//      if (`filetest -f $file` == 1) {
+//         return 1;
+//      } else {
+//         return 0;
+//      }
+//   }
+
+   // Take a shader and returns the texture maps plugged in
+   global proc string[] COD_MEW_getShaderMaps(string $shader) {
+      // These'll be our texture map "file" nodes
+      string $maps[];
+      string $colorMap, $normalMap, $specMap, $cosMap;
+      string $textures[] = ls( "-type", "file", listHistory( listConnections("-t", "shadingEngine", $shader) ) );
+
+      for ($t in $textures) {
+         string $connections[] = `listConnections -p 1 -s 0 -d 1 $t`;
+
+         // Some shaders have slightly different attribute names
+         // So we'll have a seperate set of conditions for the types
+         // we're looking for
+         if (`objectType $shader` == "phong") {
+            for ($c in $connections) {
+               if (endsWith($c, ".color")) {
+                  $colorMap = $t;
+               } else if (endsWith($c, ".bumpValue")) {
+                  $normalMap = $t;
+               } else if (endsWith($c, ".specularColor")) {
+                  $specMap = $t;
+               } else if (endsWith($c, ".cosinePower")) {
+                  $cosMap = $t;
+               }
+            }
+         } else if (`objectType $shader` == "blinn") {
+            for ($c in $connections) {
+               if (endsWith($c, ".color")) {
+                  $colorMap = $t;
+               } else if (endsWith($c, ".bumpValue")) {
+                  $normalMap = $t;
+               } else if (endsWith($c, ".specularColor")) {
+                  $specMap = $t;
+               } else if (endsWith($c, ".eccentricity")) {
+                  $cosMap = $t;
+               }
+            }
+         } else if (`objectType $shader` == "lambert") {
+            for ($c in $connections) {
+               if (endsWith($c, ".color")) {
+                  $colorMap = $t;
+               } else if (endsWith($c, ".bumpValue")) {
+                  $normalMap = $t;
+               }
+            }
+         }
+      }
+
+      // Set the values in our array
+      if ($colorMap != "")
+         $maps[0] = `getAttr ($colorMap+".fileTextureName")`;
+      if ($normalMap != "")
+         $maps[1] = `getAttr ($normalMap+".fileTextureName")`;
+      if ($specMap != "")
+         $maps[2] = `getAttr ($specMap+".fileTextureName")`;
+      if ($cosMap != "")
+         $maps[3] = `getAttr ($cosMap+".fileTextureName")`;
+
+      return $maps;
+   }
+
+   global proc COD_MEW_getMeshesFromExportIndex(string $allMeshes[], int $idx) {
+      // First empty the mesh array
+      clear($allMeshes);
+
+      // Make sure we have an IWGlobalNode
+      if (!`objExists "IWGlobalNode"`) {
+         return;
+      }
+
+      // Get the list of export nodes
+      string $nodesStr = `getAttr ("IWGlobalNode.ExportModelNodes"+$idx)`;
+      // Make it an array
+      string $exportNodes[] = stringToStringArray($nodesStr, " ");
+
+      if (!`sakCheckForAllObjects $exportNodes`) {
+         confirmDialog -t "Missing Nodes" -m "Some of the Export Nodes are missing" -b "OK";
+         return;
+      }
+
+      // Get the shape nodes from our list of export nodes
+      $allMeshes = listRelatives("-s", "-ni", $exportNodes);
+
+      // If no shapes were found, try the children
+      if (size($allMeshes) == 0) {
+         $allMeshes = listRelatives("-s", "-ni", listRelatives("-c", $exportNodes));
+      }
+   }
+
+   // Scan all GDTs under the model_export directory and search for a list of entry names
+   // Return an array containing the names of entries found
+   global proc string[] COD_MEW_checkForGdtEntries(string $entryNames[]) {
+      int $prog = 0;
+      int $step = (100 / size($entryNames));
+      string $existingEntries[];
+
+      progressWindow -t "Scanning all GDTs" -pr $prog -st "" -ii true;
+
+      for ($i=0; $i<size($entryNames); $i++) {
+         if (`progressWindow -q -ic` != 1) {
+            $prog += $step;
+
+            // This command will return an empty string if the entry is not found
+            string $result = `gdtFindEntry -f $GAME_MODELEXPORT_DIR -n $entryNames[$i]`;
+
+            // If the result is not an empty string
+            if ($result != "") {
+               // Then we append the entry name to our list of existing entries
+               $existingEntries[size($existingEntries)] = $entryNames[$i];
+            }
+
+            progressWindow -e -pr $prog;
+         } else {
+            // If the user interrupts the gdt scan we'll return this string as the first item
+            // in the array so that we can check if this procedure was canceled
+            $existingEntries[0] = "GDT CHECK CANCELED BY USER";
+            break;
+         }
+      }
+
+      progressWindow -endProgress;
+      return $existingEntries;
+   }
+
+   // Scan all gamge GDTs located in the model_export folder
+   // A popup report of the location of any selected xmodel entry is generated
+   global proc COD_MEW_findGdtEntries(string $listName) {
+      if (`checkBox -q -v MEWuseLodGrouping_chk` == 1) {
+         string $selectedEntries[] = `textScrollList -q -si $listName`;
+         string $resultStr = "Selected entries found in the following GDTs\n\n";
+
+         // Check to make sure at least one entry is selected
+         if (size($selectedEntries) == 0) {
+            confirmDialog -t "Select Entry" -m "Select at least one entry to search for" -b "OK";
+            return;
+         }
+
+         int $prog = 0;
+         int $step = (100 / size($selectedEntries));
+
+         progressWindow -t "Scanning all GDTs" -pr $prog -st "" -ii true;
+
+         for ($i=0; $i<size($selectedEntries); $i++) {
+            if (`progressWindow -q -ic` != 1) {
+               $prog += $step;
+
+               // Get the basename from the full path in the window textScrollList
+               string $entryName = basenameEx($selectedEntries[$i]);
+               // This command returns the gdt name an entry is found in
+               string $result = `gdtFindEntry -f $GAME_MODELEXPORT_DIR -n $entryName`;
+               $resultStr += "     ";
+
+               if ($result != "") {
+                  $resultStr += $entryName;
+                  $resultStr += " ----- ";
+                  $resultStr += $result;
+                  $resultStr += "\n";
+               } else {
+                  $resultStr += $entryName;
+                  $resultStr += " ----- < Not Found >\n";
+               }
+
+               progressWindow -e -pr $prog;
+            } else {
+               break;
+            }
+         }
+
+         progressWindow -endProgress;
+         confirmDialog -t "GDT Location" -m $resultStr -b "OK";
+      }
+   }
+
+   // Scan all gamge GDTs located in the model_export folder
+   // A popup report of the location of any selected materials is generated
+   global proc COD_MEW_findSelectedMaterialsInGdt(string $listName) {
+      // List selected materials, we look for the obvious types
+      string $selMaterials[] = `ls -sl -typ "lambert" -typ "blinn" -typ "phong"`;
+      // This array will hold selected scene objects
+      // We need to remeber them since we'll set our users selection back to the way it was
+      string $objSel[] = `ls -sl -l`;
+      string $allMeshes[];
+
+      if (size($selMaterials) == 0) {
+         // If no materials are selected, then we'll get the materials 
+         // based on entries selected in the UI
+         if (`checkBox -q -v MEWuseLodGrouping_chk` == 0) {
+            // Get entries selected in the export window
+            int $selIndex[] = `textScrollList -q -sii $listName`;
+
+            // For each selected entry
+            for ($s in $selIndex) {
+               string $exportMeshes[];
+               // Get the meshes from its export nodes
+               COD_MEW_getMeshesFromExportIndex($exportMeshes, $s);
+               // And add them to the array which will hold all meshes
+               $allMeshes = stringArrayCatenate($allMeshes, $exportMeshes);
+            }
+         } else {
+            // Get entries selected in the export window
+            int $selIndex[] = `textScrollList -q -sii $listName`;
+
+            for ($s in $selIndex) {
+               // These will be the indexes we read from the IWGlobalNode
+               int $indexes[];
+               // Get the indexes to be read off the IWGlobalNode
+               // The $exportFiles array will contain up to 4 consecutive indexes after calling this proc
+               sakGetIntArrayIndexesFromValue $COD_MEW_MODELEXPORT_GROUP $s $indexes;
+
+               for ($i in $indexes) {
+                  string $exportMeshes[];
+                  // Get the meshes from its export nodes
+                  COD_MEW_getMeshesFromExportIndex($exportMeshes, $i);
+                  // And add them to the array which will hold all meshes
+                  $allMeshes = stringArrayCatenate($allMeshes, $exportMeshes);
+               }
+            }
+         }
+
+         // Select the mesh objects
+         select -r $allMeshes;
+
+         // Find materials applied to selected meshes
+         hyperShade -shaderNetworksSelectMaterialNodes;
+         $selMaterials = `ls -sl`;
+      }
+
+      // If we've found some materials, proceed with the GDT scan
+      if (size($selMaterials) > 0) {
+         string $resultStr = "Selected materials found in the following GDTs\n\n";
+
+         int $prog = 0;
+         int $step = (100 / size($selMaterials));
+   
+         progressWindow -t "Scanning all GDTs" -pr $prog -st "" -ii true;
+   
+         for ($i=0; $i<size($selMaterials); $i++) {
+            if (`progressWindow -q -ic` != 1) {
+               $prog += $step;
+
+               string $entryName = $selMaterials[$i];
+               // This command returns the gdt name an entry is found in
+               string $result = `gdtFindEntry -f $GAME_MODELEXPORT_DIR -n $entryName`;
+               $resultStr += "     ";
+
+               if ($result != "") {
+                  $resultStr += $entryName;
+                  $resultStr += " ----- ";
+                  $resultStr += $result;
+                  $resultStr += "\n";
+               } else {
+                  $resultStr += $entryName;
+                  $resultStr += " ----- < Not Found >\n";
+               }
+
+               progressWindow -e -pr $prog;
+            } else {
+               break;
+            }
+         }
+   
+         progressWindow -endProgress;
+         confirmDialog -t "GDT Location" -m $resultStr -b "OK";
+
+         // If we had objects select then we reselect them
+         if (size($objSel) > 0) {
+            select -r $objSel;
+         } else {
+            select -cl;
+         }
+      } else {
+         confirmDialog -t "No Materials Selected" -m "Select materials in the Hypershade or\nSelect Entries in the Export Window" -b "OK";
+      }
+   }
+
+   global proc int COD_MEW_createMaterialsInGdt(string $gdtFile, string $name, string $maps[],
+                                                string $materialType, string $surfaceType) {
+      int $result = `gdtCreateMaterialEntry -f $gdtFile -n $name -c $maps[0] -nor $maps[1] -s $maps[2] -cos $maps[3]
+                                             -t $materialType -sur $surfaceType`;
+      return $result;
+   }
+
+   global proc int COD_MEW_createXmodelsInGdt(string $gdtFile, int $lodDist[], string $entryName,
+                                          string $collision, string $exports[], string $type) {
+      int $result = `gdtCreateXmodelEntry -f $gdtFile -n $entryName -c $collision 
+                     -d $lodDist[0] $lodDist[1] $lodDist[2] $lodDist[3]
+                     -e $exports[0] $exports[1] $exports[2] $exports[3] -t $type`;
+      return $result;
+   }
+
+   global proc int COD_MEW_updateXmodelsInGdt(string $gdtFile, int $lodDist[], string $entryName,
+                                          string $collision, string $exports[], string $type) {
+      int $result = `gdtUpdateXmodelEntry -f $gdtFile -n $entryName -c $collision 
+                     -d $lodDist[0] $lodDist[1] $lodDist[2] $lodDist[3]
+                     -e $exports[0] $exports[1] $exports[2] $exports[3] -t $type`;
+      return $result;
+   }
+}

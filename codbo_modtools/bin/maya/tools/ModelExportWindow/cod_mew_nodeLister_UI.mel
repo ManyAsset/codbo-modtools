@@ -1,0 +1,206 @@
+{
+   // Read the selected Export's node list, then load the names into the
+   // Node Lister scroll list
+   proc COD_MEW_getExportNodes(int $exportIndex) {
+      textScrollList -e -ra MEW_NL_nodes_list;
+
+      if ($exportIndex != -1) {
+         string $nodeStr = `getAttr ("IWGlobalNode.ExportModelNodes"+$exportIndex)`;
+         string $nodes[];
+         tokenize $nodeStr " " $nodes;
+
+         for ($n in $nodes) {
+            textScrollList -e -a $n MEW_NL_nodes_list;
+         }
+      }
+   }
+
+   // Select objects in the current scene according to the Node Lister's selection
+   global proc COD_MEW_selectSceneNode() {
+      string $selItems[] = `textScrollList -q -si MEW_NL_nodes_list`;
+
+      if (size($selItems) > 0) {
+         select -cl;
+
+         for ($s in $selItems) {
+            if (`objExists $s` == 1) {
+               select -add $s;
+            }
+         }
+      }
+   }
+
+   // Add the selected scene nodes to the Node Lister list and the IWGlobalNode attribute
+   global proc COD_MEW_addNodesToLister(string $listName) {
+      int $selIndex[];
+
+      // Make sure we are in Single Entry edit mode
+      if (`checkBox -q -v MEWuseLodGrouping_chk` == 0) {
+         $selIndex = `textScrollList -q -sii $listName`;
+      } else {
+         return;
+      }
+
+      string $sel[] = `ls -sl`;
+
+      for ($i=0; $i<size($selIndex); $i++) {
+         string $nodeStr = `getAttr ("IWGlobalNode.ExportModelNodes"+$selIndex[$i])`;
+         string $newNodes;
+
+         for ($s in $sel) {
+            $nodeStr += shortNameOf($s);
+            $nodeStr += " ";
+         }
+
+         $newNodes = stringArrayToString( stringArrayRemoveDuplicates( stringToStringArray($nodeStr, " ") ), " ");
+         $newNodes += " ";
+         setAttr -type "string" ("IWGlobalNode.ExportModelNodes" + $selIndex[$i]) $newNodes;
+      }
+
+      if (size($selIndex) == 1) {
+         // Refresh the Node Lister scroll list
+         COD_MEW_getExportNodes $selIndex[0];
+      }
+   }
+
+   // Remove the Lister's selected nodes from the IWGlobalNode attribute
+   global proc COD_MEW_removeNodesFromLister(string $listName) {
+      int $selIndex[];
+      string $selObjects[] = `ls -sl`;
+      select -cl;
+
+      // Make sure we are in Single Entry edit mode
+      if (`checkBox -q -v MEWuseLodGrouping_chk` == 0) {
+         $selIndex = `textScrollList -q -sii $listName`;
+      } else {
+         return;
+      }
+
+      for ($i=0; $i<size($selIndex); $i++) {
+         string $selItems[] = `textScrollList -q -si MEW_NL_nodes_list`;
+         string $nodeStr = `getAttr ("IWGlobalNode.ExportModelNodes"+$selIndex[$i])`;
+         string $newNodes;
+
+         if (size($selItems) > 0) {
+            $newNodes = stringArrayToString( stringArrayRemoveExact($selItems, stringToStringArray($nodeStr, " ")), " ");
+         } else {
+            $newNodes = stringArrayToString( stringArrayRemoveExact($selObjects, stringToStringArray($nodeStr, " ")), " ");
+         }
+
+         if (size($newNodes) > 0) $newNodes += " ";
+         setAttr -type "string" ("IWGlobalNode.ExportModelNodes" + $selIndex[$i]) $newNodes;
+      }
+
+      if (size($selIndex) == 1) {
+         // Refresh the Node Lister scroll list
+         COD_MEW_getExportNodes $selIndex[0];
+      }
+   }
+
+   // When the user closes the Node Lister, the UI elements are hidden
+   global proc COD_MEW_closeNodeLister() {
+      if (`formLayout -q -ex MEW_NL_main_frm` == 1) {
+         formLayout -e -vis 0 MEW_NL_main_frm;
+         textScrollList -e -ra MEW_NL_nodes_list;
+   
+         formLayout -e
+            -af COD_MEW_MainFormLayout_frm "top" 0
+            -af COD_MEW_MainFormLayout_frm "right" 0
+            -af COD_MEW_MainFormLayout_frm "left" 0
+            -af COD_MEW_MainFormLayout_frm "bottom" 0
+         COD_MEW_frm;
+      }
+   }
+
+   // Unhide the Node Lister UI elements
+   global proc COD_MEW_restoreNodeLister() {
+      formLayout -e -vis 1 MEW_NL_main_frm;
+
+      formLayout -e
+         -af COD_MEW_MainFormLayout_frm "top" 0
+         -ap COD_MEW_MainFormLayout_frm "right" 0 75
+         -af COD_MEW_MainFormLayout_frm "left" 0
+         -af COD_MEW_MainFormLayout_frm "bottom" 0
+
+         -af MEW_NL_main_frm "top" 0
+         -af MEW_NL_main_frm "right" 0
+         -ac MEW_NL_main_frm "left" 0 COD_MEW_MainFormLayout_frm
+         -af MEW_NL_main_frm "bottom" 0
+      COD_MEW_frm;
+   }
+
+   // This proc refreshes the Node Lister
+   // It is called from the Model Export window when an entry is updated
+   // We only need to repopulate the Node Lister if it is visible
+   global proc COD_MEW_updateNodeLister(int $index) {
+      if (`formLayout -q -ex MEW_NL_main_frm` == 1) {
+         if (`formLayout -q -vis MEW_NL_main_frm` == 1) {   
+            COD_MEW_getExportNodes $index;
+         }
+      }
+   }
+
+   // Create the Node Lister UI elements
+   global proc COD_MEW_nodeListerUI(string $listName) {
+      int $selIndex[] = `textScrollList -q -sii $listName`;
+
+      if (!`window -ex codModelExport_window`) {
+         return;
+      }
+
+      if (`text -q -ex MEW_NL_nodes_lb` == 0) {
+         formLayout -p COD_MEW_frm -nd 100 MEW_NL_main_frm;
+         text -l "Export Nodes" MEW_NL_nodes_lb;
+         textScrollList -ams 1 MEW_NL_nodes_list;
+         button -l "Add" MEW_NL_addSelection_btn;
+         button -l "Remove" MEW_NL_removeSelection_btn;
+         button -l "Close" MEW_NL_closeNodeLister_btn;
+
+         formLayout -e
+            -af COD_MEW_MainFormLayout_frm "top" 0
+            -ap COD_MEW_MainFormLayout_frm "right" 0 75
+            -af COD_MEW_MainFormLayout_frm "left" 0
+            -af COD_MEW_MainFormLayout_frm "bottom" 0
+
+            -af MEW_NL_main_frm "top" 0
+            -af MEW_NL_main_frm "right" 0
+            -ac MEW_NL_main_frm "left" 0 COD_MEW_MainFormLayout_frm
+            -af MEW_NL_main_frm "bottom" 0
+         COD_MEW_frm;
+
+         formLayout -e
+            -af MEW_NL_nodes_lb "top" 10
+            -af MEW_NL_nodes_lb "right" 10
+            -af MEW_NL_nodes_lb "left" 10
+
+            -ac MEW_NL_nodes_list "top" 0 MEW_NL_nodes_lb
+            -af MEW_NL_nodes_list "right" 10
+            -af MEW_NL_nodes_list "left" 10
+            -ac MEW_NL_nodes_list "bottom" 10 MEW_NL_addSelection_btn
+
+            -ap MEW_NL_addSelection_btn "right" 0 50
+            -af MEW_NL_addSelection_btn "left" 10
+            -ac MEW_NL_addSelection_btn "bottom" 10 MEW_NL_closeNodeLister_btn
+
+            -af MEW_NL_removeSelection_btn "right" 10
+            -ap MEW_NL_removeSelection_btn "left" 0 50
+            -ac MEW_NL_removeSelection_btn "bottom" 10 MEW_NL_closeNodeLister_btn
+
+            -af MEW_NL_closeNodeLister_btn "right" 10
+            -af MEW_NL_closeNodeLister_btn "left" 10
+            -af MEW_NL_closeNodeLister_btn "bottom" 10
+         MEW_NL_main_frm;
+
+         button -e -c ("COD_MEW_addNodesToLister "+$listName) MEW_NL_addSelection_btn;
+         button -e -c ("COD_MEW_removeNodesFromLister "+$listName) MEW_NL_removeSelection_btn;
+         button -e -c "COD_MEW_closeNodeLister" MEW_NL_closeNodeLister_btn;
+         textScrollList -e -sc "COD_MEW_selectSceneNode" MEW_NL_nodes_list;
+         textScrollList -e -dkc ("COD_MEW_removeNodesFromLister "+$listName) MEW_NL_nodes_list;
+
+         COD_MEW_getExportNodes $selIndex[0];
+      } else {
+         COD_MEW_restoreNodeLister;
+         COD_MEW_getExportNodes $selIndex[0];
+      }
+   }
+}

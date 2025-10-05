@@ -1,0 +1,58 @@
+
+#if ( ( "@blendFunc@"== "Replace" ) && ( "@alphaTest@" == "Always" ) )
+	techniqueSet( "@SW4_MaterialType@" ); 
+#else
+	techniqueSet( "@SW4_MaterialType@_transparent" ); 
+#endif
+
+// -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -
+	
+#include "commonsetup.template" 
+
+// -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -
+	
+#define SPEC_MAP_FORMAT 	 	  "DXT1"
+      	
+#if TARGET_PLATFORM == "xenon"
+            #define NORMAL_MAP_FORMAT     "DXN"
+	    #else
+	        #define NORMAL_MAP_FORMAT     "DXT5"
+	    #endif
+
+
+// -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -
+	
+textureTable
+{
+	"Vignette" = streamable map( "tile both", "mip (1x bilinear)", "$colorMap01$", 0 ) "<auto compression>" : "colorMap";
+	"Diffuse_MapSampler" = streamable map( "tile both", "mip (1x bilinear)", "$colorMap02$", 0 ) "<auto compression>" : "colorMap";
+	"DiffuseMap" = streamable map( "tile both", "mip standard (2x bilinear)", "$colorMap00$", 0 ) "<auto compression>" : "colorMap";
+	"RadiantDiffuse" = map( "tile both", "mip (1x bilinear)", "sw4\textures\sw4.tga", 1 ) "Uncompressed" : "colorMap";
+}
+
+// -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -
+	
+constantTable
+{
+	"VignetteStrength" = float1( @cg11_x@ );
+	"VignettePower" = float1( @cg10_x@ );
+	"BrightnessFPS" = float1( @cg09_x@ );
+	"BrightnessMax" = float1( @cg08_x@ );
+	"BrightnessMin" = float1( @cg07_x@ );
+	"BrightnessAmount" = float1( @cg06_x@ );
+	"ScratchFPS" = float1( @cg05_x@ );
+	"ScratchScale" = float2( @cg04_x@, @cg04_y@ );
+	"ScratchAmount" = float1( @cg03_x@ );
+	"ScreenColor" = float3( @cg02_x@, @cg02_y@, @cg02_z@ );
+	"VideoDesaturate" = float1( @cg01_x@ );
+	"VideoTint" = float3( @cg00_x@, @cg00_y@, @cg00_z@ );
+	"ScreenUVScale" = float2( @cg13_x@, @cg13_y@ );
+}
+	
+// -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -
+	
+allocReflectionProbe();
+
+// -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -
+	
+refImage( "$white" );

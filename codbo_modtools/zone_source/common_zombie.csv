@@ -1,0 +1,435 @@
+// Ignore section,
+ignore,code_post_gfx
+
+// Platform specific sepcific
+include_pc,common_zombie_pc
+include_pc,common_loadscreens
+
+include,common_zombie_localize
+//include,common_zombie_abilities
+include,common_zombie_animscripts
+include,common_zombie_materials
+include_streamed,common_zombie_materials_streamed
+include,common_zombie_scripts
+include,common_zombie_weapons
+include,common_zombie_collision
+include,zombie_titles
+include,zombiemode_magicbox
+include,zombiemode_ai_dogs
+include,zombie_challenges
+
+
+// perk machines,
+include,zombiemode_perk_doubletap
+include,zombiemode_perk_juggernaut
+include,zombiemode_perk_revive
+include,zombiemode_perk_sleightofhand
+
+include,common_dtp
+include,common_slide
+
+include,common_mp_anims
+
+// from include,cod4_common, but without the flash_grenade
+fx,misc/fx_ir_tapereflect
+fx,misc/fx_light_c4_blink
+fx,weapon/claymore/fx_claymore_laser
+fx,misc/fx_grain_test
+fx,misc/fx_nv_dlight
+fx,weapon/bullet/fx_flesh_gib_fatal_01	// MikeD: Used for gibs
+fx,impacts/fx_flesh_hit_noblood	// BarryW: Used for knife
+fx,impacts/fx_flesh_hit	// BarryW: Used for knife
+fx,impacts/fx_flesh_hit_knife	// BarryW: Used for knife
+fx,impacts/fx_flesh_hit_knife_noblood	// BarryW: Used for knife
+fx,impacts/fx_flesh_hit_splat	// BarryW: Used for knife
+fx,trail/fx_trail_blood_streak			// MikeD: Used for gibs
+
+rawfile,maps/_compass.gsc
+
+// Animtrees
+rawfile,animtrees/generic_human.atr
+rawfile,animtrees/player.atr
+rawfile,animtrees/zombie_cymbal_monkey.atr
+
+// strings,
+localize,zombie
+
+// String Table,,,
+stringtable,mp/zombiemode.csv
+stringtable,mp/challengetable_zm.csv
+stringtable,mp/zm_proTipsTable.csv
+
+// Misc,,,
+rawfile,vision/zombie.vision
+rawfile,vision/zombie_last_stand.vision
+rawfile,vision/zombie_death.vision
+
+// viewmodel arms,
+xmodel,viewmodel_usa_pow_arms
+
+// Pack-a-punch
+xmodel,zombie_vending_packapunch_on
+xmodel,zombie_sign_please_wait
+weapon,sp/zombie_knuckle_crack		// waiting on pack-a-punch anim
+
+//zombie powerups,
+fx,env/fire/fx_fire_player_torso	// used by the nuke
+fx,misc/fx_zombie_powerup_on
+fx,misc/fx_zombie_powerup_grab
+fx,misc/fx_zombie_powerup_wave
+fx,misc/fx_zombie_powerup_solo_grab
+fx,misc/fx_zombie_powerup_solo_on 
+
+xmodel,zombie_bomb
+fx,misc/fx_zombie_mini_nuke
+fx,misc/fx_zombie_mini_nuke_hotness
+
+xmodel,zombie_skull
+material,specialty_instakill_zombies
+
+xmodel,zombie_x2_icon
+material,specialty_doublepoints_zombies
+
+xmodel,zombie_firesale
+material,specialty_firesale_zombies
+
+xmodel,zombie_pickup_bonfire
+material,zom_icon_bonfire
+
+xmodel,zombie_pickup_minigun
+material,zom_icon_minigun
+
+xmodel,zombie_ammocan
+xmodel,zombie_carpenter
+xmodel,zombie_revive
+xmodel,zombie_z_money_icon
+
+// MENU materials
+// rounded frame
+material,menu_mp_lobby_gamercard_back
+material,menu_mp_lobby_frame_tab
+material,menu_mp_popup_window
+
+// FX,
+impactfx,zombie
+
+// FX for the eyes,
+fx,misc/fx_zombie_eye_single
+xmodel,char_ger_zombieeye
+
+// head gib stuff,
+fx,misc/fx_zombie_bloodsplat
+fx,misc/fx_zombie_bloodspurt
+
+// fog at edge of level,
+fx,maps/zombie/fx_fog_zombie_amb
+
+
+// Kill Counter Numbers
+xmodel,p_zom_counter_0
+xmodel,p_zom_counter_1
+xmodel,p_zom_counter_2
+xmodel,p_zom_counter_3
+xmodel,p_zom_counter_4
+xmodel,p_zom_counter_5
+xmodel,p_zom_counter_6
+xmodel,p_zom_counter_7
+xmodel,p_zom_counter_8
+xmodel,p_zom_counter_9
+
+menufile,ui/hud.menu    
+
+
+rawfile,mp/zm_challenges_reset.cfg
+rawfile,mp/zm_protips_reset.cfg
+
+// basic zombie anims
+// zombie anims,
+xanim,ai_zombie_attack_forward_v1
+xanim,ai_zombie_attack_forward_v2
+xanim,ai_zombie_attack_v1
+xanim,ai_zombie_attack_v2
+xanim,ai_zombie_attack_v4
+xanim,ai_zombie_attack_v6
+xanim,ai_zombie_walk_attack_v1
+xanim,ai_zombie_walk_attack_v2
+xanim,ai_zombie_walk_attack_v3
+xanim,ai_zombie_walk_attack_v4
+xanim,ai_zombie_run_attack_v1
+xanim,ai_zombie_run_attack_v2
+xanim,ai_zombie_run_attack_v3
+xanim,ai_zombie_crawl_death_v1
+xanim,ai_zombie_crawl_death_v2
+xanim,ai_zombie_death_v1
+xanim,ai_zombie_death_v2
+xanim,ai_zombie_door_pound_v1
+xanim,ai_zombie_door_pound_v2
+xanim,ai_zombie_door_tear_v1
+xanim,ai_zombie_idle_v1
+xanim,ai_zombie_idle_v1_delta
+xanim,ai_zombie_shot_arm_left
+xanim,ai_zombie_shot_arm_right
+xanim,ai_zombie_shot_leg_left_2_crawl
+xanim,ai_zombie_shot_leg_right_2_crawl
+xanim,ai_zombie_sprint_v1
+xanim,ai_zombie_sprint_v2
+xanim,ai_zombie_run_v1
+xanim,ai_zombie_run_v2
+xanim,ai_zombie_run_v3
+xanim,ai_zombie_run_v4
+xanim,ai_zombie_walk_fast_v1
+xanim,ai_zombie_walk_fast_v2
+xanim,ai_zombie_walk_fast_v3
+xanim,ai_zombie_walk_v1
+xanim,ai_zombie_walk_v2
+xanim,ai_zombie_walk_v3
+xanim,ai_zombie_walk_v4
+xanim,ai_zombie_walk_v6
+xanim,ai_zombie_walk_v7
+xanim,ai_zombie_walk_v8
+xanim,ai_zombie_walk_v9
+xanim,ai_zombie_door_tear_v2
+xanim,ai_zombie_walk_fast_v1
+xanim,ai_zombie_walk_fast_v2
+xanim,ai_zombie_walk_fast_v3
+xanim,ai_zombie_sprint_v1
+xanim,ai_zombie_sprint_v2
+xanim,ai_zombie_crawl
+xanim,ai_zombie_crawl_v1
+xanim,ai_zombie_crawl_v2
+xanim,ai_zombie_crawl_v3
+xanim,ai_zombie_crawl_v4
+xanim,ai_zombie_crawl_v5
+xanim,ai_zombie_crawl_death_v1
+xanim,ai_zombie_crawl_death_v2
+xanim,ai_zombie_crawl_sprint
+xanim,ai_zombie_crawl_sprint_1
+xanim,ai_zombie_crawl_sprint_2
+xanim,ai_zombie_idle_crawl
+xanim,ai_zombie_idle_crawl_base
+xanim,ai_zombie_idle_crawl_delta
+xanim,ai_zombie_attack_crawl
+xanim,ai_zombie_attack_crawl_lunge
+xanim,ai_zombie_walk_on_hands_a
+xanim,ai_zombie_walk_on_hands_b
+xanim,ai_zombie_walk_on_hands_shot_a
+xanim,ai_zombie_walk_on_hands_shot_b
+
+// taunt anims,
+xanim,ai_zombie_taunts_4
+xanim,ai_zombie_taunts_5b
+xanim,ai_zombie_taunts_5c
+xanim,ai_zombie_taunts_5d
+xanim,ai_zombie_taunts_5e
+xanim,ai_zombie_taunts_5f
+xanim,ai_zombie_taunts_7
+xanim,ai_zombie_taunts_9
+
+// window attacks,
+xanim,ai_zombie_window_attack_arm_L_out
+xanim,ai_zombie_window_attack_arm_R_out
+
+// window boar tear,
+xanim,ai_zombie_boardtear_l_1
+xanim,ai_zombie_boardtear_l_2
+xanim,ai_zombie_boardtear_l_3
+xanim,ai_zombie_boardtear_l_4
+xanim,ai_zombie_boardtear_l_5
+xanim,ai_zombie_boardtear_l_6
+xanim,ai_zombie_boardtear_m_1
+xanim,ai_zombie_boardtear_m_2
+xanim,ai_zombie_boardtear_m_3
+xanim,ai_zombie_boardtear_m_4
+xanim,ai_zombie_boardtear_m_5
+xanim,ai_zombie_boardtear_m_6
+xanim,ai_zombie_boardtear_r_1
+xanim,ai_zombie_boardtear_r_2
+xanim,ai_zombie_boardtear_r_3
+xanim,ai_zombie_boardtear_r_4
+xanim,ai_zombie_boardtear_r_5
+xanim,ai_zombie_boardtear_r_6
+xanim,ai_zombie_boardtear_crawl_l_1
+xanim,ai_zombie_boardtear_crawl_l_2
+xanim,ai_zombie_boardtear_crawl_l_3
+xanim,ai_zombie_boardtear_crawl_l_4
+xanim,ai_zombie_boardtear_crawl_l_5
+xanim,ai_zombie_boardtear_crawl_l_6
+xanim,ai_zombie_boardtear_crawl_m_1
+xanim,ai_zombie_boardtear_crawl_m_2
+xanim,ai_zombie_boardtear_crawl_m_3
+xanim,ai_zombie_boardtear_crawl_m_4
+xanim,ai_zombie_boardtear_crawl_m_5
+xanim,ai_zombie_boardtear_crawl_m_6
+xanim,ai_zombie_boardtear_crawl_r_1
+xanim,ai_zombie_boardtear_crawl_r_2
+xanim,ai_zombie_boardtear_crawl_r_3
+xanim,ai_zombie_boardtear_crawl_r_4
+xanim,ai_zombie_boardtear_crawl_r_5
+xanim,ai_zombie_boardtear_crawl_r_6
+
+// bartear           ,
+xanim,ai_zombie_bartear_l_1
+xanim,ai_zombie_bartear_l_2
+xanim,ai_zombie_bartear_l_3
+xanim,ai_zombie_bartear_l_4
+xanim,ai_zombie_bartear_l_5
+xanim,ai_zombie_bartear_l_6
+xanim,ai_zombie_bartear_m_1
+xanim,ai_zombie_bartear_m_2
+xanim,ai_zombie_bartear_m_3
+xanim,ai_zombie_bartear_m_4
+xanim,ai_zombie_bartear_m_5
+xanim,ai_zombie_bartear_m_6
+xanim,ai_zombie_bartear_r_1
+xanim,ai_zombie_bartear_r_2
+xanim,ai_zombie_bartear_r_3
+xanim,ai_zombie_bartear_r_4
+xanim,ai_zombie_bartear_r_5
+xanim,ai_zombie_bartear_r_6
+
+xanim,ai_zombie_bartear_crawl_l_1
+xanim,ai_zombie_bartear_crawl_l_2
+xanim,ai_zombie_bartear_crawl_l_3
+xanim,ai_zombie_bartear_crawl_l_4
+xanim,ai_zombie_bartear_crawl_l_5
+xanim,ai_zombie_bartear_crawl_l_6
+xanim,ai_zombie_bartear_crawl_m_1
+xanim,ai_zombie_bartear_crawl_m_2
+xanim,ai_zombie_bartear_crawl_m_3
+xanim,ai_zombie_bartear_crawl_m_4
+xanim,ai_zombie_bartear_crawl_m_5
+xanim,ai_zombie_bartear_crawl_m_6
+xanim,ai_zombie_bartear_crawl_r_1
+xanim,ai_zombie_bartear_crawl_r_2
+xanim,ai_zombie_bartear_crawl_r_3
+xanim,ai_zombie_bartear_crawl_r_4
+xanim,ai_zombie_bartear_crawl_r_5
+xanim,ai_zombie_bartear_crawl_r_6
+
+xanim,ai_zombie_bar_bend_l
+xanim,ai_zombie_bar_bend_l_2
+xanim,ai_zombie_bar_bend_m_1
+xanim,ai_zombie_bar_bend_m_2
+xanim,ai_zombie_bar_bend_r
+xanim,ai_zombie_bar_bend_r_2
+
+//bar      ,
+fx,maps/zombie/fx_zombie_bar_break
+fx,maps/zombie/fx_zombie_bar_break_lite
+
+xmodel,p_zom_win_bars_01_vert04_bend_180
+xmodel,p_zom_win_bars_01_vert01_bend_180
+xmodel,p_zom_win_bars_01_vert04_bend 
+xmodel,p_zom_win_bars_01_vert01_bend
+
+xmodel,p_zom_win_cell_bars_01_vert01_bent
+xmodel,p_zom_win_cell_bars_01_vert04_bent
+
+// tear anims,
+xanim,ai_zombie_door_tear_v1
+xanim,ai_zombie_door_tear_v2
+xanim,ai_zombie_door_tear_high
+xanim,ai_zombie_door_tear_left
+xanim,ai_zombie_door_tear_right
+xanim,ai_zombie_door_tear_low
+
+// pound door animations,
+xanim,ai_zombie_door_pound_v1
+xanim,ai_zombie_door_pound_v2
+
+// after gib shot anims,
+xanim,ai_zombie_shot_arm_left
+xanim,ai_zombie_shot_arm_right
+xanim,ai_zombie_shot_leg_left_2_crawl
+xanim,ai_zombie_shot_leg_right_2_crawl
+
+xanim,ai_gib_bothlegs_gib
+
+// melee anims,
+xanim,ai_zombie_attack_forward_v1
+xanim,ai_zombie_attack_forward_v2
+xanim,ai_zombie_attack_v1
+xanim,ai_zombie_attack_v2
+
+// idle,
+xanim,ai_zombie_idle_v1
+xanim,ai_zombie_idle_base
+
+// traverse,
+xanim,ai_zombie_traverse_v1		// Mantle over
+xanim,ai_zombie_traverse_v2		//
+xanim,ai_zombie_traverse_v3		// quad mantle
+xanim,ai_zombie_traverse_v4		// 
+xanim,ai_zombie_traverse_v5		// Hop over
+xanim,ai_zombie_traverse_v6		// Hurdle over
+xanim,ai_zombie_traverse_v7		// Hop on then jump down
+xanim,ai_zombie_traverse_crawl_v1
+xanim,ai_zombie_crawl_jump_down_72
+xanim,ai_zombie_crawl_jump_down_97
+xanim,ai_zombie_crawl_jump_down_127
+xanim,ai_zombie_crawl_jump_down_184
+xanim,ai_zombie_crawl_jump_down_189
+xanim,ai_zombie_jump_down_190
+xanim,ai_zombie_jump_down_120
+xanim,ai_zombie_jump_down_96
+xanim,ai_zombie_jump_down_72
+xanim,ai_zombie_jump_down_40
+xanim,ai_zombie_jump_up_2_climb
+xanim,ai_zombie_jump_up
+xanim,ai_zombie_crawl_jump_up_2_climb
+
+// rise out of ground,
+xanim,ai_zombie_traverse_ground_v1_crawl
+xanim,ai_zombie_traverse_ground_v1_crawlfast
+xanim,ai_zombie_traverse_ground_v1_deathinside
+xanim,ai_zombie_traverse_ground_v1_deathinside_alt
+xanim,ai_zombie_traverse_ground_v1_deathoutside
+xanim,ai_zombie_traverse_ground_v1_deathoutside_alt
+//xanim,ai_zombie_traverse_ground_v1_idle // I don't think we need this
+xanim,ai_zombie_traverse_ground_v1_run
+xanim,ai_zombie_traverse_ground_v1_walk
+xanim,ai_zombie_traverse_ground_v2_death_high
+xanim,ai_zombie_traverse_ground_v2_death_high_alt
+xanim,ai_zombie_traverse_ground_v2_death_low
+xanim,ai_zombie_traverse_ground_v2_death_low_alt
+xanim,ai_zombie_traverse_ground_v2_walk
+xanim,ai_zombie_traverse_ground_v2_walk_altA
+xanim,ai_zombie_traverse_ground_v2_walk_altB
+xanim,ai_zombie_traverse_ground_climbout_fast
+
+// rise fx,
+fx,maps/zombie/fx_mp_zombie_hand_dirt_burst
+fx,maps/zombie/fx_mp_zombie_body_dirt_billowing
+fx,maps/zombie/fx_mp_zombie_body_dust_falling
+fx,maps/zombie/fx_zombie_body_wtr_burst
+fx,maps/zombie/fx_zombie_body_wtr_billowing
+fx,maps/zombie/fx_zombie_body_wtr_falling
+
+// Zombie death anims.,
+xanim,ch_dazed_d_death
+xanim,ch_dazed_c_death
+xanim,ch_dazed_b_death
+xanim,ch_dazed_a_death
+
+//Sound,
+sound,zmb_common
+
+//AI types
+rawfile,aitype/zombie_dog.gsc
+
+// misc
+xmodel,grenade_bag
+
+
+//------------- PC Only due to PC not having common_zombie_patch ----------------
+xmodel,zombie_3rd_perk_bottle_doubletap
+xmodel,zombie_3rd_perk_bottle_jugg
+xmodel,zombie_3rd_perk_bottle_revive
+xmodel,zombie_3rd_perk_bottle_sleight
+xmodel,zombie_pickup_perk_bottle
+
+xanim,pt_laststand_fire
+
+xanim,ai_zombie_window_attack_crawl_l
+xanim,ai_zombie_window_attack_crawl_m
+xanim,ai_zombie_window_attack_crawl_r

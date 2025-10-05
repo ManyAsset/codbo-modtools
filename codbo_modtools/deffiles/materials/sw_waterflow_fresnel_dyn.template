@@ -1,0 +1,35 @@
+#if "@blendFunc@" == "Blend" || ("@blendFunc@" == "Replace" && "@alphaTest@" != "Always")
+techniqueSet( "sw_waterflow_fresnel_dyn" ); 
+#else
+techniqueSet( "sw_waterflow_fresnel_dyn_noalpha" ); 
+#endif
+
+#include "commonsetup.template" 
+
+cgfxTextureTableRefImage
+{
+	"Level_Cube_MapSampler" = streamable map( "no tile", "mip (1x trilinear)", "texture_assets\sky\bright_sky1.dds", 0 ) "<auto compression>" : "colorMap"; 
+	"Normal_MapSampler" = streamable normalMap( "tile both", "mip (1x trilinear)", "", 0 ) "<auto compression>" : "normalMap"; 
+	"Puddle_MapSampler" = streamable map( "tile both", "mip (1x trilinear)", "texture_assets\shaderworks\puddle_map.tga", 0 ) "<auto compression>" : "colorMap"; 
+	"Splash_Normal_MapSampler" = streamable normalMap( "tile both", "mip (1x trilinear)", "", 0 ) "<auto compression>" : "normalMap"; 
+	"Diffuse_MapSampler" = streamable map( "tile both", "mip (1x trilinear)", "texture_assets\shaderworks\muddy_water_c.tga", 0 ) "<auto compression>" : "colorMap"; 
+}
+
+cgfxConstantTable
+{
+	"EnvBlurLevel" = float4( 0, 0, 0, 0 );
+	"Cube_Map_Amt" = float4( 1, 0, 0, 0 );
+	"Reflection_Boost" = float4( 1, 0, 0, 0 );
+	"Velocity_Amt" = float4( 0.3, 0, 0, 0 );
+	"World_Scale" = float4( 1, 0, 0, 0 );
+	"Puddle0_Params" = float4( 0.5, 4.74, -0.19, 0 );
+	"Puddle1_Params" = float4( 0.65, 5.25, 1, 1 );
+	"Debris_Amt" = float4( 1, 0, 0, 0 );
+	"Puddle_Height_Scale" = float4( 0.490196, 0, 0, 0 );
+	"Reflection_Amt" = float4( 0.25, 0, 0, 0 );
+	"Diffuse_Tint" = float4( 1, 1, 1, 0 );
+	"Muddiness" = float4( 0.01, 0, 0, 0 );
+	"FeatherDist" = float4( 100, 0, 0, 0 );
+}
+allocReflectionProbe();
+

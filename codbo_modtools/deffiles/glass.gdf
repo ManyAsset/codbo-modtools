@@ -1,0 +1,140 @@
+#name "glass"
+#dll "all" "configstringconvert"
+#source_dir "glass/"
+#target_dir "glass/"
+#file_ext "*"
+#version 5
+
+// This tells the configstring converter what the file type identifier should be
+string "GLASS" configstringFileType
+
+string baseMaterial
+string crackedMaterial
+string shardMaterial
+int    150    0 10000 maxHealth
+float  1.0  0.0  10.0 thickness
+int     50   25  1000 minShardSize
+int    250  100  2000 maxShardSize
+float 0.75  0.0   1.0 shardLifeProbablility
+
+string crackSound
+string shatterShound
+string autoShatterShound
+string crackEffect
+string shatterEffect
+
+vcontainer
+{
+	edit(baseMaterial)
+	[
+		exec
+		{
+			label("Base Material")
+			tooltip("Material name of the prestine glass (recompile BSP after changing this field)")
+			width(600)
+		}
+	]
+	edit(crackedMaterial)
+	[
+		exec
+		{
+			label("Cracked Material")
+			tooltip("Material name of the cracked glass (recompile BSP after changing this field)")
+			width(600)
+		}
+	]
+	edit(shardMaterial)
+	[
+		exec
+		{
+			label("Shard Material")
+			tooltip("Material name of the glass shard peices")
+			width(600)
+		}
+	]
+	spinedit(maxHealth, 10, 100)
+	[
+		exec
+		{
+			label("Max Health")
+			tooltip("Maximum health of glass")
+		}
+	]
+	floatedit(thickness, 0.01, 0.1)
+	[
+		exec
+		{
+			label("Shard thickness")
+			tooltip("Thickness of 0.0 will use the thickness of the brush")
+		}
+	]
+	spinedit(minShardSize, 10, 100)
+	[
+		exec
+		{
+			label("Min shard size")
+		}
+	]
+	spinedit(maxShardSize, 10, 100)
+	[
+		exec
+		{
+			label("Max shard size")
+		}
+	]
+	floatedit(shardLifeProbablility, 0.01, 0.1)
+	[
+		exec
+		{
+			label("Shard life probability")
+			tooltip("Probability of the shard to live after it hit the ground (0: no shards are left on the ground 1: all shards are left)")
+		}
+	]
+	edit(crackSound)
+	[
+		exec
+		{
+			label("Cracked Sound")
+			tooltip("Sound to play when the glass cracks")
+			width(600)
+		}
+	]
+	edit(shatterShound)
+	[
+		exec
+		{
+			label("Shatter Sound")
+			tooltip("Sound to play when the glass shatters")
+			width(600)
+		}
+	]
+	edit(autoShatterShound)
+	[
+		exec
+		{
+			label("Auto Shatter Sound")
+			tooltip("Sound to play when the glass spontaneously shatters after being cracked")
+			width(600)
+		}
+	]
+	fileedit(crackEffect)
+	[
+		exec
+		{
+			label("Cracked Effect")
+			reldir("raw/fx/")
+			tooltip("Effect to play when the glass cracks")
+			width(600)
+		}
+	]
+	fileedit(shatterEffect)
+	[
+		exec
+		{
+			label("Shatter Effect")
+			reldir("raw/fx/")
+			tooltip("Effect to play when the glass shatters")
+			width(600)
+		}
+	]
+}

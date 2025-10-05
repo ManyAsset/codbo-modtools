@@ -1,0 +1,26 @@
+{
+	stateMap "sw4_default";
+
+	vertexShader 3.0 "pimp_shader_sw4_3d_unlit_flicker_alpha_33c083c3.hlsl"
+	{
+		Flicker_Max = material.Flicker_Max;
+  Flicker_Min = material.Flicker_Min;
+	}
+
+	pixelShader 3.0 "pimp_shader_sw4_3d_unlit_flicker_alpha_33c083c3.hlsl" 
+	{
+		Reflection_Amount  = material.Reflection_Amount;
+  Diffuse_MapSampler = material.Diffuse_MapSampler;
+	}
+
+	vertex.position = code.position;
+	vertex.normal      = code.normal;
+  vertex.texcoord[0] = code.texcoord[0];
+
+	declTypes
+	{
+		packed
+		world
+	}
+}
+

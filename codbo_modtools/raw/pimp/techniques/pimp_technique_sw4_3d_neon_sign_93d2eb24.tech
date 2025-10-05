@@ -1,0 +1,26 @@
+{
+	stateMap "sw4_default";
+
+	vertexShader 3.0 "pimp_shader_sw4_3d_neon_sign_f5ffa5c1.hlsl"
+	{
+		Flicker_Seed  = material.Flicker_Seed;
+  Flicker_Speed = material.Flicker_Speed;
+  Flicker_Max   = material.Flicker_Max;
+  Flicker_Min   = material.Flicker_Min;
+	}
+
+	pixelShader 3.0 "pimp_shader_sw4_3d_neon_sign_5bfc2ee9.hlsl" 
+	{
+		Diffuse_Map = material.Diffuse_Map;
+	}
+
+	vertex.position = code.position;
+	vertex.texcoord[0] = code.texcoord[0];
+
+	declTypes
+	{
+		packed
+		world
+	}
+}
+

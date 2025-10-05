@@ -1,0 +1,28 @@
+{
+	stateMap "default2d";
+
+	vertexShader 3.0 "pimp_shader_sw4_2d_helmet_postfx_9a0e62d6.hlsl"
+	{
+	}
+
+	pixelShader 3.0 "pimp_shader_sw4_2d_helmet_postfx_9a0e62d6.hlsl" 
+	{
+		Distance                    = material.Distance;
+  Height                      = material.Height;
+  Normal_Map                  = material.Normal_Map;
+  Reflection                  = material.Reflection;
+  C000_File                   = material.C000_File;
+  ResolvedScene_Sampler_C3_P0 = sampler.resolvedScene;
+	}
+
+	vertex.position = code.position;
+	vertex.texcoord[0] = code.texcoord[0];
+
+	declTypes
+	{
+		packed
+		debug
+		generic
+	}
+}
+

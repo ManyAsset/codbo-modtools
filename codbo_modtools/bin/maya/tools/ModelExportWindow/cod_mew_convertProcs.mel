@@ -1,0 +1,47 @@
+{
+   global string $GAME_PROJECT_BIN;
+   global string $IW_CORE_PATH;
+
+   // Get the selection from the textScrollList then call the proc to run
+   // the convert single asset batch file
+   global proc COD_MEW_convertSelectedAssets(string $listName, int $platform) {
+      if (`checkBox -q -v MEWuseLodGrouping_chk` == 1) {
+         // Get the selection
+         string $selectedEntries[] = `textScrollList -q -si $listName`;
+
+         // Make sure only one entry is selected
+         if (size($selectedEntries) == 1) {
+            string $assetToConvert = basenameEx($selectedEntries[0]);
+            COD_MEW_convertSingleAsset $platform $assetToConvert;
+         } else {
+            confirmDialog -t "Too Many Selected" -m "You can only convert one asset at a time" -b "OK";
+         }
+      }
+   }
+
+   // Call the convert my changes batch file
+   global proc COD_MEW_convertMyChanges(int $platform) {
+      chdir( $GAME_PROJECT_BIN );
+
+      if ($platform == 0) {
+         exec( toNativePath( $GAME_PROJECT_BIN+"/xenonMyChanges.bat" ) );
+      } else if ($platform == 1) {
+         exec( toNativePath( $GAME_PROJECT_BIN+"/ps3MyChanges.bat" ) );
+      } else if ($platform == 2) {
+         exec( toNativePath( $GAME_PROJECT_BIN+"/pcMyChanges.bat" ) );
+      }
+   }
+
+   // Call the convert single asset batch file for an asset
+   global proc COD_MEW_convertSingleAsset(int $platform, string $assetName) {
+      chdir( $GAME_PROJECT_BIN );
+
+      if ($platform == 0) {
+         exec( toNativePath( $IW_CORE_PATH+"/tools_bin/AssetManager/xenonConvertSingle.bat \"xmodel\" \""+$assetName+"\"" ) );
+      } else if ($platform == 1) {
+         exec( toNativePath( $IW_CORE_PATH+"/tools_bin/AssetManager/ps3ConvertSingle.bat \"xmodel\" \""+$assetName+"\"" ) );
+      } else if ($platform == 2) {
+         exec( toNativePath( $IW_CORE_PATH+"/tools_bin/AssetManager/pcConvertSingle.bat \"xmodel\" \""+$assetName+"\"" ) );
+      }
+   }
+}

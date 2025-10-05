@@ -1,0 +1,26 @@
+{
+	stateMap "build_floatz";
+
+	vertexShader 3.0 "pimp_shader_sw4_3d_schematic_screen_cb27c128.hlsl"
+	{
+	}
+
+	pixelShader 3.0 "pimp_shader_sw4_3d_schematic_screen_cb27c128.hlsl" 
+	{
+		Static            = material.Static;
+  StaticScale       = material.StaticScale;
+  Lookup            = material.Lookup;
+  Diffuse_Map       = material.Diffuse_Map;
+  Reflection_Amount = material.Reflection_Amount;
+  PreviewCompID     = material.PreviewCompID;
+	}
+
+	vertex.position = code.position;
+
+	declTypes
+	{
+		packed
+		world
+	}
+}
+

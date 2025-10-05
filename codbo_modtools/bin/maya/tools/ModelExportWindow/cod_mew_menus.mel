@@ -1,0 +1,92 @@
+{
+   global string $GAME_PROJECT_BIN;
+   global string $GAME_PROJECT_DIR;
+   global string $IW_CORE_PATH;
+
+   // We read all blt files available in the select sets folder then
+   // build a menu item for each file
+   proc COD_MEW_getSelectSets() {
+      string $searchPath = ($GAME_PROJECT_BIN+"/Maya/selectSets/");
+      string $allFiles[] = `getFileList -fld $searchPath`;
+
+      for ($file in $allFiles) {
+         string $itemName = basename($file, ".blt");
+         menuItem -l $itemName -c ("COD_MEW_selectSelectSet \""+$searchPath+$file+"\"");
+      }
+      setParent -menu codMewSelectSets_pdm;
+   }
+
+   // Open the help doc
+   global proc COD_MEW_openHelpDocument() {
+      string $helpDoc = ($IW_CORE_PATH+"/Help/Model_Exporter.pdf");
+      launch -pdf $helpDoc;
+   }
+
+   // Create pulldown menus
+   global proc COD_MEW_createPulldownMenu(string $listName) {
+      if (`window -ex codModelExport_window`) {
+         if (`menu -q -exists codMewFile_pdm`) {
+            menu -e -dai codMewFile_pdm;
+         } else {
+            menu -l "File" -p codModelExport_window -to false codMewFile_pdm;
+               menuItem -l "New" -c ("COD_MEW_newGlobalNode "+$listName);
+               menuItem -l "Open" -c ("COD_MEW_openGlobalNode "+$listName);
+               menuItem -l "Save" -c "COD_MEW_saveGlobalNode";
+               menuItem -d true;
+               menuItem -l "Exit" -c "deleteUI -wnd codModelExport_window";
+            setParent -menu "..";
+         }
+
+         if (`menu -q -exists codMewAutoPopulate_pdm`) {
+            menu -e -dai codMewAutoPopulate_pdm;
+         } else {
+            menu -l "Auto Populate" -p codModelExport_window -to false codMewAutoPopulate_pdm;
+               menuItem -l "Auto Populate Scene" -c ("COD_MEW_autoPopulate "+$listName+" 1 0");
+               menuItem -l "Create from Selection" -c ("COD_MEW_autoPopulate "+$listName+" 1 1");
+            setParent -menu "..";
+         }
+
+         if (`menu -q -exists codMewSelectSets_pdm`) {
+            menu -e -dai codMewSelectSets_pdm;
+         } else {
+            menu -l "Select Sets" -p codModelExport_window -to false codMewSelectSets_pdm;
+               COD_MEW_getSelectSets;
+         }
+
+         if (`menu -q -exists codMewCreateEntry_pdm`) {
+            menu -e -dai codMewCreateEntry_pdm;
+         } else {
+            menu -l "GDT" -p codModelExport_window -to false codMewCreateEntry_pdm;
+               menuItem -l "Find Selected Materials" -c ("COD_MEW_findSelectedMaterialsInGdt "+$listName) codMewFindMaterialInGdt_mitm;
+               menuItem -l "Create Selected Materials" -c ("COD_MEW_createMaterialGdtEntry_UI "+$listName) codMewCreateMaterialGdtEntry_mitm;
+               menuItem -divider true;
+               menuItem -l "Find Selected Xmodel" -c ("COD_MEW_findGdtEntries "+$listName) codMewFindGdtEntry_mitm;
+               menuItem -l "Create Selected Xmodel" -c ("COD_MEW_createGdtEntry_UI "+$listName) codMewCreateGdtEntry_mitm;
+               menuItem -l "Update Selected Xmodel" -c ("COD_MEW_updateGdtEntry_UI "+$listName) codMewUpdateGdtEntry_mitm;
+            setParent -menu "..";
+         }
+
+         if (`menu -q -exists codMewConvert_pdm`) {
+            menu -e -dai codMewConvert_pdm;
+         } else {
+            menu -l "Convert" -p codModelExport_window -to false codMewConvert_pdm;
+//               menuItem -l "My Changes Xenon" -c "COD_MEW_convertMyChanges 0";
+//               menuItem -l "My Changes PS3" -c "COD_MEW_convertMyChanges 1";
+//               menuItem -divider true;
+//               menuItem -l "Selected Asset Xenon" -c ("COD_MEW_convertSelectedAssets "+$listName+" 0") codMewConvertSelXe_mitm;
+//               menuItem -l "Selected Asset PS3" -c ("COD_MEW_convertSelectedAssets "+$listName+" 1") codMewConvertSelPs3_mitm;
+               menuItem -l "Selected Asset PC" -c ("COD_MEW_convertSelectedAssets "+$listName+" 2") codMewConvertSelPc_mitm;
+            setParent -menu "..";
+         }
+
+         if (`menu -q -exists codMewHelp_pdm`) {
+            menu -e -dai codMewHelp_pdm;
+         } else {
+            menu -l "Help" -p codModelExport_window -to false codMewHelp_pdm;
+               menuItem -l "Help Document" -c "COD_MEW_openHelpDocument";
+//               menuItem -l "Wiki Page" -c "launch -web \"http://pictures/codwiki/index.php?title=Model_Exporter\"";
+            setParent -menu "..";
+         }
+      }
+   }
+}

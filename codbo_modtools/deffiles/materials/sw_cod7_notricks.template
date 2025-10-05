@@ -1,0 +1,23 @@
+#if "@blendFunc@" == "Blend" || ("@blendFunc@" == "Replace" && "@alphaTest@" != "Always")
+techniqueSet( "sw_cod7_notricks" ); 
+#else
+techniqueSet( "sw_cod7_notricks_noalpha" ); 
+#endif
+
+#include "commonsetup.template" 
+
+cgfxTextureTableRefImage
+{
+	"Normal_MapSampler" = streamable normalMap( "tile both", "mip (1x trilinear)", "", 0 ) "<auto compression>" : "normalMap"; 
+	"Gloss_MapSampler" = streamable map( "tile both", "mip (1x trilinear)", "model_export\american\characters\cod7\jungle_marines\textures\c_usa_jungle_marine_head_ass_g.tga", 0 ) "<auto compression>" : "colorMap"; 
+	"Diffuse_MapSampler" = streamable map( "tile both", "mip (1x trilinear)", "", 0 ) "<auto compression>" : "colorMap"; 
+	"Specular_MapSampler" = streamable map( "tile both", "mip (1x trilinear)", "model_export\american\characters\cod7\jungle_marines\textures\c_usa_jungle_marine_head_ass_g.tga", 0 ) "<auto compression>" : "specularMap"; 
+}
+
+cgfxConstantTable
+{
+	"EnvBlurLevel" = float4( 0, 0, 0, 0 );
+	"Reflection_Amount" = float4( 0, 0, 0, 0 );
+}
+allocReflectionProbe();
+

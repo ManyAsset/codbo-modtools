@@ -1,0 +1,19 @@
+{
+	stateMap "tree_zprepass";
+
+	vertexShader 3.0 "pimp_shader_treecanopy_7474e2ea.hlsl"
+	{
+		treeCanopySwayParms = material.treeCanopySwayParms;
+	}
+
+	pixelShader 3.0 "pimp_shader_treecanopy_7474e2ea.hlsl" 
+	{
+		colorMapSampler = material.colorMap;
+		colorTint = material.colorTint;
+	}
+
+	vertex.position = code.position;
+	vertex.texcoord[0] = code.texcoord[0];
+
+}
+

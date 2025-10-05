@@ -1,0 +1,47 @@
+#include "commonsetup.template"
+
+
+
+#if @texScroll@
+	#define TEX_SCROLL_SUFFIX "_scrolluv"
+#else
+	#define TEX_SCROLL_SUFFIX ""
+#endif
+
+
+#if "@blendFunc@" == "Replace"
+	#if "@alphaTest@" == "Always"
+		techniqueSet( "unlit_replace" + TEX_SCROLL_SUFFIX );
+	#elif "@alphaTest@" == "GT0" || "@alphaTest@" == "GE128"
+		techniqueSet( "unlit_alphatest" + TEX_SCROLL_SUFFIX );
+        #else
+		#error "blendFunc '@blendFunc@' with alphaTest '@alphaTest@' not supported for unlit materials"
+	#endif
+#elif "@blendFunc@" == "Multiply"
+	techniqueSet( "unlit_multiply" + TEX_SCROLL_SUFFIX );
+#elif  "@blendFunc@" == "Blend"
+	techniqueSet( "unlit_blend" + TEX_SCROLL_SUFFIX );
+#elif  "@blendFunc@" == "Add"
+	techniqueSet( "unlit_add" + TEX_SCROLL_SUFFIX );
+#else
+	techniqueSet( "unlit" + TEX_SCROLL_SUFFIX );
+#endif
+
+
+textureTable
+{
+	#if "$colorMap$" == ""
+		#error "colorMap may not be blank in unlit materials"
+	#endif
+	"colorMap" = streamable map( "@tileColor@", "@filterColor@", "$colorMap$", @nopicmipColor@ ) "@formatColor@" : "colorMap";
+}
+
+
+constantTable
+{
+	"colorTint" = float4( @,colorTint@ );
+	"uvScroll" = float2( @uScroll@, @vScroll@ );
+}
+
+
+refImage( "$colorMap$" );

@@ -1,0 +1,17 @@
+{
+	stateMap "wireframe";
+
+	vertexShader 3.0 "pimp_shader_vertcolorsimple_bd4ad481.hlsl"
+	{
+	}
+
+	pixelShader 3.0 "pimp_shader_vertcolorsimple_4dad4609.hlsl" 
+	{
+		colorMapSampler = material.colorMap;
+	}
+
+	vertex.position = code.position;
+	vertex.texcoord[0] = code.texcoord[0];
+
+}
+

@@ -1,0 +1,25 @@
+{
+	stateMap "sw4_default";
+
+	vertexShader 3.0 "pimp_shader_sw4_3d_ui3d_watch_419e9eb9.hlsl"
+	{
+	}
+
+	pixelShader 3.0 "pimp_shader_sw4_3d_ui3d_watch_48951e45.hlsl" 
+	{
+		Reflection_Amount = material.Reflection_Amount;
+  PreviewCompID     = material.PreviewCompID;
+	}
+
+	vertex.position = code.position;
+	vertex.normal      = code.normal;
+  vertex.texcoord[2] = code.tangent;
+  vertex.texcoord[0] = code.texcoord[0];
+
+	declTypes
+	{
+		packed
+		world
+	}
+}
+

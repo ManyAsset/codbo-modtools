@@ -1,0 +1,39 @@
+{
+	stateMap "sw4_default";
+
+	vertexShader 3.0 "pimp_shader_sw4_3d_dual_auto_blend_9f62f6c.hlsl"
+	{
+	}
+
+	pixelShader 3.0 "pimp_shader_sw4_3d_dual_auto_blend_dc2c3664.hlsl" 
+	{
+		Base_Normal_Map        = material.Base_Normal_Map;
+  Tile_Scale             = material.Tile_Scale;
+  Blend_Normal_Map       = material.Blend_Normal_Map;
+  Blend_Specular_Map     = material.Blend_Specular_Map;
+  Blend_Diffuse_Map      = material.Blend_Diffuse_Map;
+  Reflection_Amount      = material.Reflection_Amount;
+  Blend_Roughness_Map    = material.Blend_Roughness_Map;
+  Base_Tile_Scale        = material.Base_Tile_Scale;
+  Base_Specular_Map      = material.Base_Specular_Map;
+  Base_Diffuse_Map       = material.Base_Diffuse_Map;
+  Base_Reflection_Amount = material.Base_Reflection_Amount;
+  Base_Roughness_Map     = material.Base_Roughness_Map;
+  Falloff_Amplitude      = material.Falloff_Amplitude;
+  Falloff_Noise_Strength = material.Falloff_Noise_Strength;
+  Falloff_Phase          = material.Falloff_Phase;
+  Falloff_UV_Scale       = material.Falloff_UV_Scale;
+	}
+
+	vertex.position = code.position;
+	vertex.normal      = code.normal;
+  vertex.texcoord[2] = code.tangent;
+  vertex.texcoord[0] = code.texcoord[0];
+
+	declTypes
+	{
+		packed
+		world
+	}
+}
+

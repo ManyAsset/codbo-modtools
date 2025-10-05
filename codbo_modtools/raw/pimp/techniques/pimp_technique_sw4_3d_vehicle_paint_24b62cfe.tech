@@ -1,0 +1,32 @@
+{
+	stateMap "sw4_default";
+
+	vertexShader 3.0 "pimp_shader_sw4_3d_vehicle_paint_656c1f2a.hlsl"
+	{
+	}
+
+	pixelShader 3.0 "pimp_shader_sw4_3d_vehicle_paint_656c1f2a.hlsl" 
+	{
+		Normal_Detail_Map_Scale = material.Normal_Detail_Map_Scale;
+  Detail_Map              = material.Detail_Map;
+  Normal_Map              = material.Normal_Map;
+  Specular_Map            = material.Specular_Map;
+  Paint_Map_Scale         = material.Paint_Map_Scale;
+  Paint_Color             = material.Paint_Color;
+  Diffuse_MapSampler      = material.Diffuse_MapSampler;
+  Roughness_AO_Mask       = material.Roughness_AO_Mask;
+  Reflection_Amount       = material.Reflection_Amount;
+	}
+
+	vertex.position = code.position;
+	vertex.normal      = code.normal;
+  vertex.texcoord[2] = code.tangent;
+  vertex.texcoord[0] = code.texcoord[0];
+
+	declTypes
+	{
+		packed
+		world
+	}
+}
+

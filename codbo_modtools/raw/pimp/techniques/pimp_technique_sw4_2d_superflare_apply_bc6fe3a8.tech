@@ -1,0 +1,23 @@
+{
+	stateMap "default2d";
+
+	vertexShader 3.0 "pimp_shader_sw4_2d_superflare_apply_5b0d5afb.hlsl"
+	{
+	}
+
+	pixelShader 3.0 "pimp_shader_sw4_2d_superflare_apply_5b0d5afb.hlsl" 
+	{
+		PostEffect0_Sampler_C2_P0 = sampler.postEffect0;
+	}
+
+	vertex.position = code.position;
+	vertex.texcoord[0] = code.texcoord[0];
+
+	declTypes
+	{
+		packed
+		debug
+		generic
+	}
+}
+

@@ -1,0 +1,24 @@
+{
+	stateMap "additive_stencil";
+
+	vertexShader 3.0 "pimp_shader_sunlightpreview_ab218e0.hlsl"
+	{
+	}
+
+	pixelShader 3.0 "pimp_shader_sunlightpreview_cd2a307c.hlsl" 
+	{
+		colorMapSampler = material.colorMap;
+		normalMapSampler = material.normalMap;
+		specularMapSampler = material.specularMap;
+		colorMapSampler = material.colorMap;
+		caseTextureSampler = sampler.caseTexture;
+	}
+
+	vertex.position = code.position;
+	vertex.color[0] = code.color;
+	vertex.texcoord[0] = code.texcoord[0];
+	vertex.texcoord[1] = code.tangent;
+	vertex.normal = code.normal;
+
+}
+

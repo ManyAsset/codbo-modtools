@@ -1,0 +1,1171 @@
+// Author - Stev Kalinowski
+// Date Created - July 2008
+// Tested in - Maya 8.5, 2009
+
+// File and Plugin dependencies
+// MEL Scripts -
+//    cod_mew_nodeLister_UI.mel
+//    cod_mew_exporterProcs.mel
+//    cod_mew_menus.mel
+//    cod_mew_fileProcs.mel
+//    cod_mew_autoPopulateProcs.mel
+//    cod_mew_selectSetProcs.mel
+//    cod_mew_convertProcs.mel
+//    cod_mew_gdtProcs.mel
+//    cod_mew_gdt_UI.mel
+//    PerforceMaya.mel
+// 
+// Plugins -
+//    PerforceMaya.mll
+//    XModelExport.mll
+//    gdtCommands.py
+//    fingerReskinCommand.py
+
+// Version 1.00 - Add wii export functionality
+// Version 1.01 - Add delete key functionality to exports ListBox
+// Version 1.01 - Support adding nodes to multiple exports at once with nodeLister
+// Version 1.01 - Remove from nodeLister now supports scene selection
+
+{
+   // Each index in this array cooresponds to an export index
+   // Exports which end with "_LOD#" are set into groups of 4 or less
+   // The value of each index is the export's group number
+   global int $COD_MEW_MODELEXPORT_GROUP[];
+   // Each index in this array cooresponds to an export index
+   // The value of each index is the position in the export's group
+   global int $COD_MEW_MODELEXPORT_OFFSET[];
+
+   global string $GAME_PROJECT_DIR;
+   global string $GAME_PROJECT_BIN;
+   global string $GAME_MODELEXPORT_DIR;
+   global string $GAME_COLLMAP_DIR;
+   global string $IW_CORE_PATH;
+
+   $GAME_MODELEXPORT_DIR = ($GAME_PROJECT_DIR+"/model_export/");
+   $GAME_COLLMAP_DIR = ($GAME_PROJECT_DIR+"/share/raw/collmaps/");
+
+   // Change drive letter to user's own local drive
+   // Trim excess stuff between the drive letter and the IW_PROJECT_GAMEDIR variable
+   global proc COD_MEW_fixDriveLetterOnGlobalAttrs() {
+      if (!`objExists IWGlobalNode`) {
+         return;
+      }
+
+      if (`attributeQuery -n "IWGlobalNode" -ex "ModelCount"` == true) {
+         int $numEntries = `getAttr "IWGlobalNode.ModelCount"`;
+         string $pattern = ".*";
+         $pattern += substitute( $GAME_PROJECT_DIR, $GAME_MODELEXPORT_DIR, "" );
+   
+         for ($i=1; $i<=$numEntries; $i++) {
+            string $exportFile = `getAttr ("IWGlobalNode.ModelFileName"+$i)`;
+            string $newExportFile = substitute( $pattern, $exportFile, $GAME_MODELEXPORT_DIR );
+            setAttr -type "string" ("IWGlobalNode.ModelFileName"+$i) $newExportFile;
+         }
+      }
+
+      if (`attributeQuery -n "IWGlobalNode" -ex "CollmapCount"` == true) {
+         int $numColEntries = `getAttr "IWGlobalNode.CollmapCount"`;
+         string $patternCol = ".*";
+         $patternCol += substitute( $GAME_PROJECT_DIR, $GAME_COLLMAP_DIR, "" );
+   
+         for ($i=1; $i<=$numColEntries; $i++) {
+            string $exportFile = `getAttr ("IWGlobalNode.CollmapFileName"+$i)`;
+            string $newExportFile = substitute( $patternCol, $exportFile, $GAME_COLLMAP_DIR );
+            setAttr -type "string" ("IWGlobalNode.CollmapFileName"+$i) $newExportFile;
+         }
+      }
+   }
+
+   // This proc will move the selected model exports in the scrollList up or down
+   global proc COD_MEW_moveSelectedEntries(int $direction, string $listName) {
+      int $selItems[] = `textScrollList -q -sii $listName`;
+      int $maxItems = `textScrollList -q -ni $listName`;
+      int $numSelected = size($selItems);
+
+      // If no items or all items are selected, the we can't move anything
+      if ($numSelected == 0 || $numSelected == $maxItems) {
+         return;
+      }
+
+      if ($direction == 0) {
+         // If we're moving entries down, we iterate backward
+         for ($i=($numSelected-1); $i>=0; $i--) {
+            // We call the proc that moves the entry down
+            // The proc move the data on the IWGlobalNode, so we let the window
+            // update take care of the UI stuff
+            COD_MEW_MoveModelEntry "Down" $selItems[$i];
+            // Now we update the entry's index value
+            // Moving down the list increases the index
+            $selItems[$i] += 1;
+         }
+      } else {
+         // If we're moving up the list we iterate over the indices
+         for ($i=0; $i<$numSelected; $i++) {
+            // We call the proc that moves the entry up
+            // The proc move the data on the IWGlobalNode, so we let the window
+            // update take care of the UI stuff
+            COD_MEW_MoveModelEntry "Up" $selItems[$i];
+            // Now we update the entry's index value
+            // Moving up the list decreases the index
+            $selItems[$i] -= 1;
+         }
+      }
+
+      // Update the window
+      COD_MEW_updateWindow $listName 0;
+
+      // Reselect the items with their new indices
+      for ($s in $selItems) {
+         if ($s != 0 && $s <= $maxItems) {
+            textScrollList -e -sii $s $listName;
+         }
+      }
+
+      // Since we changed the textScrollList selection, we need to update the entry data fields
+      COD_MEW_updateSelectedEntry $listName;
+   }
+
+   // Proc run from the UI to delete selected entries in the scrollList
+   global proc COD_MEW_deleteSelectedEntries(string $listName) {
+      if (`checkBox -q -v MEWuseLodGrouping_chk` == 0) {
+         // Get the selected items in the list
+         int $selExports[] = `textScrollList -q -sii $listName`;
+         // Unlock the IWGlobalNode
+         lockNode -lock off IWGlobalNode;
+
+         // One at a time, delete the selected entries
+         // We iterate backward so the indices don't change on us
+         for ($i=(size($selExports)-1); $i>=0; $i--) {
+            // Call the proc to perform the deletion which happens on the IWGlobalNode
+            COD_MEW_DeleteModelEntry $listName $selExports[$i];
+         }
+
+         // Update the window
+         COD_MEW_updateWindow $listName 0;
+         // Relock the IWGlobalNode
+         lockNode -lock on IWGlobalNode;
+      }
+   }
+
+   // Check the IWGlobalNode to see if a export filename already exists
+   global proc int COD_MEW_doesExportNameExist(string $exportName, int $skipIndex) {
+      if (`objExists IWGlobalNode` == 1) {
+         int $numEntries = `getAttr "IWGlobalNode.ModelCount"`;
+         if ($numEntries > 0) {
+            for ($i=1; $i<=$numEntries; $i++) {
+               // We have to skip the index of the item we are checking because this would
+               // always return true if we were comparing an entry to itself
+               if ($i != $skipIndex) {
+                  string $file = `getAttr ("IWGlobalNode.ModelFileName"+$i)`;
+                  if ($exportName == $file) {
+                     return 1;
+                  }
+               }
+            }
+         }
+      }
+      return 0;
+   }
+
+   // This proc is called when a user changes the selected tab
+   // Either Model Exporter or Collision Exporter
+   global proc COD_MEW_updateTabs() {
+      if (`tabLayout -q -sti MEWmainTabs_tlyt` == 1) {
+         // If the Xmodel Exporter tab is selected we enable the pulldown menus
+         menu -e -en true codMewAutoPopulate_pdm;
+         menu -e -en true codMewSelectSets_pdm;
+         menu -e -en true codMewCreateEntry_pdm;
+         menu -e -en true codMewConvert_pdm;
+      } else {
+         // If the Collision Map Exporter tab is selected we disable the pulldown menus
+         menu -e -en false codMewAutoPopulate_pdm;
+         menu -e -en false codMewSelectSets_pdm;
+         menu -e -en false codMewCreateEntry_pdm;
+         menu -e -en false codMewConvert_pdm;
+      }
+   }
+
+   // UI proc to refresh the window
+   // Called from scriptJobs on scene open and new scene
+   // Also called when user updates the currently selected entry or deletes entries
+   global proc COD_MEW_updateWindow(string $listName, int $sel) {
+      if (`checkBox -q -v MEWuseLodGrouping_chk` == 0) {
+         textScrollList -e -ra $listName;
+         textField -e -tx "" MEWsingleEntry_txt;
+         checkBox -e -v 0 MEWexportChilds_chk;
+         checkBox -e -v 0 MEWexportSelJoints_chk;
+
+         // If there isn't already a global node, create one
+         if ( `objExists IWGlobalNode` == 0 ) {
+            COD_MEW_createIWglobalNode;
+         }
+
+         // It is possible that the anim export window has made a global node, but not with
+         // the ModelCount attribute, so we need to check for that too
+         if (`attributeQuery -n IWGlobalNode -ex "ModelCount"` == 0) {
+            lockNode -lock off IWGlobalNode;
+            addAttr -ln ModelCount -at byte IWGlobalNode;
+            setAttr "IWGlobalNode.ModelCount" 0;
+            lockNode -lock on IWGlobalNode;
+         }
+
+         // Check for the Wii export scene attribute
+//         if (`attributeQuery -n IWGlobalNode -ex "IsWiiExportScene"` == 1) {
+//            // If it exists, set the check box item appropriately
+//            int $state = `getAttr "IWGlobalNode.IsWiiExportScene"`;
+//            checkBox -e -v $state codMewWiiFileToggle_chk;
+//         } else {
+//            // Otherwise set the check box item to false
+//            checkBox -e -v 0 codMewWiiFileToggle_chk;
+//         }
+
+         // Make sure drive letters on file paths match the user's local machine
+         COD_MEW_fixDriveLetterOnGlobalAttrs;
+
+         for ($i=1; $i<=`getAttr "IWGlobalNode.ModelCount"`; $i++) {
+            string $exportFile = `getAttr ("IWGlobalNode.ModelFileName"+$i)`;
+            string $shortName = substitute($GAME_MODELEXPORT_DIR, $exportFile, "" );
+            if ($shortName != "")
+               textScrollList -e -a $shortName $listName;
+            else
+               textScrollList -e -a "< New Entry - Enter Model Export File Path >" $listName;
+         }
+
+         if ($sel != 0) {
+            textScrollList -e -sii $sel $listName;
+         } else {
+            COD_MEW_closeNodeLister;
+         }
+
+         COD_MEW_updateSelectedEntry $listName;
+
+         if (`window -ex codMewCreateGdtWindow`) deleteUI codMewCreateGdtWindow;
+         if (`window -ex codMewUpdateGdtWindow`) deleteUI codMewUpdateGdtWindow;
+
+//         menuItem -e -en 0 codMewConvertSelXe_mitm;
+//         menuItem -e -en 0 codMewConvertSelPs3_mitm;
+         menuItem -e -en 0 codMewConvertSelPc_mitm;
+         menuItem -e -en 0 codMewFindGdtEntry_mitm;
+         menuItem -e -en 0 codMewCreateGdtEntry_mitm;
+         menuItem -e -en 0 codMewUpdateGdtEntry_mitm;
+      } else {
+         clear($COD_MEW_MODELEXPORT_GROUP);
+         clear($COD_MEW_MODELEXPORT_OFFSET);
+
+         textScrollList -e -ra $listName;
+         textField -e -tx "" MEWmultipleEntry1_txt;
+         checkBox -e -v 0 MEWexportChilds1_chk;
+         checkBox -e -v 0 MEWexportSelJoints1_chk;
+         textField -e -tx "" MEWmultipleEntry2_txt;
+         checkBox -e -v 0 MEWexportChilds2_chk;
+         checkBox -e -v 0 MEWexportSelJoints2_chk;
+         textField -e -tx "" MEWmultipleEntry3_txt;
+         checkBox -e -v 0 MEWexportChilds3_chk;
+         checkBox -e -v 0 MEWexportSelJoints3_chk;
+         textField -e -tx "" MEWmultipleEntry4_txt;
+         checkBox -e -v 0 MEWexportChilds4_chk;
+         checkBox -e -v 0 MEWexportSelJoints4_chk;
+
+         if ( `objExists IWGlobalNode` == 0 )
+            COD_MEW_createIWglobalNode;
+
+         COD_MEW_fixDriveLetterOnGlobalAttrs;
+
+         string $lastGroupName;
+         int $groupNumber = 0;
+         int $groupIndex = 0;
+
+         for ($i=1; $i<=`getAttr "IWGlobalNode.ModelCount"`; $i++) {
+            string $exportFile = `getAttr ("IWGlobalNode.ModelFileName"+$i)`;
+            string $shortName = substitute($GAME_MODELEXPORT_DIR, $exportFile, "" );
+            string $groupExport = substitute( "_[Ll][Oo][Dd][0-9]+$", $shortName, "" );
+            string $groupName = basenameEx( $groupExport );
+
+            if ($lastGroupName == $groupName) {
+               $groupIndex++;
+            } else {
+               $lastGroupName = $groupName;
+               $groupIndex = 0;
+               $groupNumber++;
+
+               if ($groupExport != "") {
+                  textScrollList -e -a $groupExport $listName;
+               } else {
+                  textScrollList -e -a "< New Entry - Enter Model Export File Path >" $listName;
+               }
+            }
+            $COD_MEW_MODELEXPORT_GROUP[$i] = $groupNumber;
+            $COD_MEW_MODELEXPORT_OFFSET[$i] = $groupIndex;
+         }
+
+         if ($sel != 0) {
+            int $maxItems = `textScrollList -q -ni $listName`;
+            if ($sel < $maxItems)
+               textScrollList -e -sii $sel $listName;
+            else
+               textScrollList -e -sii $maxItems $listName;
+         }
+         COD_MEW_updateSelectedMultiEntry $listName;
+         COD_MEW_closeNodeLister;
+
+//         menuItem -e -en 1 codMewConvertSelXe_mitm;
+//         menuItem -e -en 1 codMewConvertSelPs3_mitm;
+         menuItem -e -en 1 codMewConvertSelPc_mitm;
+         menuItem -e -en 1 codMewFindGdtEntry_mitm;
+         menuItem -e -en 1 codMewCreateGdtEntry_mitm;
+         menuItem -e -en 1 codMewUpdateGdtEntry_mitm;
+      }
+      COD_MEW_CollisionUpdateWindow 0;
+   }
+
+   // This UI proc is called when a user changes the selected entry's properties
+   global proc COD_MEW_updateSelectedEntry(string $listName) {
+      if (`checkBox -q -v MEWuseLodGrouping_chk` == 0) {
+         string $selName[] = `textScrollList -q -si $listName`;
+         int $selIndex[] = `textScrollList -q -sii $listName`;
+   
+         if (size($selName) == 1) {
+            textField -e -en 1 MEWsingleEntry_txt;
+            checkBox -e -en 1 MEWexportChilds_chk;
+            checkBox -e -en 1 MEWexportSelJoints_chk;
+            textField -e -tx $selName[0] MEWsingleEntry_txt;
+   
+            int $childsState = `getAttr ("IWGlobalNode.DoNotExportChildren" + $selIndex[0])`;
+            int $jointsState = `getAttr ("IWGlobalNode.ForceExportSelectedJoints" + $selIndex[0])`;
+            checkBox -e -v $childsState MEWexportChilds_chk;
+            checkBox -e -v $jointsState MEWexportSelJoints_chk;
+
+            button -e -en 1 MEWbrowseSingleEntry_btn;
+            button -e -en 1 MEWsetExportsSingle_btn;
+            button -e -en 1 MEWeditExportsSingle_btn;
+            
+            COD_MEW_updateNodeLister $selIndex[0];
+         } else {
+            textField -e -tx "" -en 0 MEWsingleEntry_txt;
+            checkBox -e -v 0 -en 0 MEWexportChilds_chk;
+            checkBox -e -v 0 -en 0 MEWexportSelJoints_chk;
+            button -e -en 0 MEWbrowseSingleEntry_btn;
+            button -e -en 0 MEWsetExportsSingle_btn;
+            button -e -en 0 MEWeditExportsSingle_btn;
+            
+            COD_MEW_updateNodeLister -1;
+         }
+      } else {
+         COD_MEW_updateSelectedMultiEntry $listName;
+      }
+   }
+
+   // This UI proc is called when a user changes the selected LOD group's properties
+   global proc COD_MEW_updateSelectedMultiEntry(string $listName) {
+      int $selIndex[] = `textScrollList -q -sii $listName`;
+      int $multiEntryNumber = 0;
+
+      if (size($selIndex) == 1) {
+         textField -e -tx "" -en 1 MEWmultipleEntry1_txt;
+         checkBox -e -v 0 -en 1 MEWexportChilds1_chk;
+         checkBox -e -v 0 -en 1 MEWexportSelJoints1_chk;
+         textField -e -tx "" -en 1 MEWmultipleEntry2_txt;
+         checkBox -e -v 0 -en 1 MEWexportChilds2_chk;
+         checkBox -e -v 0 -en 1 MEWexportSelJoints2_chk;
+         textField -e -tx "" -en 1 MEWmultipleEntry3_txt;
+         checkBox -e -v 0 -en 1 MEWexportChilds3_chk;
+         checkBox -e -v 0 -en 1 MEWexportSelJoints3_chk;
+         textField -e -tx "" -en 1 MEWmultipleEntry4_txt;
+         checkBox -e -v 0 -en 1 MEWexportChilds4_chk;
+         checkBox -e -v 0 -en 1 MEWexportSelJoints4_chk;
+
+         button -e -en 1 MEWbrowseMultipleEntry1_btn;
+         button -e -en 1 MEWsetExportsMultiple1_btn;
+         button -e -en 1 MEWselectNodesMultiple1_btn;
+         button -e -en 1 MEWbrowseMultipleEntry2_btn;
+         button -e -en 1 MEWsetExportsMultiple2_btn;
+         button -e -en 1 MEWselectNodesMultiple2_btn;
+         button -e -en 1 MEWbrowseMultipleEntry3_btn;
+         button -e -en 1 MEWsetExportsMultiple3_btn;
+         button -e -en 1 MEWselectNodesMultiple3_btn;
+         button -e -en 1 MEWbrowseMultipleEntry4_btn;
+         button -e -en 1 MEWsetExportsMultiple4_btn;
+         button -e -en 1 MEWselectNodesMultiple4_btn;
+
+         for ($i=1; $i<=size($COD_MEW_MODELEXPORT_GROUP); $i++) {
+            if ($multiEntryNumber < 5 && $COD_MEW_MODELEXPORT_GROUP[$i] == $selIndex[0]) {
+               $multiEntryNumber++;
+
+               string $exportFile = `getAttr ("IWGlobalNode.ModelFileName" + $i)`;
+               string $shortName = substitute($GAME_MODELEXPORT_DIR, $exportFile, "" );
+               int $childsState = `getAttr ("IWGlobalNode.DoNotExportChildren" + $i)`;
+               int $jointsState = `getAttr ("IWGlobalNode.ForceExportSelectedJoints" + $i)`;
+               textField -e -tx $shortName ("MEWmultipleEntry"+$multiEntryNumber+"_txt");
+               checkBox -e -v $childsState ("MEWexportChilds"+$multiEntryNumber+"_chk");
+               checkBox -e -v $jointsState ("MEWexportSelJoints"+$multiEntryNumber+"_chk");
+            }
+         }
+
+         if (`textField -q -tx MEWmultipleEntry1_txt` == "") {
+            textField -e -en 0 MEWmultipleEntry1_txt;
+            checkBox -e -v 0 -en 0 MEWexportChilds1_chk;
+            checkBox -e -v 0 -en 0 MEWexportSelJoints1_chk;
+            button -e -en 0 MEWbrowseMultipleEntry1_btn;
+            button -e -en 0 MEWsetExportsMultiple1_btn;
+            button -e -en 0 MEWselectNodesMultiple1_btn;
+         }
+         if (`textField -q -tx MEWmultipleEntry2_txt` == "") {
+            textField -e -en 0 MEWmultipleEntry2_txt;
+            checkBox -e -v 0 -en 0 MEWexportChilds2_chk;
+            checkBox -e -v 0 -en 0 MEWexportSelJoints2_chk;
+            button -e -en 0 MEWbrowseMultipleEntry2_btn;
+            button -e -en 0 MEWsetExportsMultiple2_btn;
+            button -e -en 0 MEWselectNodesMultiple2_btn;
+         }
+         if (`textField -q -tx MEWmultipleEntry3_txt` == "") {
+            textField -e -en 0 MEWmultipleEntry3_txt;
+            checkBox -e -v 0 -en 0 MEWexportChilds3_chk;
+            checkBox -e -v 0 -en 0 MEWexportSelJoints3_chk;
+            button -e -en 0 MEWbrowseMultipleEntry3_btn;
+            button -e -en 0 MEWsetExportsMultiple3_btn;
+            button -e -en 0 MEWselectNodesMultiple3_btn;
+         }
+         if (`textField -q -tx MEWmultipleEntry4_txt` == "") {
+            textField -e -en 0 MEWmultipleEntry4_txt;
+            checkBox -e -v 0 -en 0 MEWexportChilds4_chk;
+            checkBox -e -v 0 -en 0 MEWexportSelJoints4_chk;
+            button -e -en 0 MEWbrowseMultipleEntry4_btn;
+            button -e -en 0 MEWsetExportsMultiple4_btn;
+            button -e -en 0 MEWselectNodesMultiple4_btn;
+         }
+      } else {
+         textField -e -tx "" -en 0 MEWmultipleEntry1_txt;
+         checkBox -e -v 0 -en 0 MEWexportChilds1_chk;
+         checkBox -e -v 0 -en 0 MEWexportSelJoints1_chk;
+         textField -e -tx "" -en 0 MEWmultipleEntry2_txt;
+         checkBox -e -v 0 -en 0 MEWexportChilds2_chk;
+         checkBox -e -v 0 -en 0 MEWexportSelJoints2_chk;
+         textField -e -tx "" -en 0 MEWmultipleEntry3_txt;
+         checkBox -e -v 0 -en 0 MEWexportChilds3_chk;
+         checkBox -e -v 0 -en 0 MEWexportSelJoints3_chk;
+         textField -e -tx "" -en 0 MEWmultipleEntry4_txt;
+         checkBox -e -v 0 -en 0 MEWexportChilds4_chk;
+         checkBox -e -v 0 -en 0 MEWexportSelJoints4_chk;
+
+         button -e -en 0 MEWbrowseMultipleEntry1_btn;
+         button -e -en 0 MEWsetExportsMultiple1_btn;
+         button -e -en 0 MEWselectNodesMultiple1_btn;
+         button -e -en 0 MEWbrowseMultipleEntry2_btn;
+         button -e -en 0 MEWsetExportsMultiple2_btn;
+         button -e -en 0 MEWselectNodesMultiple2_btn;
+         button -e -en 0 MEWbrowseMultipleEntry3_btn;
+         button -e -en 0 MEWsetExportsMultiple3_btn;
+         button -e -en 0 MEWselectNodesMultiple3_btn;
+         button -e -en 0 MEWbrowseMultipleEntry4_btn;
+         button -e -en 0 MEWsetExportsMultiple4_btn;
+         button -e -en 0 MEWselectNodesMultiple4_btn;
+      }
+   }
+
+   // UI proc updates the text field and scrollList when user picks a file using the fileBrowser
+   global proc COD_MEW_updateCurrentEntry(string $listName) {
+      if (`checkBox -q -v MEWuseLodGrouping_chk` == 0) {
+         string $newEntryValue = `textField -q -tx MEWsingleEntry_txt`;
+         int $selIndex[] = `textScrollList -q -sii $listName`;
+
+         if (size($selIndex) == 1) {
+            if (`objExists IWGlobalNode`) {
+               if (`COD_MEW_doesExportNameExist ($GAME_MODELEXPORT_DIR+$newEntryValue) $selIndex[0]`) {
+                  confirmDialog -t "Duplicate Name" -m "The file name you have chosen is a duplicate" -b "OK";
+                  string $oldName = `getAttr ("IWGlobalNode.ModelFileName"+$selIndex[0])`;
+                  textField -e -tx $oldName MEWsingleEntry_txt;
+               } else {
+                  int $childsState = `checkBox -q -v MEWexportChilds_chk`;
+                  int $jointsState = `checkBox -q -v MEWexportSelJoints_chk`;
+   
+                  setAttr -type "string" ("IWGlobalNode.ModelFileName"+$selIndex[0]) ($GAME_MODELEXPORT_DIR+$newEntryValue);
+                  setAttr ("IWGlobalNode.DoNotExportChildren"+$selIndex[0]) $childsState;
+                  setAttr ("IWGlobalNode.ForceExportSelectedJoints"+$selIndex[0]) $jointsState;
+               }
+            }
+            COD_MEW_updateWindow $listName $selIndex[0];
+         }
+      } else {
+         int $selIndex[] = `textScrollList -q -sii $listName`;
+
+         if (size($selIndex) == 1) {
+            if (`objExists IWGlobalNode`) {
+               string $newEntryValues[];
+               int $childsStates[];
+               int $jointsStates[];
+
+               $newEntryValues[0] = `textField -q -tx MEWmultipleEntry1_txt`;
+               $newEntryValues[1] = `textField -q -tx MEWmultipleEntry2_txt`;
+               $newEntryValues[2] = `textField -q -tx MEWmultipleEntry3_txt`;
+               $newEntryValues[3] = `textField -q -tx MEWmultipleEntry4_txt`;
+               $childStates[0] = `checkBox -q -v MEWexportChilds1_chk`;
+               $childStates[1] = `checkBox -q -v MEWexportChilds2_chk`;
+               $childStates[2] = `checkBox -q -v MEWexportChilds3_chk`;
+               $childStates[3] = `checkBox -q -v MEWexportChilds4_chk`;
+               $jointStates[0] = `checkBox -q -v MEWexportSelJoints1_chk`;
+               $jointStates[1] = `checkBox -q -v MEWexportSelJoints2_chk`;
+               $jointStates[2] = `checkBox -q -v MEWexportSelJoints3_chk`;
+               $jointStates[3] = `checkBox -q -v MEWexportSelJoints4_chk`;
+
+               int $exportIndex[];
+
+               for ($i=1; $i<=size($COD_MEW_MODELEXPORT_GROUP); $i++) {
+                  if ($COD_MEW_MODELEXPORT_GROUP[$i] == $selIndex[0]) {
+                     $exportIndex[size($exportIndex)] = $i;
+                  }
+               }
+
+               if (`COD_MEW_doesExportNameExist ($GAME_MODELEXPORT_DIR+$newEntryValues[0]) $exportIndex[0]` ||
+                     `COD_MEW_doesExportNameExist ($GAME_MODELEXPORT_DIR+$newEntryValues[1]) $exportIndex[1]` ||
+                     `COD_MEW_doesExportNameExist ($GAME_MODELEXPORT_DIR+$newEntryValues[2]) $exportIndex[2]` ||
+                     `COD_MEW_doesExportNameExist ($GAME_MODELEXPORT_DIR+$newEntryValues[3]) $exportIndex[3]`) {
+                  confirmDialog -t "Duplicate Name" -m "The file name you have chosen is a duplicate" -b "OK";
+
+                  string $oldNames[];
+
+                  for ($x=0; $x<4; $x++) {
+                     $oldNames[$x] = `getAttr ("IWGlobalNode.ModelFileName"+$exportIndex[$x])`;
+                     textField -e -tx $oldNames[$x] ("MEWmultipleEntry"+($x+1)+"_txt");
+                  }
+               } else {
+                  for ($j=0; $j<size($exportIndex); $j++) {
+                     setAttr -type "string" ("IWGlobalNode.ModelFileName"+$exportIndex[$j]) ($GAME_MODELEXPORT_DIR+$newEntryValues[$j]);
+                     setAttr ("IWGlobalNode.DoNotExportChildren"+$exportIndex[$j]) $childStates[$j];
+                     setAttr ("IWGlobalNode.ForceExportSelectedJoints"+$exportIndex[$j]) $jointStates[$j];
+                  }
+               }
+            }
+            COD_MEW_updateWindow $listName $selIndex[0];
+         }
+      }
+   }
+
+   // The right click Move Up and Down menu should only be available when not using the
+   // LOD grouping layout mode
+   // This proc when query which layout mode we are in, then enable or disable the
+   // menu accordingly
+   global proc COD_MEW_menuMoveEnable(string $listName) {
+      int $numSel = `textScrollList -q -nsi $listName`;
+      string $menuItems[] = `popupMenu -q -ia MEW_MoveEntriesMenu_mnu`;
+
+      if (`checkBox -q -v MEWuseLodGrouping_chk` == 0) {
+         if ($numSel == 0) {
+            for ($m in $menuItems) {
+               menuItem -e -en 0 $m;
+            }
+         } else {
+            for ($m in $menuItems) {
+               menuItem -e -en 1 $m;
+            }
+         }
+      } else {
+         for ($m in $menuItems) {
+            menuItem -e -en 0 $m;
+         }
+      }
+   }
+
+   // Creates the part of the UI that contains the scrollList
+   // It's a separate proc because I initially planned on being able to create groups
+   // Abandoned that idea, I would've had to store a bunch of extra unnecessary data on the global node
+   global proc string[] COD_MEW_createNewGroup() {
+      string $lodMsg = "Group LODs like they are grouped in the GDT files";
+      string $wiiMsg = "Add prefix to filename at export time and calls command to reassign skin weighting for character fingers";
+
+      string $groupLayout = `formLayout -nd 100`;
+         text -l "All Scene Model Export Entires" MEWallSceneExportsLabel_txt;
+//         checkBox -l "Wii Export Scene" -en 1 -cc "COD_MEW_toggleWiiFile" -ann $wiiMsg codMewWiiFileToggle_chk;
+         checkBox -l "GDT Entry Layout" -en 1 -ann $lodMsg MEWuseLodGrouping_chk;
+         string $exportList = `textScrollList -ams 1 -h 100`;
+         	popupMenu -pmc ("COD_MEW_menuMoveEnable "+$exportList) MEW_MoveEntriesMenu_mnu;
+            	menuItem -rp "N" -l "Move Up" -c ("COD_MEW_moveSelectedEntries 1 "+$exportList);
+            	menuItem -rp "S" -l "Move Down" -c ("COD_MEW_moveSelectedEntries 0 "+$exportList);
+      setParent COD_MEW_MainFormLayout_frm;
+
+      formLayout -e
+         -af MEWallSceneExportsLabel_txt "top" 0
+         -af MEWallSceneExportsLabel_txt "left" 20
+
+         -af MEWuseLodGrouping_chk "top" 0
+         -af MEWuseLodGrouping_chk "right" 20
+
+//         -af codMewWiiFileToggle_chk "top" 0
+//         -ac codMewWiiFileToggle_chk "right" 20 MEWuseLodGrouping_chk
+
+         -ac $exportList "top" 10 MEWallSceneExportsLabel_txt
+         -af $exportList "right" 20
+         -af $exportList "left" 20
+         -af $exportList "bottom" 20
+      $groupLayout;
+
+      textScrollList -e -dcc ("COD_MEW_SelectExportNodes "+$exportList) $exportList;
+      textScrollList -e -sc ("COD_MEW_updateSelectedEntry "+$exportList) $exportList;
+      textScrollList -e -dkc ("COD_MEW_deleteSelectedEntries "+$exportList) $exportList;
+      checkBox -e -cc ("COD_MEW_toggleEntryLayout "+$exportList) MEWuseLodGrouping_chk;
+
+      return {$groupLayout, $exportList};
+   }
+
+   // Toggle Wii export check box
+//   global proc COD_MEW_toggleWiiFile() {
+//      if (!`objExists IWGlobalNode`) {
+//         return;
+//      }
+//
+//      // If the Wii attribute doesn't exist yet, add it to the global node
+//      if (`attributeQuery -n IWGlobalNode -ex "IsWiiExportScene"` == 0) {
+//         lockNode -l off IWGlobalNode;
+//         addAttr -ln "IsWiiExportScene" -at byte IWGlobalNode;
+//         lockNode -l on IWGlobalNode;
+//      }
+//      // Get the new state of the check box item
+//      int $state = `checkBox -q -v codMewWiiFileToggle_chk`;
+//      // Set the attribute on the global node
+//      setAttr "IWGlobalNode.IsWiiExportScene" $state;
+//   }
+
+   // Proc called when user checks the LOD grouping checkbox
+   // It toggles the layout of the selected export entries below the scrollList
+   global proc COD_MEW_toggleEntryLayout(string $listName) {
+      if (`checkBox -q -v MEWuseLodGrouping_chk` == 1) {
+         COD_MEW_clearSingleEntryLayout;
+         if (`text -q -ex MEWmodifyLodEntryLabel_txt` == 0) {
+            COD_MEW_createLodEntryLayout $listName;
+         } else {
+            COD_MEW_restoreMultipleEntryLayout;
+         }
+         button -e -en 0 MEWaddEntry_btn;
+         button -e -en 0 MEWaddEntryIncrement_btn;
+         button -e -en 0 MEWdeleteSelectedEntry_btn;
+      } else {
+         COD_MEW_clearMultipleEntryLayout;
+         COD_MEW_restoreSingleEntryLayout;
+         button -e -en 1 MEWaddEntry_btn;
+         button -e -en 1 MEWaddEntryIncrement_btn;
+         button -e -en 1 MEWdeleteSelectedEntry_btn;
+      }
+      COD_MEW_updateWindow $listName 0;
+   }
+
+   // Turns the visibility off of the Multiple Entry Layout UI objects off
+   global proc COD_MEW_clearMultipleEntryLayout() {
+      text -e -vis 0 MEWmodifyLodEntryLabel_txt;
+
+      checkBox -e -vis 0 MEWexportChilds1_chk;
+      checkBox -e -vis 0 MEWexportSelJoints1_chk;
+      textField -e -vis 0 MEWmultipleEntry1_txt;
+      button -e -vis 0 MEWbrowseMultipleEntry1_btn;
+      button -e -vis 0 MEWsetExportsMultiple1_btn;
+      button -e -vis 0 MEWselectNodesMultiple1_btn;
+
+      checkBox -e -vis 0 MEWexportChilds2_chk;
+      checkBox -e -vis 0 MEWexportSelJoints2_chk;
+      textField -e -vis 0 MEWmultipleEntry2_txt;
+      button -e -vis 0 MEWbrowseMultipleEntry2_btn;
+      button -e -vis 0 MEWsetExportsMultiple2_btn;
+      button -e -vis 0 MEWselectNodesMultiple2_btn;
+
+      checkBox -e -vis 0 MEWexportChilds3_chk;
+      checkBox -e -vis 0 MEWexportSelJoints3_chk;
+      textField -e -vis 0 MEWmultipleEntry3_txt;
+      button -e -vis 0 MEWbrowseMultipleEntry3_btn;
+      button -e -vis 0 MEWsetExportsMultiple3_btn;
+      button -e -vis 0 MEWselectNodesMultiple3_btn;
+
+      checkBox -e -vis 0 MEWexportChilds4_chk;
+      checkBox -e -vis 0 MEWexportSelJoints4_chk;
+      textField -e -vis 0 MEWmultipleEntry4_txt;
+      button -e -vis 0 MEWbrowseMultipleEntry4_btn;
+      button -e -vis 0 MEWsetExportsMultiple4_btn;
+      button -e -vis 0 MEWselectNodesMultiple4_btn;
+   }
+
+   // Turns the visibility off of the Single Entry Layout UI objects off
+   global proc COD_MEW_clearSingleEntryLayout() {
+      text -e -vis 0 MEWmodifyEntryLabel_txt;
+
+      checkBox -e -vis 0 MEWexportChilds_chk;
+      checkBox -e -vis 0 MEWexportSelJoints_chk;
+      textField -e -vis 0 MEWsingleEntry_txt;
+      button -e -vis 0 MEWbrowseSingleEntry_btn;
+      button -e -vis 0 MEWsetExportsSingle_btn;
+      button -e -vis 0 MEWeditExportsSingle_btn;
+   }
+
+   // Show the UI elements for the LOD grouping layout mode
+   global proc COD_MEW_restoreMultipleEntryLayout() {
+      text -e -vis 1 MEWmodifyLodEntryLabel_txt;
+
+      checkBox -e -vis 1 MEWexportChilds1_chk;
+      checkBox -e -vis 1 MEWexportSelJoints1_chk;
+      textField -e -vis 1 MEWmultipleEntry1_txt;
+      button -e -vis 1 MEWbrowseMultipleEntry1_btn;
+      button -e -vis 1 MEWsetExportsMultiple1_btn;
+      button -e -vis 1 MEWselectNodesMultiple1_btn;
+
+      checkBox -e -vis 1 MEWexportChilds2_chk;
+      checkBox -e -vis 1 MEWexportSelJoints2_chk;
+      textField -e -vis 1 MEWmultipleEntry2_txt;
+      button -e -vis 1 MEWbrowseMultipleEntry2_btn;
+      button -e -vis 1 MEWsetExportsMultiple2_btn;
+      button -e -vis 1 MEWselectNodesMultiple2_btn;
+
+      checkBox -e -vis 1 MEWexportChilds3_chk;
+      checkBox -e -vis 1 MEWexportSelJoints3_chk;
+      textField -e -vis 1 MEWmultipleEntry3_txt;
+      button -e -vis 1 MEWbrowseMultipleEntry3_btn;
+      button -e -vis 1 MEWsetExportsMultiple3_btn;
+      button -e -vis 1 MEWselectNodesMultiple3_btn;
+
+      checkBox -e -vis 1 MEWexportChilds4_chk;
+      checkBox -e -vis 1 MEWexportSelJoints4_chk;
+      textField -e -vis 1 MEWmultipleEntry4_txt;
+      button -e -vis 1 MEWbrowseMultipleEntry4_btn;
+      button -e -vis 1 MEWsetExportsMultiple4_btn;
+      button -e -vis 1 MEWselectNodesMultiple4_btn;
+
+      COD_MEW_setLodEntryLayout;
+   }
+
+   // Show the UI elements for the single entry layout mode
+   global proc COD_MEW_restoreSingleEntryLayout() {
+      text -e -vis 1 MEWmodifyEntryLabel_txt;
+
+      checkBox -e -vis 1 MEWexportChilds_chk;
+      checkBox -e -vis 1 MEWexportSelJoints_chk;
+
+      textField -e -vis 1 MEWsingleEntry_txt;
+      button -e -vis 1 MEWbrowseSingleEntry_btn;
+      button -e -vis 1 MEWsetExportsSingle_btn;
+      button -e -vis 1 MEWeditExportsSingle_btn;
+
+      formLayout -e
+         -ac MEWmodifyEntry_sep1 "bottom" 0 MEWmodifyEntryLabel_txt
+         -af MEWmodifyEntry_sep1 "right" 5
+         -af MEWmodifyEntry_sep1 "left" 5
+
+         -ac MEWmodifyEntryLabel_txt "bottom" 15 MEWsingleEntry_txt
+         -af MEWmodifyEntryLabel_txt "right" 10
+         -af MEWmodifyEntryLabel_txt "left" 10
+
+         -ac MEWsingleEntry_txt "bottom" 20 MEWexportChilds_chk
+         -ac MEWsingleEntry_txt "right" 5 MEWbrowseSingleEntry_btn
+         -af MEWsingleEntry_txt "left" 20
+
+         -ac MEWbrowseSingleEntry_btn "bottom" 20 MEWexportChilds_chk
+         -ac MEWbrowseSingleEntry_btn "right" 5 MEWsetExportsSingle_btn
+
+         -ac MEWsetExportsSingle_btn "bottom" 20 MEWexportChilds_chk
+         -af MEWsetExportsSingle_btn "right" 20
+
+         -ac MEWeditExportsSingle_btn "bottom" 20 MEWmodifyEntry_sep2
+         -af MEWeditExportsSingle_btn "right" 20
+
+         -ac MEWexportSelJoints_chk "bottom" 20 MEWmodifyEntry_sep2
+         -ac MEWexportSelJoints_chk "right" 20 MEWeditExportsSingle_btn
+
+         -ac MEWexportChilds_chk "bottom" 20 MEWmodifyEntry_sep2
+         -ac MEWexportChilds_chk "right" 20 MEWexportSelJoints_chk
+      COD_MEW_MainFormLayout_frm;
+   }
+
+   // Set layout for LOD grouping UI elements
+   global proc COD_MEW_setLodEntryLayout() {
+      formLayout -e
+         -ac MEWmodifyEntry_sep1 "bottom" 0 MEWmodifyLodEntryLabel_txt
+         -af MEWmodifyEntry_sep1 "right" 5
+         -af MEWmodifyEntry_sep1 "left" 5
+
+         -ac MEWmodifyLodEntryLabel_txt "bottom" 15 MEWmultipleEntry1_txt
+         -af MEWmodifyLodEntryLabel_txt "right" 10
+         -af MEWmodifyLodEntryLabel_txt "left" 10
+
+
+         -ac MEWmultipleEntry1_txt "bottom" 10 MEWexportChilds1_chk
+         -ac MEWmultipleEntry1_txt "right" 5 MEWbrowseMultipleEntry1_btn
+         -af MEWmultipleEntry1_txt "left" 20
+
+         -ac MEWbrowseMultipleEntry1_btn "bottom" 10 MEWexportChilds1_chk
+         -ac MEWbrowseMultipleEntry1_btn "right" 5 MEWsetExportsMultiple1_btn
+
+         -ac MEWsetExportsMultiple1_btn "bottom" 10 MEWexportChilds1_chk
+         -ac MEWsetExportsMultiple1_btn "right" 5 MEWselectNodesMultiple1_btn
+
+         -ac MEWselectNodesMultiple1_btn "bottom" 10 MEWexportChilds1_chk
+         -af MEWselectNodesMultiple1_btn "right" 20
+
+         -ac MEWexportSelJoints1_chk "bottom" 20 MEWmultipleEntry2_txt
+         -af MEWexportSelJoints1_chk "right" 80
+
+         -ac MEWexportChilds1_chk "bottom" 20 MEWmultipleEntry2_txt
+         -ac MEWexportChilds1_chk "right" 20 MEWexportSelJoints1_chk
+
+
+         -ac MEWmultipleEntry2_txt "bottom" 10 MEWexportChilds2_chk
+         -ac MEWmultipleEntry2_txt "right" 5 MEWbrowseMultipleEntry2_btn
+         -af MEWmultipleEntry2_txt "left" 20
+
+         -ac MEWbrowseMultipleEntry2_btn "bottom" 10 MEWexportChilds2_chk
+         -ac MEWbrowseMultipleEntry2_btn "right" 5 MEWsetExportsMultiple2_btn
+
+         -ac MEWsetExportsMultiple2_btn "bottom" 10 MEWexportChilds2_chk
+         -ac MEWsetExportsMultiple2_btn "right" 5 MEWselectNodesMultiple2_btn
+
+         -ac MEWselectNodesMultiple2_btn "bottom" 10 MEWexportChilds2_chk
+         -af MEWselectNodesMultiple2_btn "right" 20
+
+         -ac MEWexportSelJoints2_chk "bottom" 20 MEWmultipleEntry3_txt
+         -af MEWexportSelJoints2_chk "right" 80
+
+         -ac MEWexportChilds2_chk "bottom" 20 MEWmultipleEntry3_txt
+         -ac MEWexportChilds2_chk "right" 20 MEWexportSelJoints2_chk
+
+
+         -ac MEWmultipleEntry3_txt "bottom" 10 MEWexportChilds3_chk
+         -ac MEWmultipleEntry3_txt "right" 5 MEWbrowseMultipleEntry3_btn
+         -af MEWmultipleEntry3_txt "left" 20
+
+         -ac MEWbrowseMultipleEntry3_btn "bottom" 10 MEWexportChilds3_chk
+         -ac MEWbrowseMultipleEntry3_btn "right" 5 MEWsetExportsMultiple3_btn
+
+         -ac MEWsetExportsMultiple3_btn "bottom" 10 MEWexportChilds3_chk
+         -ac MEWsetExportsMultiple3_btn "right" 5 MEWselectNodesMultiple3_btn
+
+         -ac MEWselectNodesMultiple3_btn "bottom" 10 MEWexportChilds3_chk
+         -af MEWselectNodesMultiple3_btn "right" 20
+
+         -ac MEWexportSelJoints3_chk "bottom" 20 MEWmultipleEntry4_txt
+         -af MEWexportSelJoints3_chk "right" 80
+
+         -ac MEWexportChilds3_chk "bottom" 20 MEWmultipleEntry4_txt
+         -ac MEWexportChilds3_chk "right" 20 MEWexportSelJoints3_chk
+
+
+         -ac MEWmultipleEntry4_txt "bottom" 10 MEWexportChilds4_chk
+         -ac MEWmultipleEntry4_txt "right" 5 MEWbrowseMultipleEntry4_btn
+         -af MEWmultipleEntry4_txt "left" 20
+
+         -ac MEWbrowseMultipleEntry4_btn "bottom" 10 MEWexportChilds4_chk
+         -ac MEWbrowseMultipleEntry4_btn "right" 5 MEWsetExportsMultiple4_btn
+
+         -ac MEWsetExportsMultiple4_btn "bottom" 10 MEWexportChilds4_chk
+         -ac MEWsetExportsMultiple4_btn "right" 5 MEWselectNodesMultiple4_btn
+
+         -ac MEWselectNodesMultiple4_btn "bottom" 10 MEWexportChilds4_chk
+         -af MEWselectNodesMultiple4_btn "right" 20
+
+         -ac MEWexportSelJoints4_chk "bottom" 20 MEWmodifyEntry_sep2
+         -af MEWexportSelJoints4_chk "right" 80
+
+         -ac MEWexportChilds4_chk "bottom" 20 MEWmodifyEntry_sep2
+         -ac MEWexportChilds4_chk "right" 20 MEWexportSelJoints4_chk
+      COD_MEW_MainFormLayout_frm;
+   }
+
+   // First time creation of the UI element which make up the LOD grouping layout mode
+   global proc COD_MEW_createLodEntryLayout(string $listName) {
+      text -p COD_MEW_MainFormLayout_frm -l "Modify Selected LOD Group's Entries" MEWmodifyLodEntryLabel_txt;
+
+      checkBox -p COD_MEW_MainFormLayout_frm -l "Do Not Export Children" MEWexportChilds1_chk;
+      checkBox -p COD_MEW_MainFormLayout_frm -l "Force Export Selected Joints" MEWexportSelJoints1_chk;
+      textField -p COD_MEW_MainFormLayout_frm MEWmultipleEntry1_txt;
+      button -p COD_MEW_MainFormLayout_frm -l "..." MEWbrowseMultipleEntry1_btn;
+      button -p COD_MEW_MainFormLayout_frm -l "Set Exports" MEWsetExportsMultiple1_btn;
+      button -p COD_MEW_MainFormLayout_frm -l "Select Nodes" MEWselectNodesMultiple1_btn;
+
+      checkBox -p COD_MEW_MainFormLayout_frm -l "Do Not Export Children" MEWexportChilds2_chk;
+      checkBox -p COD_MEW_MainFormLayout_frm -l "Force Export Selected Joints" MEWexportSelJoints2_chk;
+      textField -p COD_MEW_MainFormLayout_frm MEWmultipleEntry2_txt;
+      button -p COD_MEW_MainFormLayout_frm -l "..." MEWbrowseMultipleEntry2_btn;
+      button -p COD_MEW_MainFormLayout_frm -l "Set Exports" MEWsetExportsMultiple2_btn;
+      button -p COD_MEW_MainFormLayout_frm -l "Select Nodes" MEWselectNodesMultiple2_btn;
+
+      checkBox -p COD_MEW_MainFormLayout_frm -l "Do Not Export Children" MEWexportChilds3_chk;
+      checkBox -p COD_MEW_MainFormLayout_frm -l "Force Export Selected Joints" MEWexportSelJoints3_chk;
+      textField -p COD_MEW_MainFormLayout_frm MEWmultipleEntry3_txt;
+      button -p COD_MEW_MainFormLayout_frm -l "..." MEWbrowseMultipleEntry3_btn;
+      button -p COD_MEW_MainFormLayout_frm -l "Set Exports" MEWsetExportsMultiple3_btn;
+      button -p COD_MEW_MainFormLayout_frm -l "Select Nodes" MEWselectNodesMultiple3_btn;
+
+      checkBox -p COD_MEW_MainFormLayout_frm -l "Do Not Export Children" MEWexportChilds4_chk;
+      checkBox -p COD_MEW_MainFormLayout_frm -l "Force Export Selected Joints" MEWexportSelJoints4_chk;
+      textField -p COD_MEW_MainFormLayout_frm MEWmultipleEntry4_txt;
+      button -p COD_MEW_MainFormLayout_frm -l "..." MEWbrowseMultipleEntry4_btn;
+      button -p COD_MEW_MainFormLayout_frm -l "Set Exports" MEWsetExportsMultiple4_btn;
+      button -p COD_MEW_MainFormLayout_frm -l "Select Nodes" MEWselectNodesMultiple4_btn;
+
+      checkBox -e -cc ("COD_MEW_updateCurrentEntry "+$listName) MEWexportChilds1_chk;
+      checkBox -e -cc ("COD_MEW_updateCurrentEntry "+$listName) MEWexportSelJoints1_chk;
+      textField -e -cc ("COD_MEW_updateCurrentEntry "+$listName) MEWmultipleEntry1_txt;
+      checkBox -e -cc ("COD_MEW_updateCurrentEntry "+$listName) MEWexportChilds2_chk;
+      checkBox -e -cc ("COD_MEW_updateCurrentEntry "+$listName) MEWexportSelJoints2_chk;
+      textField -e -cc ("COD_MEW_updateCurrentEntry "+$listName) MEWmultipleEntry2_txt;
+      checkBox -e -cc ("COD_MEW_updateCurrentEntry "+$listName) MEWexportChilds3_chk;
+      checkBox -e -cc ("COD_MEW_updateCurrentEntry "+$listName) MEWexportSelJoints3_chk;
+      textField -e -cc ("COD_MEW_updateCurrentEntry "+$listName) MEWmultipleEntry3_txt;
+      checkBox -e -cc ("COD_MEW_updateCurrentEntry "+$listName) MEWexportChilds4_chk;
+      checkBox -e -cc ("COD_MEW_updateCurrentEntry "+$listName) MEWexportSelJoints4_chk;
+      textField -e -cc ("COD_MEW_updateCurrentEntry "+$listName) MEWmultipleEntry4_txt;
+
+      button -e -c ("COD_MEW_pickMultiExportFile "+$listName+" 1") MEWbrowseMultipleEntry1_btn;
+      button -e -c ("COD_MEW_pickMultiExportFile "+$listName+" 2") MEWbrowseMultipleEntry2_btn;
+      button -e -c ("COD_MEW_pickMultiExportFile "+$listName+" 3") MEWbrowseMultipleEntry3_btn;
+      button -e -c ("COD_MEW_pickMultiExportFile "+$listName+" 4") MEWbrowseMultipleEntry4_btn;
+      button -e -c ("COD_MEW_SetMultiExportNodes "+$listName+" 0") MEWsetExportsMultiple1_btn;
+      button -e -c ("COD_MEW_SetMultiExportNodes "+$listName+" 1") MEWsetExportsMultiple2_btn;
+      button -e -c ("COD_MEW_SetMultiExportNodes "+$listName+" 2") MEWsetExportsMultiple3_btn;
+      button -e -c ("COD_MEW_SetMultiExportNodes "+$listName+" 3") MEWsetExportsMultiple4_btn;
+      button -e -c ("COD_MEW_SelectMultiExportNodes "+$listName+" 0") MEWselectNodesMultiple1_btn;
+      button -e -c ("COD_MEW_SelectMultiExportNodes "+$listName+" 1") MEWselectNodesMultiple2_btn;
+      button -e -c ("COD_MEW_SelectMultiExportNodes "+$listName+" 2") MEWselectNodesMultiple3_btn;
+      button -e -c ("COD_MEW_SelectMultiExportNodes "+$listName+" 3") MEWselectNodesMultiple4_btn;
+
+      COD_MEW_setLodEntryLayout;
+   }
+
+   // First time creation of the UI elements for the single entry layout mode
+   global proc COD_MEW_createSingeEntryLayout() {
+      separator MEWmodifyEntry_sep1;
+      text -l "Modify Selected Entry" MEWmodifyEntryLabel_txt;
+
+      checkBox -l "Do Not Export Children" MEWexportChilds_chk;
+      checkBox -l "Force Export Selected Joints" MEWexportSelJoints_chk;
+      button -l "Edit Exports" -w 70 MEWeditExportsSingle_btn;
+
+      textField MEWsingleEntry_txt;
+      button -l "..." MEWbrowseSingleEntry_btn;
+      button -l "Set Exports" -w 70 MEWsetExportsSingle_btn;
+
+      separator MEWmodifyEntry_sep2;
+
+      formLayout -e
+         -ac MEWmodifyEntry_sep1 "bottom" 0 MEWmodifyEntryLabel_txt
+         -af MEWmodifyEntry_sep1 "right" 5
+         -af MEWmodifyEntry_sep1 "left" 5
+
+         -ac MEWmodifyEntryLabel_txt "bottom" 15 MEWsingleEntry_txt
+         -af MEWmodifyEntryLabel_txt "right" 10
+         -af MEWmodifyEntryLabel_txt "left" 10
+
+         -ac MEWsingleEntry_txt "bottom" 20 MEWexportChilds_chk
+         -ac MEWsingleEntry_txt "right" 5 MEWbrowseSingleEntry_btn
+         -af MEWsingleEntry_txt "left" 20
+
+         -ac MEWbrowseSingleEntry_btn "bottom" 20 MEWexportChilds_chk
+         -ac MEWbrowseSingleEntry_btn "right" 5 MEWsetExportsSingle_btn
+
+         -ac MEWsetExportsSingle_btn "bottom" 20 MEWexportChilds_chk
+         -af MEWsetExportsSingle_btn "right" 20
+
+         -ac MEWeditExportsSingle_btn "bottom" 20 MEWmodifyEntry_sep2
+         -af MEWeditExportsSingle_btn "right" 20
+
+         -ac MEWexportSelJoints_chk "bottom" 20 MEWmodifyEntry_sep2
+         -ac MEWexportSelJoints_chk "right" 20 MEWeditExportsSingle_btn
+
+         -ac MEWexportChilds_chk "bottom" 20 MEWmodifyEntry_sep2
+         -ac MEWexportChilds_chk "right" 20 MEWexportSelJoints_chk
+
+         -ac MEWmodifyEntry_sep2 "bottom" 10 MEWexportSelected_btn
+         -af MEWmodifyEntry_sep2 "right" 5
+         -af MEWmodifyEntry_sep2 "left" 5
+      COD_MEW_MainFormLayout_frm;
+   }
+
+   // Prompts the user with a dialog box to pick an export file
+   global proc COD_MEW_pickExportFile(string $listName) {
+      int $selIndex[] = `textScrollList -q -sii $listName`;
+      string $currentDir = dirname( `file -q -sn` );
+
+      if (size($selIndex) == 1) {
+         string $fileToLoad = `fileDialog -m 1 -dm "*.XMODEL_EXPORT"`;
+
+         if ($fileToLoad != "") {
+            string $shortName = substitute($GAME_MODELEXPORT_DIR, $fileToLoad, "" );
+            $shortName = substitute(".XMODEL_EXPORT", $shortName, "" );
+            textField -e -tx $shortName MEWsingleEntry_txt;
+         }
+
+         COD_MEW_updateCurrentEntry $listName;
+      } else if (size($selIndex) == 0) {
+         confirmDialog -t "Select an Entry" -m "You must select an entry" -b "OK";
+      } else {
+         confirmDialog -t "Multiple Entries" -m "You must select only one entry to edit" -b "OK";
+      }
+   }
+
+   // Prompts the user with a dialog box to pick an export file
+   global proc COD_MEW_pickMultiExportFile(string $listName, int $index) {
+      int $selIndex[] = `textScrollList -q -sii $listName`;
+      string $currentDir = dirname( `file -q -sn` );
+
+      if (size($selIndex) == 1) {
+         string $fileToLoad = `fileDialog -m 1 -dm "*.XMODEL_EXPORT"`;
+
+         if ($fileToLoad != "") {
+            string $shortName = substitute($GAME_MODELEXPORT_DIR, $fileToLoad, "" );
+            $shortName = substitute(".XMODEL_EXPORT", $shortName, "" );
+            textField -e -tx $shortName ("MEWmultipleEntry"+$index+"_txt");
+         }
+
+         COD_MEW_updateCurrentEntry $listName;
+      } else if (size($selIndex) == 0) {
+         confirmDialog -t "Select an Entry" -m "You must select an entry" -b "OK";
+      } else {
+         confirmDialog -t "Multiple Entries" -m "You must select only one entry to edit" -b "OK";
+      }
+   }
+
+   // General setup, loads needed scripts and plugins
+   global proc int COD_MEW_Setup() {
+      if (!sakCatchSourceScript("ModelExportWindow/cod_mew_nodeLister_UI.mel")) return 0;
+      if (!sakCatchSourceScript("ModelExportWindow/cod_mew_exporterProcs.mel")) return 0;
+      if (!sakCatchSourceScript("ModelExportWindow/cod_mew_menus.mel")) return 0;
+      if (!sakCatchSourceScript("ModelExportWindow/cod_mew_fileProcs.mel")) return 0;
+      if (!sakCatchSourceScript("ModelExportWindow/cod_mew_autoPopulateProcs.mel")) return 0;
+      if (!sakCatchSourceScript("ModelExportWindow/cod_mew_selectSetProcs.mel")) return 0;
+      if (!sakCatchSourceScript("ModelExportWindow/cod_mew_convertProcs.mel")) return 0;
+      if (!sakCatchSourceScript("ModelExportWindow/cod_mew_gdtProcs.mel")) return 0;
+      if (!sakCatchSourceScript("ModelExportWindow/cod_mew_gdt_UI.mel")) return 0;
+      if (!sakCatchSourceScript("ModelExportWindow/cod_mew_collision_UI.mel")) return 0;
+      if (!sakCatchSourceScript("ModelExportWindow/cod_mew_collisionProcs.mel")) return 0;
+      if (!sakCatchSourceScript("ModelExportWindow/cod_mew_collisionNodeListerProcs.mel")) return 0;
+
+      if (!sakCatchSourceScript("library/arrayProcs.mel")) return 0;
+      if (!sakCatchSourceScript("library/fileProcs.mel")) return 0;
+      if (!sakCatchSourceScript("modeling/checkVertexColors.mel")) return 0;
+//      if (!sakCatchSourceScript("PerforceMaya")) return 0;
+
+      if (!sakCatchLoadPlugin($IW_CORE_PATH+"/pyPlugins/gdtCommands.py")) return 0;
+      if (!sakCatchLoadPlugin($IW_CORE_PATH+"/pyPlugins/fingerReskinCommand.py")) return 0;
+//      if (!sakCatchLoadPlugin("PerforceMaya")) return 0;
+      if (!sakCatchLoadPlugin("XModelExport")) return 0;
+
+      if (`objExists IWGlobalNode` == 0) {
+         COD_MEW_createIWglobalNode;
+      }
+
+      return 1;
+   }
+
+   // This is the main proc which creates the Model Export window
+   global proc COD_ModelExportWindow_UI() {
+      // Call the setup procedure
+      if (!`COD_MEW_Setup`) {
+         error "Error occured during setup";
+      }
+
+      // Destroy the window if it already exists
+      if (`window -ex codModelExport_window`) {
+         deleteUI codModelExport_window;
+      }
+      if (`window -ex codMewCreateMaterialWindow`) {
+         deleteUI codMewCreateMaterialWindow;
+      }
+
+      // Make the main window
+      window -title (" Model Export Window   ->   "+$GAME_MODELEXPORT_DIR) -mb 1 -wh 690 500 -s 1 -mxb 0 codModelExport_window;
+
+      int $windowWidth = 690;
+      int $windowHeight = 500;
+
+      // Main Tabs layout
+      // One tab for Xmodel Exporter and one for Collision Map Exporter
+      formLayout -nd 100 COD_MEW_tabsmain_frm;
+      tabLayout -innerMarginWidth 5 -innerMarginHeight 5 MEWmainTabs_tlyt;
+
+      // Xmodel Exporter Layouts
+      formLayout -nd 100 COD_MEW_frm;
+         formLayout -nd 100 COD_MEW_MainFormLayout_frm;
+            button -l "Add New Entry" MEWaddEntry_btn;
+            button -l "+" MEWaddEntryIncrement_btn;
+            button -l "Delete Selected Entry" MEWdeleteSelectedEntry_btn;
+
+            button -l "Export Selected" MEWexportSelected_btn;
+            button -l "Export All" MEWexportAll_btn;
+
+            COD_MEW_createSingeEntryLayout;
+
+      // We start with the single entry layout, which is created here
+      string $exportGrp[] = `COD_MEW_createNewGroup`;
+
+      formLayout -e
+         -af MEWmainTabs_tlyt "top" 0
+         -af MEWmainTabs_tlyt "right" 0
+         -af MEWmainTabs_tlyt "left" 0
+         -af MEWmainTabs_tlyt "bottom" 0
+      COD_MEW_tabsmain_frm;
+
+      formLayout -e
+         -af COD_MEW_MainFormLayout_frm "top" 0
+         -af COD_MEW_MainFormLayout_frm "right" 0
+         -af COD_MEW_MainFormLayout_frm "left" 0
+         -af COD_MEW_MainFormLayout_frm "bottom" 0
+      COD_MEW_frm;
+
+      formLayout -e
+         -af $exportGrp "top" 20
+         -af $exportGrp "right" 20
+         -af $exportGrp "left" 20
+         -ac $exportGrp "bottom" 5 MEWmodifyEntry_sep1
+
+         -af MEWaddEntry_btn "bottom" 10
+         -ap MEWaddEntry_btn "right" 10 22
+         -af MEWaddEntry_btn "left" 20
+
+         -af MEWaddEntryIncrement_btn "bottom" 10
+         -ap MEWaddEntryIncrement_btn "right" 10 25
+         -ac MEWaddEntryIncrement_btn "left" 0 MEWaddEntry_btn
+
+         -af MEWdeleteSelectedEntry_btn "bottom" 10
+         -ap MEWdeleteSelectedEntry_btn "right" 5 50
+         -ac MEWdeleteSelectedEntry_btn "left" 10 MEWaddEntryIncrement_btn
+
+         -af MEWexportSelected_btn "bottom" 10
+         -ac MEWexportSelected_btn "right" 10 MEWexportAll_btn
+         -ap MEWexportSelected_btn "left" 5 50
+
+         -af MEWexportAll_btn "bottom" 10
+         -af MEWexportAll_btn "right" 20
+         -ap MEWexportAll_btn "left" 10 75
+      COD_MEW_MainFormLayout_frm;
+
+      COD_MEW_CollisionExportLayouts();
+
+      tabLayout -edit -tl COD_MEW_frm "Xmodel Exporter"
+                      -tl MEWcollisionMapMain_frm "Collision Map Exporter"
+      MEWmainTabs_tlyt;
+
+      // Create the pulldown menus
+      COD_MEW_createPulldownMenu $exportGrp[1];
+
+      // Show the window
+      showWindow codModelExport_window;
+
+      // Refresh the window
+      // This is when the IWGlobalNode is read and its information is put into the window
+      COD_MEW_updateWindow $exportGrp[1] 0;
+
+      // Add our button commands
+      button -e -c ("COD_MEW_AddModel "+$exportGrp[1]+" 0 0") MEWaddEntry_btn;
+      button -e -c ("COD_MEW_AddModel "+$exportGrp[1]+" 0 1") MEWaddEntryIncrement_btn;
+      button -e -c ("COD_MEW_deleteSelectedEntries "+$exportGrp[1]) MEWdeleteSelectedEntry_btn;
+      button -e -c ("COD_MEW_StartTheExport 1 "+$exportGrp[1]) MEWexportSelected_btn;
+      button -e -c ("COD_MEW_StartTheExport 0 "+$exportGrp[1]) MEWexportAll_btn;
+
+      button -e -c ("COD_MEW_pickExportFile "+$exportGrp[1]) MEWbrowseSingleEntry_btn;
+      button -e -c ("COD_MEW_SetExportNodes "+$exportGrp[1]) MEWsetExportsSingle_btn;
+      button -e -c ("COD_MEW_nodeListerUI "+$exportGrp[1]) MEWeditExportsSingle_btn;
+
+      checkBox -e -cc ("COD_MEW_updateCurrentEntry "+$exportGrp[1]) MEWexportChilds_chk;
+      checkBox -e -cc ("COD_MEW_updateCurrentEntry "+$exportGrp[1]) MEWexportSelJoints_chk;
+      textField -e -cc ("COD_MEW_updateCurrentEntry "+$exportGrp[1]) MEWsingleEntry_txt;
+
+      tabLayout -e -cc "COD_MEW_updateTabs" MEWmainTabs_tlyt;
+
+      // We need to refresh the window when a user opens a new scene
+      scriptJob -p codModelExport_window -e "SceneOpened" ("COD_MEW_updateWindow "+$exportGrp[1]+" 0");
+      scriptJob -p codModelExport_window -e "NewSceneOpened" ("COD_MEW_updateWindow "+$exportGrp[1]+" 0");
+   }
+   COD_ModelExportWindow_UI;
+}

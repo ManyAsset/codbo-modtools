@@ -1,0 +1,18 @@
+{
+	stateMap "effect_add";
+
+	vertexShader 3.0 "pimp_shader_effectsimple_6f4d5ae9.hlsl"
+	{
+		eyeOffsetParms = material.eyeOffsetParms;
+	}
+
+	pixelShader 3.0 "pimp_shader_effectsimple_4e29dd6.hlsl" 
+	{
+		colorMapSampler = material.colorMap;
+	}
+
+	vertex.position = code.position;
+	vertex.texcoord[0] = code.texcoord[0];
+
+}
+

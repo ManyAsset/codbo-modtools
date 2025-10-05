@@ -1,0 +1,23 @@
+{
+	stateMap "build_shadowmap_depth_noalpha";
+
+	vertexShader 3.0 "pimp_shader_sw4_3d_char_skin_gas_94ec3b33.hlsl"
+	{
+		RevealMap  = material.RevealMap;
+  BurnOffset = material.BurnOffset;
+  BurnSpeed  = material.BurnSpeed;
+	}
+
+	pixelShader 3.0 "pimp_shader_null_494c2039.hlsl" 
+	{
+	}
+
+	vertex.position = code.position;
+
+	declTypes
+	{
+		packed
+		world
+	}
+}
+

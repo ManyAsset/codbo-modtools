@@ -1,0 +1,191 @@
+// VEHICLE	
+//include	vehicle_huey			// filtered below
+//include	vehicle_huey_player		// this might not be needed
+include,vehicle_zpu_antiair
+
+rawfile,vehicle/heli_hind_steer.graph	// TODO:  What is this and do we need it?
+
+fx,vehicle/vexplosion/fx_vexplode_helicopter_exp_mp
+
+
+// replacing vehicle_huey
+/////////////////////////////////////////
+xmodel,t5_veh_helo_huey
+xmodel,t5_veh_helo_huey_damaged_low
+
+// SeaKnight!
+xmodel,vehicle_ch46e
+xmodel,t5_veh_jet_f4_gearup
+
+// interior and rockets
+xmodel,t5_veh_helo_huey_att_interior
+xmodel,t5_veh_helo_huey_att_rockets
+xmodel,t5_veh_helo_huey_att_decal_std
+
+// damage states
+xmodel,t5_veh_helo_huey_att_uwb_dmg_blood
+xmodel,t5_veh_helo_huey_att_uwb_dmg_dials
+xmodel,t5_veh_helo_huey_att_uwb_dmg_glass
+xmodel,t5_veh_helo_huey_att_uwb_dmg_scorch
+
+// VEHICLE WEAPONS
+weapon,sp/huey_side_minigun_uwb
+weapon,sp/huey_side_minigun_uwb_ai
+weapon,sp/huey_side_minigun
+weapon,sp/huey_rockets_uwb
+weapon,sp/hind_turret
+//weapon,sp/hind_rockets_2x_sp
+weapon,sp/hind_rockets_sp_uwb
+weapon,sp/hind_rockets_sp_player_uwb
+weapon,sp/hind_minigun_enemy_pilot
+weapon,sp/bm21_missile_uwb
+weapon,sp/sam_uwb_sp
+weapon,sp/hip_minigun_gunner
+weapon,sp/hip_minigun_gunner_uwb
+
+// VEHICLE MODELS
+xmodel,t5_veh_helo_hind_double_size
+xmodel,t5_veh_helo_mi8_woodland
+xmodel,t5_veh_helo_mi8_att_dualguns
+
+// VEHICLE EFFECTS
+fx,vehicle/exhaust/fx_exhaust_huey_engine
+fx,vehicle/treadfx/fx_treadfx_dust
+
+fx,vehicle/props/fx_hind_main_blade_full_2x
+fx,vehicle/props/fx_hind_small_blade_full_2x
+
+fx,weapon/muzzleflashes/fx_heli_hind_minigun_2x
+fx,weapon/muzzleflashes/fx_huey_minigun_player
+
+xmodel,t5_veh_helo_huey_damaged_door_front
+xmodel,t5_veh_helo_huey_damaged_rotor_tip
+xmodel,t5_veh_helo_huey_damaged_rotor
+
+// Rocket pod
+xmodel,vehicle_bm21_rckt_lnchr
+xmodel,vehicle_bm21_rckt_lnchr_dest
+
+// VEHICLE EFFECTS
+fx,vehicle/exhaust/fx_exhaust_huey_engine	// in the heli_huey_player in vehiclesettings.gdt
+fx,vehicle/treadfx/fx_heli_dust_default		// in the heli_huey_player in vehiclesettings.gdt
+fx,vehicle/treadfx/fx_heli_dust_concrete	// in the heli_huey_player in vehiclesettings.gdt
+//fx,vehicle/treadfx/fx_heli_foliage_leaves	// might not be needed
+//fx,vehicle/treadfx/fx_heli_snow_spray		// in the heli_huey_player in vehiclesettings.gdt TODO: do we need snow fx???
+fx,vehicle/treadfx/fx_heli_water_spray		// in the heli_huey_player in vehiclesettings.gdt
+//fx,vehicle/vexplosion/fx_Vexplode_plane_lg_mid_air	// might not be needed
+fx,explosions/fx_large_vehicle_explosion	// in the heli_huey_player in vehiclesettings.gdt
+//fx,trail/fx_trail_plane_smoke_damage		// might not be needed
+//fx,vehicle/treadfx/fx_heli_dust_khe_sanh	// might not be needed
+
+//fx,vehicle/props/fx_huey_main_blade_static	// in the heli_huey_player in vehiclesettings.gdt
+//fx,vehicle/props/fx_huey_main_blade_start	// in the heli_huey_player in vehiclesettings.gdt
+fx,vehicle/props/fx_huey_main_blade_full	// in the heli_huey_player in vehiclesettings.gdt
+//fx,vehicle/props/fx_huey_main_blade_stop	// in the heli_huey_player in vehiclesettings.gdt
+
+//fx,vehicle/props/fx_huey_small_blade_static	// in the heli_huey_player in vehiclesettings.gdt
+//fx,vehicle/props/fx_huey_small_blade_start	// in the heli_huey_player in vehiclesettings.gdt
+fx,vehicle/props/fx_huey_small_blade_full	// in the heli_huey_player in vehiclesettings.gdt
+//fx,vehicle/props/fx_huey_small_blade_stop	// in the heli_huey_player in vehiclesettings.gdt
+
+fx,vehicle/vexplosion/fx_vexplode_hind_aerial // in the heli_hind in vehiclesettings.gdt
+fx,vehicle/props/fx_hind_main_blade_full // in the heli_hind in vehiclesettings.gdt
+fx,vehicle/props/fx_hind_small_blade_full // in the heli_hind in vehiclesettings.gdt
+//fx,vehicle/props/fx_hind_main_blade_static // in the heli_hind in vehiclesettings.gdt
+//fx,vehicle/props/fx_hind_small_blade_static // in the heli_hind in vehiclesettings.gdt
+//fx,vehicle/props/fx_hind_main_blade_start // in the heli_hind in vehiclesettings.gdt
+//fx,vehicle/props/fx_hind_small_blade_start // in the heli_hind in vehiclesettings.gdt
+//fx,vehicle/props/fx_hind_main_blade_stop // in the heli_hind in vehiclesettings.gdt
+//fx,vehicle/props/fx_hind_small_blade_stop // in the heli_hind in vehiclesettings.gdt
+fx,vehicle/vexplosion/fx_vexp_bm21_rocket_launcher	// in wpn_bm21_sam_launcher in vehiclesettings.gdt
+
+// VEHICLE DRIVE ANIMS
+xanim,v_huey_fly
+
+// JMA - Is the player going to use these anims???
+// VEHICLE AI ANIMS
+//xanim,ai_huey_gunner1
+//xanim,ai_huey_gunner1_enter
+//xanim,ai_huey_gunner1_exit
+//xanim,ai_huey_gunner2
+//xanim,ai_huey_gunner2_enter
+//xanim,ai_huey_gunner2_exit
+xanim,ai_huey_passenger_b_lt
+//xanim,ai_huey_passenger_b_lt_enter
+xanim,ai_huey_passenger_b_lt_exit
+xanim,ai_huey_passenger_f_lt
+//xanim,ai_huey_passenger_f_lt_enter
+xanim,ai_huey_passenger_f_lt_exit
+xanim,ai_huey_passenger_m_lt
+xanim,ai_huey_passenger_b_rt
+//xanim,ai_huey_passenger_b_rt_enter
+xanim,ai_huey_passenger_b_rt_exit
+xanim,ai_huey_passenger_f_rt
+//xanim,ai_huey_passenger_f_rt_enter
+xanim,ai_huey_passenger_f_rt_exit
+xanim,ai_huey_passenger_m_rt
+//xanim,ai_huey_pilot1_intro
+xanim,ai_huey_pilot1_idle_loop1
+xanim,ai_huey_pilot2_idle_loop1
+//xanim,ai_huey_gunner_aim_60down_60left
+//xanim,ai_huey_gunner_aim_60down_60right
+//xanim,ai_huey_gunner_aim_60left_level
+//xanim,ai_huey_gunner_aim_60right_level
+//xanim,ai_huey_gunner_aim_60up_60left
+//xanim,ai_huey_gunner_aim_60up_60right
+//xanim,ai_huey_gunner_aim_forward_60down
+//xanim,ai_huey_gunner_aim_forward_60up
+//xanim,ai_huey_gunner_aim_forward_level
+
+// JMA - Is the player going to use these anims???
+// testing anims
+//xanim,ai_huey_passenger_switch
+//xanim,ai_huey_passenger_waiting
+
+
+// JMA - Is the player going to use these anims???
+// player anims
+//xanim,pb_huey_gunner1
+//xanim,pb_huey_gunner1_enter
+//xanim,pb_huey_gunner2
+//xanim,pb_huey_gunner2_enter
+//xanim,pb_huey_gunner_aim_60down_60left
+//xanim,pb_huey_gunner_aim_60down_60right
+//xanim,pb_huey_gunner_aim_60left_level
+//xanim,pb_huey_gunner_aim_60right_level
+//xanim,pb_huey_gunner_aim_60up_60left
+//xanim,pb_huey_gunner_aim_60up_60right
+//xanim,pb_huey_gunner_aim_forward_60down
+//xanim,pb_huey_gunner_aim_forward_60up
+//xanim,pb_huey_gunner_aim_forward_level
+//xanim,pb_huey_passenger_b_lt
+//xanim,pb_huey_passenger_f_lt
+//xanim,pb_huey_passenger_m_lt
+//xanim,pb_huey_passenger_b_rt
+//xanim,pb_huey_passenger_f_rt
+//xanim,pb_huey_passenger_m_rt
+
+// JMA - Is the player going to use these anims???
+// player passenger1 anims
+//xanim,pb_huey_passenger_b_lt_aim_60down_60left
+//xanim,pb_huey_passenger_b_lt_aim_forward_60down
+//xanim,pb_huey_passenger_b_lt_aim_60down_60right
+//xanim,pb_huey_passenger_b_lt_aim_60left_level
+//xanim,pb_huey_passenger_b_lt_aim_forward_level
+//xanim,pb_huey_passenger_b_lt_aim_60right_level
+//xanim,pb_huey_passenger_b_lt_aim_60up_60left
+//xanim,pb_huey_passenger_b_lt_aim_forward_60up
+//xanim,pb_huey_passenger_b_lt_aim_60up_60right
+
+// JMA - Is the player going to use these anims???
+// turret moving left and right anims
+//xanim,v_huey_leftgunner_base_idle
+//xanim,v_huey_leftgunner_slideback
+//xanim,v_huey_leftgunner_slideforward
+//xanim,v_huey_rightgunner_base_idle
+//xanim,v_huey_rightgunner_slideback
+//xanim,v_huey_rightgunner_slideforward
+
+// huey weapon icons
+material,hud_hind_minigun
+material,hud_hind_rocket

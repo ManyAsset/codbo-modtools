@@ -1,0 +1,22 @@
+{
+	stateMap "objective";
+
+	vertexShader 3.0 "pimp_shader_objective_848091a9.hlsl"
+	{
+	}
+
+	pixelShader 3.0 "pimp_shader_objective_848091a9.hlsl" 
+	{
+		colorMapSampler = material.colorMap;
+		colorObjMin = material.colorObjMin;
+		colorObjMinBaseBlend = material.colorObjMinBaseBlend;
+		colorObjMax = material.colorObjMax;
+		colorObjMaxBaseBlend = material.colorObjMaxBaseBlend;
+	}
+
+	vertex.position = code.position;
+	vertex.texcoord[0] = code.texcoord[0];
+	vertex.normal = code.normal;
+
+}
+

@@ -1,0 +1,27 @@
+{
+	stateMap "blood";
+
+	vertexShader 3.0 "pimp_shader_sw4_2d_meatshield_29e34da2.hlsl"
+	{
+	}
+
+	pixelShader 3.0 "pimp_shader_sw4_2d_meatshield_29e34da2.hlsl" 
+	{
+		BloodBrightness = material.BloodBrightness;
+  BloodIntensity  = material.BloodIntensity;
+  Reveal_Map      = material.Reveal_Map;
+  Diffuse_Map     = material.Diffuse_Map;
+	}
+
+	vertex.position = code.position;
+	vertex.color[0]    = code.color;
+  vertex.texcoord[0] = code.texcoord[0];
+
+	declTypes
+	{
+		packed
+		debug
+		generic
+	}
+}
+

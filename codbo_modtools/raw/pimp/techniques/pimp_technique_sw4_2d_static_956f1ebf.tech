@@ -1,0 +1,27 @@
+{
+	stateMap "blood";
+
+	vertexShader 3.0 "pimp_shader_sw4_2d_static_3405a512.hlsl"
+	{
+	}
+
+	pixelShader 3.0 "pimp_shader_sw4_2d_static_3405a512.hlsl" 
+	{
+		ScanlinePower = material.ScanlinePower;
+  ScanlineColor = material.ScanlineColor;
+  Scale         = material.Scale;
+  Whiteness     = material.Whiteness;
+  OverlayNoise  = material.OverlayNoise;
+	}
+
+	vertex.position = code.position;
+	vertex.texcoord[0] = code.texcoord[0];
+
+	declTypes
+	{
+		packed
+		debug
+		generic
+	}
+}
+

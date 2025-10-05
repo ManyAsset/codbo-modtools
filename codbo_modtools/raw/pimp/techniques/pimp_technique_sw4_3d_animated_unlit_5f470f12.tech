@@ -1,0 +1,27 @@
+{
+	stateMap "sw4_default";
+
+	vertexShader 3.0 "pimp_shader_sw4_3d_animated_unlit_fb24ecc7.hlsl"
+	{
+	}
+
+	pixelShader 3.0 "pimp_shader_sw4_3d_animated_unlit_417c00e5.hlsl" 
+	{
+		Reflection_Amount  = material.Reflection_Amount;
+  FPS                = material.FPS;
+  Padding            = material.Padding;
+  Grid               = material.Grid;
+  Diffuse_MapSampler = material.Diffuse_MapSampler;
+	}
+
+	vertex.position = code.position;
+	vertex.normal      = code.normal;
+  vertex.texcoord[0] = code.texcoord[0];
+
+	declTypes
+	{
+		packed
+		world
+	}
+}
+

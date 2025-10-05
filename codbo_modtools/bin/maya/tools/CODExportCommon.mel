@@ -1,0 +1,9 @@
+global proc RunConverter( string $platform )
+{
+	if ( $platform == "PC" )
+		RunProcess "C:/trees/cod3/cod3/bin/pcupdate.bat";
+	else if( $platform == "Xenon")
+		RunProcess "C:/trees/cod3/cod3/bin/xenonMyChanges.bat";
+}
+
+

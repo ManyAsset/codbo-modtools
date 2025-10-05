@@ -1,0 +1,184 @@
+/* This script creates and install COD Tools Menu
+
+
+Proc List
+
+TreyarchCreateMenuItemAndCommand
+CODStartup
+CODToolsMenu
+InstallCODToolsMenu
+
+
+*/
+
+//-------------------------------------------------------------------------------------------------------------------------------------//
+//	PROC:	CODStartup
+//
+//	COD Startup - Load plugins for now.
+//-------------------------------------------------------------------------------------------------------------------------------------//
+global proc CODStartup()
+{
+   global string $GAME_PROJECT_DIR;
+   global string $GAME_PROJECT_BIN;
+   global string $IW_CORE_PATH;
+   global string $WORKING_DIR;
+   
+   // SparkyMcSparks (5/19/2011 6:45:26 PM): Changed from IW Env Var Dependency To Working Directory Based On Maya Env
+   $WORKING_DIR = `getenv "MAYA_PLUG_IN_PATH"`;
+   string $buffer[] ;
+   tokenize $WORKING_DIR ";" $buffer ;
+   $WORKING_DIR = $buffer[0];
+   
+   $GAME_PROJECT_DIR = $WORKING_DIR; // `getenv "IW_PROJECT_GAMEDIR"`;
+   $GAME_PROJECT_BIN = $WORKING_DIR; // `getenv "IW_PROJECT_BIN"`;
+   $IW_CORE_PATH = $WORKING_DIR; // `getenv "IW_CORE_PATH"`;
+
+   // some Maya plugins use dlls in tl\bin
+  // putenv "PATH" (`getenv "PATH"`+";"+`getenv "TL"`+"\\bin");
+   putenv "PATH" (`getenv "PATH"`+";"+`getenv "MAYA_PLUG_IN_PATH"`);
+
+   if ( catch( eval("source \""+$IW_CORE_PATH+"/library/generalProcs.mel\"") ) ) {
+      print ("general.mel file failed to load.\n");
+   }
+
+   if ( !`sakCatchLoadPlugin("XAnimExport")` ) {
+      print ("XAnimExport failed to load.\n");
+   }
+
+   if ( !`sakCatchLoadPlugin("XModelExport")` ) {
+      print ("XModelExport failed to load.\n");
+   }
+
+//   if ( !`sakCatchLoadPlugin("PerforceMaya")` ) {
+//      print ("PerforceMaya failed to load.\n");
+//   }
+
+   sakExecPythonFile($IW_CORE_PATH + "/pythonSetup.py");
+}
+
+// This proc creates a menu item which points to a runTimeCommand
+// The advantage to this is that the user can map hotkeys directly to runTimeCommands so that they don't
+// have to use the pulldown menus if they don't want to
+// The parameter $command is optional, if it is passed as "", then $longName will have its spaces removed
+// to make the $command
+// $category is the subcategory under Treyarch
+// $cmdStr is the command which the runTimeCommand executes
+proc TreyarchCreateMenuItemAndCommand(string $longName, string $command, string $category, string $cmdStr) {
+   // If the $command arg is an empty string, we make it by removing spaces from the $longName
+   if ($command == "") {
+      string $tmp[];
+      tokenize $longName " " $tmp;
+
+      for ($i=0; $i<size($tmp); $i++) {
+         $command += $tmp[$i];
+      }
+   }
+   // Create a runTimeCommand
+   // A user can use these to bind hotkeys to commands in our menu
+   if (!catch(`runTimeCommand
+            	-annotation $longName
+            	-category ("Treyarch - "+$category)
+            	-commandLanguage "mel"
+            	-d true
+            	-command $cmdStr
+            	("Treyarch_"+$command)` ) ) {
+      // Create the menu item
+      menuItem -l $longName -c ("Treyarch_"+$command);
+   } else {
+      menuItem -l $longName -c $cmdStr;
+   }
+}
+
+//-------------------------------------------------------------------------------------------------------------------------------------//
+//	PROC:	CODToolsMenu
+//
+//	Create COD Tools Menu
+//-------------------------------------------------------------------------------------------------------------------------------------//
+global proc CODToolsMenu()
+{
+   // Set up the variables
+   global string $IW_CORE_PATH;
+   global string $gMainWindow;
+   global string $gMenuModeButton;
+   string $userName;
+   string $tokName[];
+   string $mayaMode = `setMenuMode`;
+   string $os = `about -operatingSystem`;
+
+   string $getUserPrefDirectory = `internalVar -upd`;
+   tokenize $getUserPrefDirectory "/" $tokName;
+   $userName = $tokName[2];
+
+   if(`menu -exists CODToolsMenu`)
+   deleteUI -menu CODToolsMenu;
+
+   setParent $gMainWindow;
+
+   menu -l "COD Tools"
+      -parent $gMainWindow
+      -tearOff true
+      CODToolsMenu;
+
+   string $category = "General";
+   TreyarchCreateMenuItemAndCommand("Model Exporter", "", $category, "source \"ModelExportWindow/cod_mew_UI.mel\"");
+   TreyarchCreateMenuItemAndCommand("Animation Exporter", "", $category, "source \"AnimationExportWindow/cod_aew_UI.mel\"");
+
+   menuItem -divider true;
+
+   $category = "Animation";
+
+   TreyarchCreateMenuItemAndCommand("Notetrack Window", "", $category, "source NoteTrack; NoteTrack");
+
+   menuItem -divider true;
+
+
+   // ViewModel Tools menu
+   $category = "ViewModel";
+
+   TreyarchCreateMenuItemAndCommand("Create Gunsleeve File", "", $category, "source ViewModelControlWindow;MakeSingleVMExportRig 0");
+   TreyarchCreateMenuItemAndCommand("Create Dual Wield Gunsleeve File", "", $category, "source ViewModelControlWindow;MakeSingleVMExportRig 1");
+   TreyarchCreateMenuItemAndCommand("Create new ViewModel Rig file", "", $category, "source ViewModelControlWindow;LoadVMRig");
+   TreyarchCreateMenuItemAndCommand("Switch Gun in current Rig file", "", $category, "source ViewModelControlWindow;VM_ChangeGun");
+
+   hotBox -updateMenus;
+}
+
+//-------------------------------------------------------------------------------------------------------------------------------------//
+//	PROC:	InstallCODToolsMenu
+//
+//	Installs COD Tools Menu, only if BonusTools is installed because of "whatIs" command
+//-------------------------------------------------------------------------------------------------------------------------------------//
+global proc InstallCODToolsMenu()
+{
+   string $whatIsOutput;
+   string $userSetupFilePath;
+   int $whatIsOutputSize;
+   int $fileID;
+
+   $whatIsOutput = `whatIs usersetup.mel`;
+   $whatIsOutputSize = `size ( $whatIsOutput )`;
+
+   if ( $whatIsOutputSize == 0 )
+      return;
+
+   if ( size($whatIsOutput) > 17 )
+   {
+      $userSetupFilePath = `substring $whatIsOutput 18 $whatIsOutputSize `;
+      $fileID = `fopen $userSetupFilePath "a"`;
+   }
+   else
+   {
+      $userSetupFilePath = `internalVar -usd`;
+      $userSetupFilePath += "usersetup.mel";
+      $fileID = `fopen $userSetupFilePath "w"`;
+   }
+
+   fprint $fileID "\n\n";
+   fprint $fileID "// scriptJob to rebuild menu as working mode changes\n";
+   fprint $fileID "scriptJob -permanent -event \"MenuModeChanged\" \"CODToolsMenu\";\n\n";
+   fprint $fileID "// COD Startup\n";
+   fprint $fileID "CODStartup;\n";
+   fprint $fileID "// COD Tools Menu\n";
+   fprint $fileID "CODToolsMenu;\n";
+   fclose $fileID;
+}

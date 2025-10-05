@@ -1,0 +1,29 @@
+#if "@blendFunc@" == "Blend" || ("@blendFunc@" == "Replace" && "@alphaTest@" != "Always")
+techniqueSet( "sw_cod7_zombie_dissolve_and_explode_mar" ); 
+#else
+techniqueSet( "sw_cod7_zombie_dissolve_and_explode_mar_noalpha" ); 
+#endif
+
+#include "commonsetup.template" 
+
+cgfxTextureTableRefImage
+{
+	"Normal_MapSampler" = streamable normalMap( "tile both", "mip (1x trilinear)", "texture_assets\test\cod7_material_test_n.tga", 0 ) "<auto compression>" : "normalMap"; 
+	"Gloss_MapSampler" = streamable map( "tile both", "mip (1x trilinear)", "texture_assets\test\cod7_material_test_sc.tga", 0 ) "<auto compression>" : "colorMap"; 
+	"Diffuse_MapSampler" = streamable map( "tile both", "mip (1x trilinear)", "texture_assets\test\cod7_material_test_c.tga", 0 ) "<auto compression>" : "colorMap"; 
+	"Specular_ColorSampler" = streamable map( "tile both", "mip (1x trilinear)", "texture_assets\test\cod7_material_test_sc.tga", 0 ) "<auto compression>" : "specularMap"; 
+	"Dissolve_MapSampler" = streamable map( "tile both", "mip (1x trilinear)", "texture_assets\shaderworks\glowcycle_random_03_c.tga", 0 ) "<auto compression>" : "colorMap"; 
+	"Gore_MapSampler" = streamable map( "tile both", "mip (1x trilinear)", "texture_assets\shaderworks\gore_dest_c.tga", 0 ) "<auto compression>" : "colorMap"; 
+}
+
+cgfxConstantTable
+{
+	"v_ExplodeRate" = float4( 0.08, 0, 0, 0 );
+	"EnvBlurLevel" = float4( 0, 0, 0, 0 );
+	"Dissolve_Scale" = float4( 1.72, 0, 0, 0 );
+	"Edge_Glow" = float4( 1.47, 0.746699, 0.103764, 0 );
+	"Temporal_Growth" = float4( 1, 0, 0, 0 );
+	"Temporal_Sharpness" = float4( 0, 0, 0, 0 );
+}
+allocReflectionProbe();
+

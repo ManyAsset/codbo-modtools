@@ -1,0 +1,32 @@
+{
+   // Create pulldown menus
+   global proc COD_AEW_createPulldownMenu() {
+      if (`window -ex codAnimationExport_window`) {
+         if (`menu -q -exists codAewFile_pdm`) {
+            menu -e -dai codAewFile_pdm;
+         } else {
+            menu -l "File" -p codAnimationExport_window -to false codAewFile_pdm;
+               menuItem -l "Exit" -c "deleteUI -wnd codAnimationExport_window";
+            setParent -menu "..";
+         }
+
+         if (`menu -q -exists codAewConvert_pdm`) {
+            menu -e -dai codAewConvert_pdm;
+         }// else {
+//            menu -l "Convert" -p codAnimationExport_window -to false codAewConvert_pdm;
+//               menuItem -l "My Changes Xenon" -c "COD_MEW_convertMyChanges 0";
+//               menuItem -l "My Changes PS3" -c "COD_MEW_convertMyChanges 1";
+//            setParent -menu "..";
+//         }
+
+         if (`menu -q -exists codAewHelp_pdm`) {
+            menu -e -dai codAewHelp_pdm;
+         } else {
+            menu -l "Help" -p codAnimationExport_window -to false codAewHelp_pdm;
+               menuItem -l "Help Document" -c "COD_MEW_openHelpDocument";
+//               menuItem -l "Wiki Page" -c "launch -web \"http://pictures/codwiki/index.php?title=Animation_Exporter\"";
+            setParent -menu "..";
+         }
+      }
+   }
+}

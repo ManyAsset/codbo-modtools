@@ -1,0 +1,16 @@
+{
+	stateMap "default";
+
+	vertexShader 3.0 "pimp_shader_projecteddecal_de45efc8.hlsl"
+	{
+	}
+
+	pixelShader 3.0 "pimp_shader_projecteddecal_7f52de1d.hlsl" 
+	{
+		colorMapSampler = material.colorMap;
+	}
+
+	vertex.position = code.position;
+
+}
+

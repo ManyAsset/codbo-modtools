@@ -1,0 +1,172 @@
+// --------------------------------------------------------------------------------
+// ---- csv's ----
+// --------------------------------------------------------------------------------
+include,contextual_melee_garrote_stand
+include,bulletcam
+
+// --------------------------------------------------------------------------------
+// ---- gsc's ----
+// --------------------------------------------------------------------------------
+
+rawfile,maps/_mgturret.gsc
+
+// --------------------------------------------------------------------------------
+// ---- Models ----
+// --------------------------------------------------------------------------------
+xmodel,anim_rus_zipline_hook
+xmodel,t5_weapon_al54_hook
+
+// --------------------------------------------------------------------------------
+// ---- Animations ----
+// --------------------------------------------------------------------------------
+xanim,Juggernaut_sprint
+xanim,ch_khe_E1B_troopssprint_1
+xanim,ch_khe_E1B_troopssprint_2
+xanim,ch_khe_E1B_troopssprint_3
+xanim,ch_khe_E1B_troopssprint_4
+xanim,ch_khe_E1B_troopssprint_5
+xanim,ch_khe_E1B_troopssprint_6
+xanim,ch_khe_E1B_troopssprint_7
+
+// zipline friendlies
+xanim,ch_zip_entry_bowman
+xanim,ch_zip_entry_idle_bowman
+xanim,ch_zip_entry2_line_bowman
+xanim,ch_zip_idle_bowman
+xanim,ch_zip_exit_bowman
+
+xanim,ch_zip_entry_woods
+xanim,ch_zip_entry_idle_woods
+xanim,ch_zip_entry2_line_woods
+xanim,ch_zip_idle_woods
+xanim,ch_zip_exit_woods
+
+// zipline guards
+xanim,ch_zip_idle_guard_left
+xanim,ch_zip_idle_guard_right
+xanim,ch_zip_death_guard_left
+xanim,ch_zip_death_guard_right
+
+// zipline player
+xanim,int_zip_entry_player
+xanim,int_zip_entry_loop_player
+xanim,int_zip_exit_player
+
+// crossbow
+xanim,o_zipline_crossbow_align_bowman
+xanim,o_zipline_crossbow_align_woods
+
+// contextual melee radio guy
+xanim,ch_b02_guard_in_building_loop
+xanim,ch_b02_guard_in_building_exit
+
+// compound breach new anims
+xanim,ch_cuba_b02_cuba_door_breach_1_woods_reshoot
+xanim,ch_cuba_b02_cuba_door_breach_1_bowman_reshoot
+xanim,ch_cuba_b02_cuba_door_breach_1_bowman_reshoot_crouch
+xanim,ch_cuba_b02_cuba_door_breach_1_bowman_reshoot_idle
+
+// signaling enemy troops
+xanim,ch_cuba_b02_troops_signal_1
+xanim,ch_cuba_b02_troops_signal_2
+xanim,ch_cuba_b02_troops_signal_3
+xanim,ch_cuba_b02_troops_signal_4
+
+// parking breach
+xanim,ch_cuba_b02_cuba_door_breach_2_woods
+xanim,ch_cuba_b02_cuba_door_breach_2_bowman
+
+// Re-using some animations from WMD
+xanim,ch_wmd_b05_truckguards_loop_grd01
+xanim,ch_wmd_b05_truckguards_loop_grd02
+xanim,ch_wmd_b05_truckguards_alert_grd01
+xanim,ch_wmd_b05_truckguards_alert_grd02
+
+// mansion breach
+xanim,ch_cuba_b02_climb_out_window_bowman_002
+xanim,ch_cuba_b02_climb_out_window_woods
+xanim,ch_cuba_b02_climb_out_window_cabinet_death_guard
+xanim,ch_cuba_b02_climb_out_window_win_death_guard
+
+// door breach before assasination
+xanim,ch_cuba_b02_door_breach_woods
+xanim,ch_cuba_b02_door_breach_player
+xanim,ch_cuba_b02_door_breach_woods_loop
+
+xanim,ch_cuba_b02_assig_pre_guard1_idle
+xanim,ch_cuba_b02_assig_pre_guard1_attack
+
+xanim,ch_cuba_b02_assig_pre_guard2_idle
+xanim,ch_cuba_b02_assig_pre_guard2_attack
+
+xanim,ch_cuba_b02_assig_pre_guard3_idle
+xanim,ch_cuba_b02_assig_pre_guard3_attack
+
+// assasination woods
+xanim,ch_cuba_b02_castro_assassination_part1_woods
+xanim,ch_cuba_b02_castro_assassination_part2a_woods
+xanim,ch_cuba_b02_castro_assassination_part2b_woods
+xanim,ch_cuba_b02_castro_stack_up_woods_loop
+
+// assasination castro
+xanim,ch_cuba_b02_castro_assassination_part1_castro
+xanim,ch_cuba_b02_castro_assassination_part2a_castro
+xanim,ch_cuba_b02_castro_assassination_part2b_castro
+xanim,ch_cuba_b02_castro_assassination_castro_death_loop
+
+// assasination woman
+xanim,ch_cuba_b02_castro_assassination_part1_woman
+xanim,ch_cuba_b02_castro_assassination_part2a_woman
+xanim,ch_cuba_b02_castro_assassination_part2b_woman
+xanim,o_cuba_b02_castro_assassination_shotgun_idle
+
+// assasination player
+xanim,ch_cuba_b02_castro_assassination_part1_player
+xanim,ch_cuba_b02_castro_assassination_part2a_player
+xanim,ch_cuba_b02_castro_assassination_part2b_player
+
+// assasination guards
+xanim,ch_cuba_b02_castro_assassination_guard_left_death
+xanim,ch_cuba_b02_castro_assassination_guard_right_death
+
+// assasination bullet cam
+xanim,prop_meatshield_bullet_tip_cam_cuba
+
+// staircase deaths
+xanim,ai_death_stair_a
+xanim,ai_death_stair_b 
+
+// --------------------------------------------------------------------------------
+// ---- gsc's ----
+// --------------------------------------------------------------------------------
+rawfile,maps/cuba_zipline.gsc
+rawfile,maps/cuba_compound.gsc
+
+// --------------------------------------------------------------------------------
+// ---- fx's ----
+// --------------------------------------------------------------------------------
+fx,misc/fx_cuba_flare 
+fx,misc/fx_cuba_flare_burst 
+
+// dust spill inside the mansion
+fx,maps/cuba/fx_cuba_ceiling_low_dust_heavy
+fx,maps/cuba/fx_cuba_ceiling_low_dust_light
+
+//  for contectual melee
+fx,maps/cuba/fx_cuba_garrote_spit
+
+// for chandeliers in the mansion
+fx,maps/cuba/fx_cuba_chandelier_med
+
+// assasination headshot bulletcam effect
+fx,maps/cuba/fx_cuba_headshot
+
+// small glass chunk effect for breaches in the mansion
+fx,maps/cuba/fx_cuba_window_break_sm
+
+// --------------------------------------------------------------------------------
+// ---- Weapons ----
+// --------------------------------------------------------------------------------
+
+// special weapon for castro's assasination
+weapon,sp/asp_sp_castro

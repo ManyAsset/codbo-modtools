@@ -1,0 +1,23 @@
+{
+	stateMap "default";
+
+	vertexShader 3.0 "pimp_shader_sw4_3d_glass_cheap_e30fb158.hlsl"
+	{
+	}
+
+	pixelShader 3.0 "pimp_shader_sw4_3d_glass_cheap_e30fb158.hlsl" 
+	{
+		Reflection_Amount = material.Reflection_Amount;
+		Diffuse_MapSampler = material.RadiantDiffuse;
+	}
+
+	vertex.position = code.position;
+	vertex.normal = code.normal;
+
+	declTypes
+	{
+		packed
+		world
+	}
+}
+

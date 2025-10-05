@@ -1,0 +1,27 @@
+{
+	stateMap "additive_stencil";
+
+	vertexShader 3.0 "pimp_shader_sw4_3d_pentagon_animated_glasses_af80d8b7.hlsl"
+	{
+	}
+
+	pixelShader 3.0 "pimp_shader_sw4_3d_pentagon_animated_glasses_af80d8b7.hlsl" 
+	{
+		Alpha             = material.Alpha;
+  VideoBrightness   = material.VideoBrightness;
+  VideoCoords       = material.VideoCoords;
+  Reflection_Amount = material.Reflection_Amount;
+  SoftenMap         = material.SoftenMap;
+	}
+
+	vertex.position = code.position;
+	vertex.normal      = code.normal;
+  vertex.texcoord[0] = code.texcoord[0];
+
+	declTypes
+	{
+		packed
+		world
+	}
+}
+

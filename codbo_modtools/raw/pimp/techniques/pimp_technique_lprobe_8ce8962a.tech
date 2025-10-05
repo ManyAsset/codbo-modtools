@@ -1,0 +1,27 @@
+{
+	stateMap "default";
+
+	vertexShader 3.0 "pimp_shader_lprobe_42570214.hlsl"
+	{
+	}
+
+	pixelShader 3.0 "pimp_shader_lprobe_8073189a.hlsl" 
+	{
+		colorMapSampler = material.colorMap;
+		normalMapSampler = material.normalMap;
+		specularMapSampler = material.specularMap;
+		envMapParms = material.envMapParms;
+		tensionStretchMapSampler = material.tensionStretchMap;
+		tensionCompressMapSampler = material.tensionCompressMap;
+		tensionData1 = material.tensionData1;
+		tensionData2 = material.tensionData2;
+		dynamicFoliageSunDiffuseMinMax = material.dynamicFoliageSunDiffuseMinMax;
+	}
+
+	vertex.position = code.position;
+	vertex.normal = code.normal;
+	vertex.texcoord[0] = code.texcoord[0];
+	vertex.texcoord[2] = code.tangent;
+
+}
+

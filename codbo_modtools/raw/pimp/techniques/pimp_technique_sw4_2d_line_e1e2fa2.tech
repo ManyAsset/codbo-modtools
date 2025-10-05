@@ -1,0 +1,29 @@
+{
+	stateMap "default2d";
+
+	vertexShader 3.0 "pimp_shader_sw4_2d_line_b21e402a.hlsl"
+	{
+	}
+
+	pixelShader 3.0 "pimp_shader_sw4_2d_line_b21e402a.hlsl" 
+	{
+		LineColor  = material.LineColor;
+  CapWidth   = material.CapWidth;
+  LineWidth  = material.LineWidth;
+  P2         = material.P2;
+  P1         = material.P1;
+  Dimensions = material.Dimensions;
+	}
+
+	vertex.position = code.position;
+	vertex.color[0]    = code.color;
+  vertex.texcoord[0] = code.texcoord[0];
+
+	declTypes
+	{
+		packed
+		debug
+		generic
+	}
+}
+

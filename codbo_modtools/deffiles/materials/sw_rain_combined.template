@@ -1,0 +1,31 @@
+#if "@blendFunc@" == "Blend" || ("@blendFunc@" == "Replace" && "@alphaTest@" != "Always")
+techniqueSet( "sw_rain_combined" ); 
+#else
+techniqueSet( "sw_rain_combined_noalpha" ); 
+#endif
+
+#include "commonsetup.template" 
+
+cgfxTextureTableRefImage
+{
+	"Normal_MapSampler" = streamable normalMap( "tile both", "mip (1x trilinear)", "", 0 ) "<auto compression>" : "normalMap"; 
+	"Puddle_MapSampler" = streamable map( "tile both", "mip (1x trilinear)", "texture_assets\shaderworks\puddle_map.tga", 0 ) "<auto compression>" : "colorMap"; 
+	"Splash_Normal_MapSampler" = streamable normalMap( "tile both", "mip (1x trilinear)", "", 0 ) "<auto compression>" : "normalMap"; 
+	"Gust_Warp_MapSampler" = streamable map( "tile both", "mip (1x trilinear)", "", 0 ) "Uncompressed" : "colorMap"; 
+	"Reflection_MaskSampler" = streamable map( "tile both", "mip (1x trilinear)", "texture_assets\shaderworks\concrete_metal_g.tga", 0 ) "<auto compression>" : "colorMap"; 
+	"Diffuse_MapSampler" = streamable map( "tile both", "mip (1x trilinear)", "", 0 ) "<auto compression>" : "colorMap"; 
+}
+
+cgfxConstantTable
+{
+	"EnvBlurLevel" = float4( 0, 0, 0, 0 );
+	"World_Scale" = float4( 1, 0, 0, 0 );
+	"Puddle0_Params" = float4( 0.5, 4.74, -0.19, 0 );
+	"Puddle1_Params" = float4( 0.65, 5.25, 1, 1 );
+	"Gust_Scale" = float4( 0.03, 0, 0, 0 );
+	"Gust_Vel1" = float4( 0.04, 0.02123, 0, 0 );
+	"Gust_Vel2" = float4( 0.02, 0, 0, 0 );
+	"Gust_Amts" = float4( 0.423529, 0.67, 0.423529, 0 );
+}
+allocReflectionProbe();
+

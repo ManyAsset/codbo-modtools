@@ -1,0 +1,23 @@
+{
+	stateMap "default2d";
+
+	vertexShader 3.0 "pimp_shader_flamethrowerfx_97dd740c.hlsl"
+	{
+	}
+
+	pixelShader 3.0 "pimp_shader_flamethrowerfx_97dd740c.hlsl" 
+	{
+		colorMapSampler = sampler.feedback;
+		normalMapSampler = material.detailMap;
+		colorMapSampler1 = material.colorMap;
+	}
+
+	vertex.position = code.position;
+	vertex.texcoord[0] = code.texcoord[0];
+
+	declTypes
+	{
+		generic
+	}
+}
+

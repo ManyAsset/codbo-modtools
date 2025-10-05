@@ -1,0 +1,26 @@
+{
+	stateMap "default2d";
+
+	vertexShader 3.0 "pimp_shader_sw4_2d_goggles_postfx_d016cef0.hlsl"
+	{
+	}
+
+	pixelShader 3.0 "pimp_shader_sw4_2d_goggles_postfx_d016cef0.hlsl" 
+	{
+		Dispersion                  = material.Dispersion;
+  WarpHeight                  = material.WarpHeight;
+  Normal_Map                  = material.Normal_Map;
+  ResolvedScene_Sampler_C3_P0 = sampler.resolvedScene;
+	}
+
+	vertex.position = code.position;
+	vertex.texcoord[0] = code.texcoord[0];
+
+	declTypes
+	{
+		packed
+		debug
+		generic
+	}
+}
+

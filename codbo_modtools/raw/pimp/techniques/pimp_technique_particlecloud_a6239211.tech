@@ -1,0 +1,17 @@
+{
+	stateMap "default";
+
+	vertexShader 3.0 "pimp_shader_particlecloud_fcc2a393.hlsl"
+	{
+	}
+
+	pixelShader 3.0 "pimp_shader_particlecloud_fcc2a393.hlsl" 
+	{
+		colorMapSampler = material.colorMap;
+		outdoorMapSampler = sampler.outdoor;
+	}
+
+	vertex.position = code.position;
+
+}
+

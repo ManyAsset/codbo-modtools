@@ -1,0 +1,436 @@
+{
+   global proc COD_MEW_autoPopulate(string $listName, int $deleteOld, int $selOnly) {
+      COD_MEW_AP_Main $selOnly;
+
+      COD_MEW_updateWindow $listName 0;
+   }
+
+   // All of the following procs were copied from the original CODExportModelWindow.mel script
+
+   // Find Root Export Node according to Brad's description
+   // e.g.
+   //       - Depth find the first node which does not start with "sort_"
+   //	  - If the found node starts with "piece_" return it's parent (WARNING: No check is being done, where it's parent is also "sort_" )
+   // For example:
+   //        |sort_undamaged|ldoor_dmg2_LOD2|piece_cabinet_door_dmg2_L|A30
+   //        the result is "ldoor_dmg2_LOD2"
+   global proc int COD_MEW_AP_FindRootExportNode( string $nodes[] )
+   {
+   	int $i;
+   	
+   	for( $i = 0; $i < size( $nodes ); $i++ )
+   	{
+   		// If the node starts with "piece_" return the parent node.
+   		if( startsWith( $nodes[$i], "piece_" ) == 1 )
+   			return $i - 1;
+   			
+   		// If the node does not starts with "sort_" (and does not starts with "piece_") return it.
+   		if( startsWith( $nodes[$i], "sort_" ) == 0 )
+   			return $i;
+   	}
+
+   	return -1;
+   }
+   
+   // Get Prefix according to Brad's description
+   // e.g.
+   //    - Find the root of the node
+   //    - Get all dag children of the root node
+   //    - From all dag children of the root node, find the first one named like "prefix_Xxxxx"
+   //    - Return Xxxxx as the prefix name if successfull
+   //    - Return empty string otherwise
+   global proc string COD_MEW_AP_GetPrefix( string $node )
+   {
+   	string $firstParent = $node;
+   	while( $firstParent != "" )
+   	{
+   		$firstParent = firstParentOf( $firstParent );
+   		string $node, $nodes[] = `ls -long -transforms -dagObjects -leaf $firstParent`;
+   		for( $node in $nodes )
+   		{
+   			string $prefixNodes[];
+   			int $prefixNodeCount = tokenize( $node, "|", $prefixNodes );
+   			if( $prefixNodeCount > 0 && startsWith( $prefixNodes[$prefixNodeCount - 1], "prefix_" ) )
+   				return substring($prefixNodes[$prefixNodeCount - 1], 8, 
+   				                 size($prefixNodes[$prefixNodeCount - 1])) + "_";
+   		}
+   	}
+   	return "";
+   }
+   
+   global proc string[] COD_MEW_AP_CollectModelsForExporting(int $selOnly)
+   {
+   	string $models[], $names[];
+   	string $tokens[];
+   	int $numTokens;
+   	int $j;
+   	string $mesh, $meshes[];
+
+   	// List and sort all geometry names in their full name (This would allow easy checking on duplicates)
+   	if ($selOnly) {
+      	$meshes = sort( ls( "-geometry", "-ni", "-l", listRelatives("-ad", "-f", ls("-sl", "-l")) ) );
+   	} else {
+      	$meshes = sort( `ls -long -geometry -noIntermediate` );
+   	}
+
+   	for( $mesh in $meshes )
+   	{
+   		string $node, $nodes[];
+   		tokenize( $mesh, "|", $nodes );
+   		
+   		int $skipTheNode = 0;
+   		for( $node in $nodes )
+   		{
+   			// Do not add nodes with "noexport_" or "add_" for exporting
+   			// The nodes with starting with "_add" would be added later
+   			if(startsWith( $node, "noexport_" ) || startsWith( $node, "add_" ))
+   			{
+   				$skipTheNode = 1;
+   				break;
+   			}
+   		}
+   		
+   		if( $skipTheNode )
+   		    continue;
+   		
+   		// Find the Root Export node (index) according to Brad's document
+   		int $rootExportNode = COD_MEW_AP_FindRootExportNode( $nodes );
+   		if( $rootExportNode >= 0 )
+   		{
+   			// Add the node if it's different than the last node added. 
+   			//	NOTE: All the nodes are sorted, which makes the duplicate check way easierAs the nodes are coming sorted, we don't need to check for duplicatation from the start, only from the last node.			
+   			if(  size( $models ) == 0
+     			||  $models[ size($models) - 1] != $mesh
+   			&& $names[ size($names) - 1 ] != $nodes[ $rootExportNode ] )
+   			{
+   				$models[ size($models) ] = $mesh;
+   				$names[ size($names) ] = $nodes[ $rootExportNode ];
+   			}
+   		}
+   	}
+   	
+   	// CYB Resort the models by name and then by LodXXX
+   	if( 1 )
+   	{
+   		int $i;
+   		
+   		for( $i = 0; $i < size( $models ); $i ++ )
+   		{
+   			$numTokens = tokenize( $models[$i], "|", $tokens );
+   
+   			//cyb instead of just sorting the lod, we need to sort the name first
+   			//print( $models[$i] + " with name: " + $tokens[$numTokens-1] );
+   		//	print "\n";
+   			int $rootNode = COD_MEW_AP_FindRootExportNode( $tokens );
+               $models[$i] = $tokens[$rootNode] + $models[$i];
+   			//$models[$i] = $tokens[$numTokens-1] + $models[$i];
+   		//	print $models[$i];
+   		//	print "\n";
+   		//	print "\n";
+   		}
+   		
+   		$models = sort( $models );
+   		
+   		for( $i = 0; $i < size( $models ); $i++ )
+   		{
+   			// recover the original string
+   			$numTokens = tokenize( $models[$i], "|", $tokens );
+   			$models[$i] = "";
+   			// skip the first one, because we add on
+   			for( $j=1; $j<$numTokens; $j++ )
+   			{
+   				$models[$i] = $models[$i] + $tokens[$j];
+   				if( $j < ($numTokens-1) )
+   					$models[$i] = $models[$i] + "|";
+   			}
+   		}
+   	}
+   	
+   	return $models;
+   }
+
+   global proc string[] COD_MEW_AP_FindRelatedSkinJoints( string $node )
+   {
+   	string $joints[];
+   	string $shortNode = shortNameOf( $node );
+   	string $skinCluster = findRelatedSkinCluster( $shortNode );
+   	if( attributeExists( "matrix", $skinCluster ) )
+   	{
+   		string $skinCluster_matrix = $skinCluster + ".matrix";
+   		int $matrixIndex, $matrixCount = `getAttr -size $skinCluster_matrix`;
+   		for( $matrixIndex=0; $matrixIndex < $matrixCount; $matrixIndex ++ )
+   		{
+   			string $skinCluster_matrixIndex = $skinCluster + ".matrix[" + $matrixIndex + "]";
+   			string $sourceNode = `connectionInfo -sourceFromDestination $skinCluster_matrixIndex`;
+   			$joints[ size($joints) ] = plugNode( $sourceNode );
+   		}
+   	}
+   	return $joints;
+   }
+   
+   // COD_MEW_AP_SortAndRemoveDuplicates
+   // 
+   global proc string[] COD_MEW_AP_SortAndRemoveDuplicates( string $input[] )
+   {
+   	string $sorted[] = sort( $input ), $uniqued[], $string;
+   	for( $string in $sorted )
+   		if( size($uniqued) == 0 || $uniqued[ size($uniqued) - 1 ] != $string )
+   			$uniqued[ size($uniqued) ] = $string;
+   	return $uniqued;
+   }
+   
+   global proc string[] COD_MEW_AP_RemoveParentsFromSortedList( string $sortedList[] )
+   {
+   	// From an already sorted list like that:
+   	//
+   	//    head
+   	//    head|child1
+   	//    head|child1|subchild1
+   	//    head|child1|subchild2
+   	//    head|child1|subchild3
+   	//    head|child2
+   	//    head|child2|subchild4
+   	//    head|child2|subchild5
+   	//
+   	// It would return this:
+   	// 
+   	//    head|child1|subchild1
+   	//    head|child1|subchild2
+   	//    head|child1|subchild3
+   	//    head|child2|subchild4
+   	//    head|child2|subchild5
+   	//
+   	string $entry, $outputList[];
+   	for( $entry in $sortedList )
+   	{
+   		if( size( $outputList ) && startsWith( $entry, $outputList[ size( $outputList ) - 1] ) )
+   			$outputList[ size( $outputList ) - 1 ] = $entry;  // Replace the parent with the entry
+   		else
+   			$outputList[ size( $outputList ) ] = $entry; // Add new entry
+   	}
+   	return $outputList;
+   }
+   
+   global proc string[] COD_MEW_AP_RemovePrefixNodes( string $inputList[] )
+   {
+   	string $input, $outputList[];
+   	for( $input in $inputList )
+   	{
+   		string $longName = longNameOf($input);
+   		if(match("|prefix_", $longName) == "")
+   			$outputList[ size( $outputList ) ] = shortNameOf($input);
+   	}
+   	return $outputList;
+   }
+   
+   global proc COD_MEW_AP_AddModel( string $fullNodeName, string $exportedMeshName, string $additionalNodes[] )
+   {
+   	string $boneSet;
+   	string $boneSets[];
+   	string $exportedMesh;
+   	string $exportedJointNodes[];
+   	global string $g_ExportPath;
+   	
+   	// Get the parent and all children in the fullNodeName
+   	string $exportedMeshNodes[] = `ls -long -dagObjects -transforms $fullNodeName`;
+   	$exportedMeshNodes = stringArrayCatenate( $exportedMeshNodes, $additionalNodes );
+   	$exportedMeshNodes = COD_MEW_AP_SortAndRemoveDuplicates( $exportedMeshNodes );
+   	
+   	for( $exportedMesh in $exportedMeshNodes )
+   	{
+   		string $longName = longNameOf( $exportedMesh );
+   		string $shortName, $shortNames[];
+   		string $boneSetName;
+   		
+   		//print "Mesh: ";
+   		//print $exportedMesh;
+   		//print "\n";
+   		
+   		// Make our own version of shortNameOf which always returns the shortName, 
+   		// not the smallest unique name which the Maya shortNameOf function does
+   		tokenize( $longName, "|", $shortNames );
+   		if( size($shortNames) )
+   			$shortName = $shortNames[ size($shortNames) - 1 ];
+   			
+   		// Remove the "add_" prefix
+   		// From: add_head123_dmg0_somethngElse_lod123
+   		//    to:        head123_dmg0_somethngElse
+   		$shortName = substitute( "^add_", $shortName, "" );
+
+   		// Remove the "_lodXxx" suffix
+   		// From: head123_dmg0_somethngElse_lod123
+   		//    to: head123_dmg0_somethngElse
+   		$shortName = substitute( "_[Ll][Oo][Dd][0-9]+$", $shortName, "" );
+   		
+   		// See if there is a specific "bones_" set associated with the node
+   		// The bones set name is made of "bones_" + the first word of $shortName
+   		$boneSetName = "bones_" + $shortName; 
+   		if( objExists( $boneSetName ) )
+   		{
+   			$boneSets[ size($boneSets) ] = $boneSetName;
+   			//print "Bone Set (direct): ";
+   			//print $boneSetName;
+   			//print "\n";
+   			continue;
+   		}
+   		else
+   		{	
+   			// CYB if not finding exact match, check the generic				
+   			$secondPassName = substitute( "[0-9]+$", $boneSetName, "" );
+   
+   			if( objExists( $secondPassName ) )
+   			{
+   				$boneSets[ size($boneSets) ] = $secondPassName;
+   			}
+   		}
+   		
+   		// Now remove from the shortName the digits from the first word
+   		// head123_dmg0_somethngElse
+   		// head_dmg0_somethingElse
+   		
+   		string $firstWordWithoutDigits = match( "^[a-zA-Z]+", $shortName );
+   		string $firstWordWithDigits = match( "^[a-zA-Z0-9]+", $shortName );
+   		if( size($firstWordWithDigits) < size($shortName) )
+   		   $shortName = $firstWordWithoutDigits +  substring( $shortName, 
+   		       size($firstWordWithDigits) + 1, size($shortName));
+   
+   		// If we couldn't find any specific "bones_" set, try finding more general one:
+   		// Extract the first word from the short node name. For example for
+   		// For example for head12_dmg0_lod0, the first word would be "head",
+   		// Try finding "bones_head" for it.
+   		$boneSetName = "bones_" + $shortName;
+   		if( objExists( $boneSetName ) )
+   		{
+   			$boneSets[ size($boneSets) ] = $boneSetName;
+   			//print "Bone Set (generic): ";
+   			//print $boneSetName;
+   			//print "\n";
+   			continue;
+   		}
+   		//print "Bone Set: N/A\n";
+   	}
+   	
+   	$boneSets = COD_MEW_AP_SortAndRemoveDuplicates( $boneSets );
+   	for( $boneSet in $boneSets )
+   	{
+   		string $boneSetJoints[] = `sets -query $boneSet`;
+   		$exportedJointNodes = stringArrayCatenate( $exportedJointNodes, $boneSetJoints );
+   	}
+   	
+   	$exportedJointNodes = COD_MEW_AP_SortAndRemoveDuplicates( $exportedJointNodes );
+   	
+   	if( !size( $exportedJointNodes) )
+   	{
+   		// If there were no bones_ sets, then lookup the related skin cluster for each mesh
+   		for( $exportedMesh in $exportedMeshNodes )
+   		{
+   			string $relatedSkinJoints[] = COD_MEW_AP_FindRelatedSkinJoints( $exportedMesh );
+   			$exportedJointNodes = stringArrayCatenate( $exportedJointNodes, $relatedSkinJoints );
+   		}
+   			
+   		$exportedJointNodes = COD_MEW_AP_SortAndRemoveDuplicates( $exportedJointNodes );
+   		string $exportedJoint;
+   		for( $exportedJoint in $exportedJointNodes )
+   		{
+   			if( firstParentOf($exportedJoint) == "" )
+   			{
+   				// If we have a root joint, add all subjoints
+   				string $childJoint, $childJoints[] = `ls -dagObjects $exportedJoint`;
+   				for( $childJoint in $childJoints )
+   					$exportedJointNodes[ size($exportedJointNodes) ] = $childJoint;
+   				break;
+   			}
+   		}
+   	}
+   	
+   	$exportedJointNodes = COD_MEW_AP_SortAndRemoveDuplicates( $exportedJointNodes );
+   	$exportedMeshNodes = COD_MEW_AP_SortAndRemoveDuplicates( $exportedMeshNodes );
+   	$exportedMeshNodes = COD_MEW_AP_RemoveParentsFromSortedList( $exportedMeshNodes );
+   	$exportedMeshNodes = COD_MEW_AP_RemovePrefixNodes( $exportedMeshNodes );
+   	
+   	string $exportedModelNodes = 
+   					stringArrayToString( $exportedJointNodes, " " ) + " " + 	
+   					stringArrayToString( $exportedMeshNodes, " " );
+
+      $exportedModelNodes += " ";
+   
+   	int $ModelCount = `getAttr IWGlobalNode.ModelCount` + 1;
+   	setAttr IWGlobalNode.ModelCount $ModelCount;
+   	COD_MEW_AddModelAttributes $ModelCount;
+   
+   	// CYB try to remove folder name out
+   	string $newpath = COD_MEW_AP_GetModelExportPath();
+   	$newpath += "/";
+   	//print( "new path: " + $newpath  + " (file): " + $exportedMeshName + "\n" );
+   	string $xmodelExportName = $newpath + $exportedMeshName;
+   	setAttr -type "string" ("IWGlobalNode.ModelFileName" + $ModelCount) $xmodelExportName;
+   	setAttr -type "string" ("IWGlobalNode.ExportModelNodes" + $ModelCount) $exportedModelNodes;
+   	setAttr ("IWGlobalNode.ForceExportSelectedJoints" + $ModelCount) 1;
+   }
+   
+   global proc COD_MEW_AP_AddModels( string $models[] )
+   {
+   	lockNode -lock off IWGlobalNode;
+   	string $model;
+   	for( $model in $models )
+   	{
+   		string $nodes[];
+   		string $longNameOfModel = longNameOf( $model );
+   		int $nodesCount = tokenize( $longNameOfModel, "|", $nodes );
+   		int $rootExportNode = COD_MEW_AP_FindRootExportNode( $nodes );
+   		string $additionalNodes[];
+   		if( $rootExportNode > 0 )
+   		{
+   			string $additionalNodesFilter = longNameOf( $nodes[ $rootExportNode - 1 ] ) + "|add_*";
+   			$additionalNodes = `ls -long -transforms $additionalNodesFilter`;
+   		}
+   		COD_MEW_AP_AddModel(
+   			$nodes[ $rootExportNode ], 
+   			COD_MEW_AP_GetPrefix( $model ) + $nodes[ $rootExportNode ],
+   			$additionalNodes
+   		);
+   	}
+   	lockNode IWGlobalNode;
+   }
+   
+   global proc COD_MEW_AP_RemoveAllModels()
+   {
+   	lockNode -lock off IWGlobalNode;
+   	int $i, $ModelCount = `getAttr IWGlobalNode.ModelCount`;
+
+   	for ($i = 1; $i <= $ModelCount; $i++ ) {
+   		COD_MEW_RemoveModelAttributes( $i );
+   	}
+
+   	setAttr IWGlobalNode.ModelCount 0;
+   	lockNode IWGlobalNode;
+   }
+   
+   global proc COD_MEW_AP_DisplayModels()
+   {
+   	// CYB need to set different parent: set the right framelayout
+   	setParent ExportMainLayout;
+   	
+   	int $model, $modelCount = `getAttr IWGlobalNode.ModelCount`;
+   		
+   	for( $model = 1; $model <= $modelCount; $model ++ )
+   		DisplayModelLine( $model );	
+   }
+   
+   
+   global proc COD_MEW_AP_Main(int $selOnly)
+   {
+   	COD_MEW_AP_RemoveAllModels();
+   	COD_MEW_AP_AddModels( COD_MEW_AP_CollectModelsForExporting($selOnly) );
+   }
+
+   global proc string COD_MEW_AP_GetModelExportPath()
+   {
+   	string $sceneDirectory = dirname( `file -query -sceneName` );
+   	string $exportDirectory = substitute( ".*[\\/]*[Mm][Oo][Dd][Ee][Ll][_][Ee][Xx][Pp][Oo][Rr][Tt][\\/]*", $sceneDirectory, "" );
+   	
+   	if( $exportDirectory == $sceneDirectory )
+   		return $sceneDirectory + "/";
+   	return fromNativePath( getenv( "IW_PROJECT_GAMEDIR" ) ) + "/model_export/" + fromNativePath( $exportDirectory );
+   }
+}

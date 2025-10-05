@@ -1,0 +1,18 @@
+{
+   // Reads a file which contains a list of bones
+   // Then select the bones in the current scene
+   global proc COD_MEW_selectSelectSet(string $filePath) {
+      string $selection[];
+
+      // Read the list of bones from the settings blt file
+      sakReadListFile($filePath, $selection);
+
+      // If any objects are missing we crap out
+      if (!`sakCheckForAllObjects $selection`) {
+         error "Not all objects found";
+      } else {
+         // Select the objects if they all exist
+         select -r $selection;
+      }
+   }
+}

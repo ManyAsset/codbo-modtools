@@ -1,0 +1,57 @@
+
+#if ( ( "@blendFunc@"== "Replace" ) && ( "@alphaTest@" == "Always" ) )
+	techniqueSet( "@SW4_MaterialType@" ); 
+#else
+	techniqueSet( "@SW4_MaterialType@_transparent" ); 
+#endif
+
+// -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -
+	
+#include "commonsetup.template" 
+
+// -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -
+	
+#define SPEC_MAP_FORMAT 	 	  "DXT1"
+      	
+#if TARGET_PLATFORM == "xenon"
+            #define NORMAL_MAP_FORMAT     "DXN"
+	    #else
+	        #define NORMAL_MAP_FORMAT     "DXT5"
+	    #endif
+
+
+// -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -
+	
+textureTable
+{
+	"RevealMap" = streamable map( "tile both", "mip (1x bilinear)", "$colorMap10$", 0 ) SPEC_MAP_FORMAT : "specularMap";
+	"NormalMapBurnt2" = streamable normalMap( "tile both", "mip (1x bilinear)", "$colorMap05$", 0 ) NORMAL_MAP_FORMAT : "normalMap";
+	"NormalMapBurnt1" = streamable normalMap( "tile both", "mip (1x bilinear)", "$colorMap04$", 0 ) NORMAL_MAP_FORMAT : "normalMap";
+	"NormalMap" = streamable normalMap( "tile both", "mip (1x bilinear)", "$colorMap03$", 0 ) NORMAL_MAP_FORMAT : "normalMap";
+	"DiffuseBurnt2" = streamable map( "tile both", "mip (1x bilinear)", "$colorMap02$", 0 ) "<auto compression>" : "colorMap";
+	"DiffuseBurnt1" = streamable map( "tile both", "mip (1x bilinear)", "$colorMap01$", 0 ) "<auto compression>" : "colorMap";
+	"SpecularMap" = streamable map( "tile both", "mip (1x bilinear)", "$colorMap07$", 0 ) SPEC_MAP_FORMAT : "specularMap";
+	"RoughnessMap" = streamable map( "tile both", "mip (1x bilinear)", "$colorMap06$", 0 ) SPEC_MAP_FORMAT : "specularMap";
+	"Diffuse" = streamable map( "tile both", "mip (1x bilinear)", "$colorMap00$", 0 ) "<auto compression>" : "colorMap";
+	"Rim_Specular_Mask" = streamable map( "tile both", "mip (1x bilinear)", "$colorMap15$", 0 ) SPEC_MAP_FORMAT : "specularMap";
+}
+
+// -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -
+	
+constantTable
+{
+	"BurnOffset" = float1( @cg04_x@ );
+	"BurnSpeed" = float1( @cg03_x@ );
+	"Spotlight_Spec_Multiplier" = float1( @cg22_x@ );
+	"Reflection_Amount" = float1( @cg02_x@ );
+	"CookColor" = float4( @cg00_x@, @cg00_y@, @cg00_z@, @cg00_w@ );
+	"Rim_Specular" = float1( @cg27_x@ );
+}
+	
+// -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -
+	
+allocReflectionProbe();
+
+// -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -
+	
+refImage( "$colorMap00$" );

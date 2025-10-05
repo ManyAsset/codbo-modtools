@@ -1,0 +1,33 @@
+{
+	stateMap "sw4_default";
+
+	vertexShader 3.0 "pimp_shader_sw4_3d_snow_slide_7cdc662e.hlsl"
+	{
+	}
+
+	pixelShader 3.0 "pimp_shader_sw4_3d_snow_slide_b416645a.hlsl" 
+	{
+		Master_scale       = material.Master_scale;
+  Scroll_Speed       = material.Scroll_Speed;
+  Slide_Normal_Amt   = material.Slide_Normal_Amt;
+  Detail_Map         = material.Detail_Map;
+  Normal_Amt         = material.Normal_Amt;
+  Normal_Map         = material.Normal_Map;
+  Diffuse_MapSampler = material.Diffuse_MapSampler;
+  AO_Map             = material.AO_Map;
+  Reflection_Amount  = material.Reflection_Amount;
+  Roughness_Map      = material.Roughness_Map;
+	}
+
+	vertex.position = code.position;
+	vertex.normal      = code.normal;
+  vertex.texcoord[2] = code.tangent;
+  vertex.texcoord[0] = code.texcoord[0];
+
+	declTypes
+	{
+		packed
+		world
+	}
+}
+

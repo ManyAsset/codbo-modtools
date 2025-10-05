@@ -1,0 +1,187 @@
+ignore,code_post_gfx
+ignore,common
+//ignore,dev
+
+screenclearcolor,1,1,1,1
+
+// Dept. zone_source
+
+include,rebirth_fx
+include,rebirth_animation
+include,rebirth_vehicles
+include,rebirth_characters
+include,rebirth_lighting
+include,rebirth_weapons
+//include,ai_anims_mg_arrivals_and_exits
+//include,destructible_barrel
+
+// Level zone_source
+col_map_sp,maps/rebirth.d3dbsp
+gfx_map,maps/rebirth.d3dbsp
+
+// Level rawfiles
+rawfile,maps/rebirth.gsc
+rawfile,maps/rebirth_anim.gsc
+rawfile,maps/rebirth_amb.gsc
+rawfile,maps/rebirth_fx.gsc
+rawfile,maps/createfx/rebirth_fx.gsc
+rawfile,maps/rebirth_gas.gsc
+rawfile,maps/rebirth_mason_stealth.gsc
+rawfile,maps/rebirth_mason_lab.gsc
+rawfile,maps/rebirth_btr_rail.gsc
+rawfile,maps/rebirth_gas_attack.gsc
+rawfile,maps/rebirth_hudson_lab.gsc
+rawfile,maps/rebirth_steiners_office.gsc
+rawfile,maps/rebirth_utility.gsc
+rawfile,maps/rebirth_portals.gsc
+
+// Clientscripts
+rawfile,clientscripts/rebirth.csc
+rawfile,clientscripts/rebirth_amb.csc
+rawfile,clientscripts/rebirth_fx.csc
+rawfile,clientscripts/createfx/rebirth_fx.csc
+rawfile,clientscripts/_gasmask.csc
+
+// Light settings
+rawfile,exposure/rebirth.xpo
+rawfile,maps/createart/rebirth_art.gsc
+rawfile,vision/rebirth.vision
+rawfile,vision/rebirth_cargo_container.vision
+rawfile,vision/rebirth_btr_rail.vision
+rawfile,vision/rebirth_lab_exterior.vision
+rawfile,vision/rebirth_lab_interior.vision
+rawfile,vision/rebirth_lab_interior_2.vision
+rawfile,vision/rebirth_docks.vision
+rawfile,vision/rebirth_elevator_shaft.vision
+rawfile,vision/rebirth_gas_attack.vision
+rawfile,vision/rebirth_stairwell_security_room.vision
+rawfile,vision/rebirth_steiner_kill.vision
+rawfile,vision/rebirth_tunnel_exit.vision
+rawfile,vision/infrared_rebirth.vision
+
+// rawfile,sun/rebirth.sun
+
+// Other rawfiles
+rawfile,maps/_gasmask.gsc
+rawfile,maps/_heatseekingmissile.gsc
+rawfile,maps/_color_manager.gsc
+rawfile,animtrees/rebirth.atr
+rawfile,animtrees/critter.atr
+
+localize,rebirth
+
+sound,spl_rebirth
+
+// Other Includes
+include,common_player_us_rebirth
+// include,patrol
+include,rusher
+include,common_civilians
+
+// Contextual Melee
+//include,contextual_melee
+
+// FX
+fx,weapon/bio_gas_canister/fx_bio_gas_canister
+fx,weapon/grenade/fx_smoke_grenade_rebirth
+// fx,maps/rebirth/fx_gas_streamer_child
+// fx,env/water/fx_water_decon_spray_lg
+fx,maps/rebirth/fx_hip_spotlight_beam
+// fx,maps/rebirth/fx_hip_spotlight_target_light
+fx,maps/rebirth/fx_hip_spotlight_target_circle
+//fx,vehicle/light/fx_huey_spotlight
+fx,env/light/fx_flashlight_ai_spotlight
+// fx,explosions/fx_exp_bomb_huge
+fx,weapon/ir_scope/fx_ir_scope_heartbeat // Use for IR
+// fx,maps/kowloon/fx_blood_punch_clark
+// fx,maps/kowloon/fx_blood_spit_clark
+fx,maps/rebirth/fx_punch_blood_spray
+
+//generic filters / overlays
+material,generic_filter_hazmat
+material,generic_overlay_hazmat_1
+material,generic_overlay_hazmat_2
+material,generic_overlay_hazmat_3
+material,generic_overlay_hazmat_4
+material,generic_filter_infrared
+material,cinematic
+//material,generic_filter_teargas 
+
+// HUD
+material,hud_btr_60
+material,hud_obit_nova_gas
+
+// Xmodel,
+xmodel,c_ger_steiner_rebirth_fb
+xmodel,c_ger_steiner_rebirth_dead_fb
+xmodel,p_rus_rb_window_frame_01
+xmodel,p_rus_rb_steiner_window_01
+xmodel,p_rus_rb_steiner_window_02
+xmodel,p_rus_rb_steiner_window_03
+xmodel,p_rus_rb_steiner_window_04
+xmodel,p_rus_rb_steiner_window_05
+xmodel,p_rus_rb_steiner_window_06
+xmodel,fxanim_gp_seagull_mod
+xmodel,anim_monkey
+xmodel,anim_monkey_gas
+xmodel,p_rus_animal_cage_medium_01
+xmodel,c_usa_rebirth_mason_fb
+xmodel,t5_weapon_viewmodel_flashlight
+xmodel,t5_weapon_strela_world_obj
+xmodel,t5_weapon_radio_hold
+xmodel,t5_weapon_enfield_world
+xmodel,c_rus_engineer_head1_gas
+xmodel,p_rus_computer_terminal_chair_blood
+
+// xmodel,fx_axis_createfx
+
+// Traversal	
+include,traverse_jump_down_96
+include,traverse_jump_down_56
+include,traverse_mantle_over_36
+include,traverse_mantle_over_40
+include,traverse_mantle_over_96
+include,traverse_mantle_over_40_down_80
+include,traverse_mantle_window_36
+include,traverse_mantle_on_40
+include,traverse_stairs_up_8x12
+include,traverse_stairs_up_8x16
+include,traverse_stairs_down_8x12
+include,traverse_stairs_down_8x16
+include,traverse_jump_across_120
+include,traverse_jump_down_36
+// include,traverse_slide_across_car
+xanim,ladder_climbon
+xanim,ladder_climbdown
+xanim,ladder_climbon_bottom_walk
+xanim,ladder_climbup
+xanim,ladder_climboff
+
+// FXANIMS
+xanim,fxanim_gp_seagull_falling_anim
+xanim,fxanim_rebirth_heli01_crash_anim
+xanim,fxanim_rebirth_heli01_rotor_anim
+xanim,fxanim_rebirth_heli01_chunks_anim
+xanim,fxanim_gp_seagull_circle_01_anim
+xanim,fxanim_gp_seagull_circle_02_anim
+xanim,fxanim_gp_seagull_circle_03_anim
+xanim,fxanim_rebirth_container_01_anim
+xanim,fxanim_rebirth_container_02_anim
+xanim,fxanim_rebirth_container_03_anim
+xanim,fxanim_rebirth_gascan_01_anim
+xanim,fxanim_rebirth_gascan_02_anim
+xanim,fxanim_rebirth_gascan_03_anim
+xanim,fxanim_gp_streamer01_anim
+xanim,fxanim_gp_streamer02_anim
+xanim,fxanim_rebirth_cargo_ropes_loop_anim
+xanim,fxanim_rebirth_cargo_ropes_stop_anim
+
+//lights
+xmodel,p_rus_rb_lab_warning_light_01
+xmodel,p_rus_rb_lab_warning_light_01_off
+xmodel,p_rus_rb_lab_light_core_on
+xmodel,p_rus_rb_lab_light_core_off
+fx,env/light/fx_light_warning
+
+
+

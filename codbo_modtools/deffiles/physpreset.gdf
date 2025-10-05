@@ -1,0 +1,280 @@
+#name "physpreset"
+#dll "all" "configstringconvert"
+#source_dir "physic/"
+#target_dir "physic/"
+#file_ext "*"
+#version 20
+
+string "PHYSIC" configstringFileType
+
+float 1.0 0.01 10000.0 mass
+float 1.0 0.0 10000.0 friction
+int 1 0 1 isFrictionInfinity
+float 0.1 0.0 1.0 bounce
+float 1.0 0.0 1.0 bulletForceScale
+float 1.0 0.0 1.0 explosiveForceScale
+
+float 0.0 0.0 1.0 piecesSpreadFraction
+float 0.0 0.0 1000.0 piecesUpwardVelocity
+
+int 1 0 1 canFloat
+
+float 1.0 0.01 10.0 gravityScale
+float 0.0 -500 500 massOffsetX
+float 0.0 -500 500 massOffsetY
+float 0.0 -500 500 massOffsetZ
+float 0.0 -500 500 buoyancyMinX
+float 0.0 -500 500 buoyancyMinY
+float 0.0 -500 500 buoyancyMinZ
+float 0.0 -500 500 buoyancyMaxX
+float 0.0 -500 500 buoyancyMaxY
+float 0.0 -500 500 buoyancyMaxZ
+
+vcontainer
+{
+	vcontainer
+	{
+		floatedit(mass, 0.01, 0.5)
+		[
+			exec
+			{
+				label("Mass")
+				tooltip("The mass of the object expressed in pounds.")
+				width(280)
+				labelwidth(180)
+			}
+		]
+	
+		floatedit(bounce, 0.01, 0.1)
+		[
+			exec
+			{
+				label("Bounce")
+				tooltip("How much the object will bounce (0 means no bounce at all, 1 means biggest bounce).")
+				width(280)
+				labelwidth(180)
+			}
+		]
+ 
+ 		checkbox(isFrictionInfinity)
+		[
+			exec
+			{
+				label("Infinite Friction")
+				tooltip("Check this for infinite friction; (instead of using huge values of friction).")
+				labelwidth(180)
+			}
+		]
+		
+		floatedit(friction, 0.1, 5)
+		[
+			exec
+			{
+				label("Friction")
+				tooltip("The friction of the object (0 means no friction at all).")
+				width(280)
+				labelwidth(180)
+				visible(isFrictionInfinity == 0)
+			}
+		]
+	}
+	[
+		exec
+		{
+			groupBox("Object properties")
+		}
+	]
+	
+	vcontainer
+	{
+		floatedit(bulletForceScale, 0.01, 0.1)
+		[
+			exec
+			{
+				label("Bullet Force Scale")
+				tooltip("How much to scale the bullet force (0 means no force at all, 1 means original force).")
+				width(280)
+				labelwidth(180)
+			}
+		]
+		
+		floatedit(explosiveForceScale, 0.01, 0.1)
+		[
+			exec
+			{
+				label("Explosive Force Scale")
+				tooltip("How much to scale the explosive force (0 means no force at all, 1 means original force).")
+				width(280)
+				labelwidth(180)
+			}
+		]
+	}
+	[
+		exec
+		{
+			groupBox("Force Scaling")
+		}
+	]
+
+	vcontainer
+	{	
+		floatedit(piecesSpreadFraction, 0.01, 0.1)
+		[
+			exec
+			{
+				label("Spread Fraction")
+				tooltip("The fraction of the initial piece velocity diection that independent is based on the direction of the impact.")
+				width(280)
+				labelwidth(180)
+			}
+		]
+		floatedit(piecesUpwardVelocity, 0.01, 0.1)
+		[
+			exec
+			{
+				label("Upward Velocity Bias")
+				tooltip("Additional initial upward piece velocity.")
+				width(280)
+				labelwidth(180)
+			}
+		]
+	}
+	[
+		exec
+		{
+			groupBox("Pieces")
+		}
+	]
+	
+	floatedit(gravityScale, 0.01, 0.05)
+	[
+		exec
+		{
+			label("Gravity Scale")
+			tooltip("Scale the gravity applied to this object.")
+			width(280)
+			labelwidth(180)
+		}
+	]
+	
+	hcontainer
+	{
+		floatedit(massOffsetX, 1, 5)
+		[
+			exec
+			{
+				width(125)
+				labelwidth(50)
+				label("X")
+			}
+		]
+		floatedit(massOffsetY, 1, 5)
+		[
+			exec
+			{
+				width(125)
+				labelwidth(50)
+				label("Y")
+			}
+		]
+		floatedit(massOffsetZ, 1, 5)
+		[
+			exec
+			{
+				width(125)
+				labelwidth(50)
+				label("Z")
+			}
+		]
+	}
+	[
+		exec
+		{
+			groupBox("Center of Mass Offset")
+		}
+	]
+	
+	checkbox(canFloat)
+	[
+		exec
+		{
+			label("Can float")
+			tooltip("The entity can float.")
+			labelwidth(180)
+		}
+	]
+	
+	hcontainer
+	{
+		floatedit(buoyancyMinX, 1, 5)
+		[
+			exec
+			{
+				width(125)
+				labelwidth(50)
+				label("X")
+			}
+		]
+		floatedit(buoyancyMinY, 1, 5)
+		[
+			exec
+			{
+				width(125)
+				labelwidth(50)
+				label("Y")
+			}
+		]
+		floatedit(buoyancyMinZ, 1, 5)
+		[
+			exec
+			{
+				width(125)
+				labelwidth(50)
+				label("Z")
+			}
+		]
+	}
+	[
+		exec
+		{
+			groupBox("Buoyancy Box Min")
+		}
+	]
+	hcontainer
+	{
+		floatedit(buoyancyMaxX, 1, 5)
+		[
+			exec
+			{
+				width(125)
+				labelwidth(50)
+				label("X")
+			}
+		]
+		floatedit(buoyancyMaxY, 1, 5)
+		[
+			exec
+			{
+				width(125)
+				labelwidth(50)
+				label("Y")
+			}
+		]
+		floatedit(buoyancyMaxZ, 1, 5)
+		[
+			exec
+			{
+				width(125)
+				labelwidth(50)
+				label("Z")
+			}
+		]
+	}
+	[
+		exec
+		{
+			groupBox("Buoyancy Box Max")
+		}
+	]
+	
+}

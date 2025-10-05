@@ -1,0 +1,16 @@
+{
+	stateMap "color_only";
+
+	vertexShader 3.0 "pimp_shader_sky_f7d75888.hlsl"
+	{
+	}
+
+	pixelShader 3.0 "pimp_shader_sky_f7d75888.hlsl" 
+	{
+		skyMapSampler = material.colorMap;
+	}
+
+	vertex.position = code.position;
+
+}
+

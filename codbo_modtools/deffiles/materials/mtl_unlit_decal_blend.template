@@ -1,0 +1,48 @@
+#include "commonsetup.template"
+
+#if "@noStreamColor@" == "1"
+#define STREAM_PREFIX
+#else
+#define STREAM_PREFIX streamable
+#endif
+
+
+#if !@noCastShadow@
+	#error "noCastShadow must be set for unlit decal blend materials"
+#endif
+
+
+#if "@blendFunc@" == "Add"	
+	#define BLEND_SUFFIX	"_add"
+#elif "@blendFunc@" == "Multiply"
+	#define BLEND_SUFFIX	"_multiply"
+#else
+	#error "blend mode must be Add or Multiply for unlit decal blend materials"
+#endif
+
+#if @noFog@
+	#define FOG_SUFFIX "_nofog"
+#else
+	#define FOG_SUFFIX ""
+#endif
+
+techniqueSet( "unlitdecalblend" + BLEND_SUFFIX + FOG_SUFFIX );
+
+textureTable
+{
+	#if "$colorMap$" == ""
+		#error "colorMap may not be blank in unlit decal blend materials"
+	#endif
+	#if "@filterColor@" == "nomip bilinear" || "@filterColor@" == "nomip nearest"
+		"colorMap" = STREAM_PREFIX map( "@tileColor@", "@filterColor@", "$colorMap$", @nopicmipColor@ ) "@formatColor@" : "colorMap";
+	#else
+		"colorMap" = STREAM_PREFIX map( "@tileColor@", "mip (1x bilinear)", "$colorMap$", @nopicmipColor@ ) "@formatColor@" : "colorMap";
+	#endif
+}
+
+
+constantTable
+{
+}
+
+refImage( "$colorMap$" );

@@ -1,0 +1,131 @@
+ignore,code_post_gfx,
+ignore,common_zombie,
+include,configStrings
+col_map_sp,maps/zombie_pentagon.d3dbsp,
+localize,zombie_pentagon,
+
+// Dept. zone_source,,
+include,zombiemode_powerup_minigun // minigun powerup
+include,zombie_pentagon_fx,
+include,zombie_pentagon_animation,
+include,zombie_pentagon_vehicles,
+include,zombie_pentagon_characters,
+include,zombie_pentagon_lighting,
+include,zombie_pentagon_weapons
+include,zombiemode_ai_quad
+include,zombiemode_ai_thief
+
+
+// Level zone_source,,
+col_map_sp,maps/zombie_pentagon.d3dbsp
+gfx_map,maps/zombie_pentagon.d3dbsp
+
+rawfile,maps/zombie_pentagon.gsc
+rawfile,maps/zombie_pentagon_teleporter.gsc
+rawfile,maps/zombie_pentagon_elevators.gsc
+rawfile,maps/zombie_pentagon_anim.gsc
+rawfile,maps/zombie_pentagon_amb.gsc
+rawfile,maps/zombie_pentagon_fx.gsc
+rawfile,maps/zombie_pentagon_traps.gsc
+rawfile,maps/zombie_pentagon_magic_box.gsc
+rawfile,maps/createart/zombie_pentagon_art.gsc
+rawfile,maps/createfx/zombie_pentagon_fx.gsc
+rawfile,clientscripts/zombie_pentagon.csc
+rawfile,clientscripts/zombie_pentagon_teleporter.csc
+rawfile,clientscripts/zombie_pentagon_amb.csc,
+rawfile,clientscripts/zombie_pentagon_fx.csc,
+rawfile,clientscripts/createfx/zombie_pentagon_fx.csc,
+rawfile,exposure/zombie_pentagon.xpo,
+
+// Zombie Specific source,,
+rawfile,clientscripts/_zombiemode.csc,
+material,zombie_electric_shock_overlay,
+material,zombie_transporter_overlay,
+
+mptype,player_t5_zm_pentagon,
+xmodel,viewhands_usmc,
+xmodel,viewmodel_knife,
+xmodel,viewmodel_knife_bowie,
+
+// Weapons - Special,,
+include,zombiemode_weap_freezegun
+include,zombiemode_weap_crossbow
+include,zombiemode_weap_ballistic_knife
+
+rawfile,animscripts/traverse/zombie_mantle_over_40.gsc,
+//rawfile,animscripts/traverse/zombie_jump_down_40.gsc,
+rawfile,animscripts/traverse/zombie_jump_down_72.gsc,
+rawfile,animscripts/traverse/zombie_jump_down_120.gsc,
+rawfile,animscripts/traverse/zombie_jump_down_127.gsc,
+rawfile,animscripts/traverse/zombie_quad_vent_jump_down.gsc,
+//rawfile,animscripts/traverse/zombie_jump_down_190.gsc,
+//rawfile,animscripts/traverse/zombie_jump_down_240.gsc,
+rawfile,animscripts/traverse/zombie_jump_up_222.gsc,
+
+xanim,ai_zombie_jump_down_40,
+xanim,ai_zombie_jump_down_72,
+xanim,ai_zombie_jump_down_120,
+xanim,ai_zombie_jump_down_127,
+//xanim,ai_zombie_jump_down_190,
+//xanim,ai_zombie_jump_down_240,
+//xanim,ai_zombie_jump_down_286,
+xanim,ai_zombie_jump_up_222,
+
+
+// Fog, Sky,
+rawfile,vision/zombie_pentagon.vision
+rawfile,vision/zombie_pentagon_offices_poweroff.vision
+rawfile,vision/zombie_pentagon_warroom.vision
+rawfile,vision/zombie_pentagon_lab.vision
+rawfile,vision/zombie_pentagon_electrician.vision
+//rawfile,vision/zombie_sumpf_dogs.vision
+rawfile,maps/createart/zombie_pentagon_art.gsc
+
+sound,zmb_pentagon
+
+// super weapon for pentagon
+// weapon,sp/minigun_zm
+
+// Viewmodel arms
+// temp
+xmodel,viewmodel_usa_pow_arms
+
+// Trap piece for the electric trap
+material,zom_icon_trap_switch_handle
+
+// magci box monitors
+xmodel,p_zom_monitor_screen_fsale1
+xmodel,p_zom_monitor_screen_fsale2
+xmodel,p_zom_monitor_screen_labs0
+xmodel,p_zom_monitor_screen_labs1
+xmodel,p_zom_monitor_screen_labs2
+xmodel,p_zom_monitor_screen_labs3
+xmodel,p_zom_monitor_screen_lobby0
+xmodel,p_zom_monitor_screen_lobby1
+xmodel,p_zom_monitor_screen_lobby2
+xmodel,p_zom_monitor_screen_logo
+xmodel,p_zom_monitor_screen_off
+xmodel,p_zom_monitor_screen_on
+xmodel,p_zom_monitor_screen_warroom0
+xmodel,p_zom_monitor_screen_warroom1
+
+// initial texture load order list (keep at end)
+texturelist,texturelist/zombie_pentagon.csv
+
+// office light swap
+xmodel,p_pent_light_ceiling
+xmodel,p_pent_light_tinhat_off
+
+//lights
+xmodel,p_rus_rb_lab_warning_light_01
+xmodel,p_rus_rb_lab_warning_light_01_off
+xmodel,p_rus_rb_lab_light_core_on
+xmodel,p_rus_rb_lab_light_core_off
+fx,env/light/fx_light_warning
+
+//defcon signs
+xmodel,p_zom_pent_defcon_sign_01
+xmodel,p_zom_pent_defcon_sign_02
+xmodel,p_zom_pent_defcon_sign_03
+xmodel,p_zom_pent_defcon_sign_04
+xmodel,p_zom_pent_defcon_sign_05 

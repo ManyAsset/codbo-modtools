@@ -1,0 +1,214 @@
+iwfx 3
+
+	efFlags;
+	efPriority 150;
+	efBoundingBoxDim 0 0 0;
+	efBoundingBoxCentre 0 0 0;
+{
+	name "ice_chunks 2";
+	editorFlags looping useRandSize0 useRandScale useRandRotDelta useRandVel0 useBackCompatVel playOnTouch playOnRun;
+	flags useItemClip spawnRelative spawnOffsetNone runRelToEffect useCollision;
+	spawnRange 0 1200;
+	fadeInRange 0 0;
+	fadeOutRange 0 0;
+	spawnFrustumCullRadius 200;
+	spawnLooping 700 0;
+	spawnOneShot 7 0;
+	spawnDelayMsec 0 2000;
+	lifeSpanMsec 3000 1000;
+	spawnOrgX 0 0;
+	spawnOrgY 80 -160;
+	spawnOrgZ 0 50;
+	spawnOffsetRadius 50 50;
+	spawnOffsetHeight 0 0;
+	spawnAnglePitch 0 190;
+	spawnAngleYaw 0 190;
+	spawnAngleRoll 0 190;
+	angleVelPitch 0 650;
+	angleVelYaw 0 650;
+	angleVelRoll 0 650;
+	initialRot 0 320;
+	rotationAxis 0 0 0 1;
+	gravity 50 5;
+	elasticity 0.4 0.1;
+	windinfluence 0;
+	atlasBehavior startFixed;
+	atlasIndex 0;
+	atlasFps 0;
+	atlasLoopCount 0;
+	atlasColIndexBits 0;
+	atlasRowIndexBits 0;
+	atlasEntryCount 0;
+	atlasIndexRange 0;
+	velGraph0X 1300
+	{
+		{
+			0 0.5
+			1 0.5
+		}
+		{
+			0 0.270335
+			1 0.270335
+		}
+	};
+	velGraph0Y 100
+	{
+		{
+			0 0.5
+			1 0
+		}
+		{
+			0 -0.5
+			1 0
+		}
+	};
+	velGraph0Z 300
+	{
+		{
+			0 0.0789474
+			1 0.00239235
+		}
+		{
+			0 0.5
+			1 0.284689
+		}
+	};
+	velGraph1X 0
+	{
+		{
+			0 0
+			1 0
+		}
+		{
+			0 0
+			1 0
+		}
+	};
+	velGraph1Y 0
+	{
+		{
+			0 0
+			1 0
+		}
+		{
+			0 0
+			1 0
+		}
+	};
+	velGraph1Z 400
+	{
+		{
+			0 0
+			1 0
+		}
+		{
+			0 0
+			1 0
+		}
+	};
+	rotGraph 1000
+	{
+		{
+			0 0.5
+			0.311047 0.212963
+			0.677326 0.0648148
+			1 0.00925922
+		}
+		{
+			0 -0.5
+			0.261628 -0.236111
+			0.625 -0.0787037
+			1 -0.0185185
+		}
+	};
+	sizeGraph0 16
+	{
+		{
+			0 1
+			1 1
+		}
+		{
+			0 0.149351
+			1 0.149351
+		}
+	};
+	sizeGraph1 200
+	{
+		{
+			0 0.279221
+			1 1
+		}
+		{
+			0 0.376623
+			1 0.376623
+		}
+	};
+	scaleGraph 1
+	{
+		{
+			0 1
+			0.591176 0.961039
+			0.829412 0.662338
+			1 0
+		}
+		{
+			0 0.512987
+			0.611765 0.461039
+			0.776471 0.337662
+			1 0
+		}
+	};
+	colorGraph 1
+	{
+		{
+			0 1 1 1
+			1 1 1 1
+		}
+		{
+			0 1 1 1
+			1 0 0 0
+		}
+	};
+	alphaGraph 1
+	{
+		{
+			0 0
+			0.0319767 1
+			0.901163 1
+			1 0
+		}
+		{
+			0 1
+			0.912791 1
+			1 0
+		}
+	};
+	lightingFrac 0;
+	collOffset 0 0 0;
+	collRadius 0;
+	fxOnImpact "env/weather/fx_snow_debris_plume_md";
+	fxOnDeath "";
+	sortOrder 30;
+	emission "env/weather/fx_snow_wall_avalanche_elem3";
+	emitDist 90 -10;
+	emitDistVariance 0 0;
+	attachment "";
+	trailSplitDist 0;
+	trailScrollTime 0;
+	trailRepeatDist 0;
+	alphafadetimemsec 0;
+	maxwind_mag 0;
+	maxwind_life 0;
+	maxwind_interval 1;
+	billboardTopWidth 1;
+	billboardBottomWidth 1;
+	elemSpawnSound
+	{
+	};
+	cloudDensity 1024 0;
+	billboardPivot 0 0;
+	model
+	{
+		"p_rus_snow_chunk_01"
+	};
+}

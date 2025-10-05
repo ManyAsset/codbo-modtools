@@ -1,0 +1,31 @@
+{
+	stateMap "default2d";
+
+	vertexShader 3.0 "pimp_shader_sw4_2d_heatmap_a4228676.hlsl"
+	{
+	}
+
+	pixelShader 3.0 "pimp_shader_sw4_2d_heatmap_a4228676.hlsl" 
+	{
+		LineColor         = material.LineColor;
+  HeatmapNightColor = material.HeatmapNightColor;
+  HeatmapColor      = material.HeatmapColor;
+  NoiseScale        = material.NoiseScale;
+  NoiseSpeed        = material.NoiseSpeed;
+  Power             = material.Power;
+  FadeMap           = material.FadeMap;
+  C004_File         = material.C004_File;
+	}
+
+	vertex.position = code.position;
+	vertex.color[0]    = code.color;
+  vertex.texcoord[0] = code.texcoord[0];
+
+	declTypes
+	{
+		packed
+		debug
+		generic
+	}
+}
+

@@ -1,0 +1,25 @@
+{
+	stateMap "build_floatz";
+
+	vertexShader 3.0 "pimp_shader_sw4_3d_rope_ebeed581.hlsl"
+	{
+	}
+
+	pixelShader 3.0 "pimp_shader_sw4_3d_rope_ebeed581.hlsl" 
+	{
+		Normal_Map         = material.Normal_Map;
+  SpecularMap        = material.SpecularMap;
+  Diffuse_MapSampler = material.Diffuse_MapSampler;
+  SpecularIntensity  = material.SpecularIntensity;
+  SpecularIShininess = material.SpecularIShininess;
+	}
+
+	vertex.position = code.position;
+
+	declTypes
+	{
+		packed
+		world
+	}
+}
+

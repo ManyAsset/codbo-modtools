@@ -1,0 +1,318 @@
+#if "@formatNormal@" == "<auto compression>"
+	#if TARGET_PLATFORM == "xenon"
+		#define NORMAL_MAP_FORMAT	"DXN"
+	#else
+		#define NORMAL_MAP_FORMAT	"DXT5"
+	#endif
+#else
+	#define NORMAL_MAP_FORMAT	"@formatNormal@"
+#endif
+
+#if "@noStreamColor@" == "1"
+#define COLOR_STREAMABLE
+#else
+#define COLOR_STREAMABLE streamable
+#endif
+
+#if "@noStreamDetail@" == "1"
+#define DETAIL_STREAMABLE
+#else
+#define DETAIL_STREAMABLE streamable
+#endif
+
+//
+// default images
+//
+#define COLOR_SUFFIX	"c0"
+#define COD7_SUFFIX     "x0"
+
+
+#if "$cosinePowerMap$" != ""
+		#define POWER_MAP	"$cosinePowerMap$"
+#else
+  		#define POWER_MAP	"$white"
+#endif
+
+
+#if "$specularCorrectionMap$" != ""
+		#define SPECCORR_MAP	"$specularCorrectionMap$"
+#else
+		#define SPECCORR_MAP	"$white"
+#endif
+
+
+#if "$occMap$" != ""
+		#define OCC_MAP		"$occMap$"
+#else
+		#define OCC_MAP		"$white"
+#endif
+
+
+
+#if "$normalMap$" == "" || "$normalMap$" == "$identityNormalMap"
+		#define NORMAL_MAP_TILE 	"tile both"
+		#define NORMAL_MAP_FILTER	"nomip nearest"
+		#define NORMAL_MAP_IMAGE 	"$identityNormalMap"
+		#define NORMAL_MAP_NOPICMIP	1
+		#define NORMAL_SUFFIX		""
+#else
+		#define NORMAL_MAP_TILE		"@tileNormal@"
+		#define NORMAL_MAP_FILTER	"@filterNormal@"
+		#define NORMAL_MAP_IMAGE	"$normalMap$"
+		#define NORMAL_MAP_NOPICMIP	@nopicmipNormal@
+		#define NORMAL_SUFFIX		"n0"
+#endif
+
+
+#if ("$occMap$" == "" && ("@materialType@" == "cod7 simple world" || "@materialType@" == "cod7 simple model"  || "$specularCorrectionMap$" == "")  &&  "$cosinePowerMap$" == "")
+   		#define USE_SPEC_MAP		0
+       	#define SPEC_SUFFIX			""
+       	#define SPECCORR_SUFFIX     ""
+#else
+    	#define USE_SPEC_MAP 		1
+    	#define SPEC_SUFFIX			"s0"
+    	#if "@materialType@" == "cod7 simple world" || "@materialType@" == "cod7 simple model" 
+       		#define SPECCORR_SUFFIX     ""
+    	#else
+       		#define SPECCORR_SUFFIX     "sc0"
+       	#endif
+
+    	#if "@formatSpecular@" == "<auto compression>"
+    		#define SPECULAR_FORMAT		"DXT5"
+    	#else
+    		#define SPECULAR_FORMAT		"@formatSpecular@"
+    	#endif
+#endif
+
+#define	USE_DETAIL_MAP	("$detailMapEnable$" == "1" && "$detailMap$" != "" && "@materialType@" != "cod7 simple world" && "@materialType@" != "cod7 basic world")
+#if USE_DETAIL_MAP
+	#define DETAIL_SUFFIX	"d0"
+#else
+	#define DETAIL_SUFFIX	""
+#endif
+
+
+#include "commonsetup.template"
+
+#if @texScroll@
+	#define TEX_SCROLL_SUFFIX "_scroll"
+#else
+	#define TEX_SCROLL_SUFFIX ""
+#endif
+
+#if @subLayerScroll@
+	#define SUBLAYERSCROLL_SUFFIX "_sls"
+	#define USE_SUBLAYERSCROLL 1
+#else
+	#define SUBLAYERSCROLL_SUFFIX ""
+	#define USE_SUBLAYERSCROLL 0
+#endif
+
+#if @scorchable@
+	#define SCORCH_SUFFIX "_sco"
+#else
+	#define SCORCH_SUFFIX ""
+#endif
+
+#if "@heroLight@" == "1" 
+	#define HERO_SUFFIX "_hero"
+#else
+	#define HERO_SUFFIX ""
+#endif
+
+#include "objective_colors.template"
+
+#if @marksDirectionFade@ && "@blendFunc@" == "Blend" && "@materialType@" == "impact mark"
+	#define MARK_DIRFADE_SUFFIX "_markdf"
+#else
+	#define MARK_DIRFADE_SUFFIX ""
+#endif
+
+#if "@materialType@" == "cod7 weapon"
+	#if @adsZscaleOn@
+		#define MAT_FEATURE_SUFFIX "_adszscale"
+	#else
+		#define MAT_FEATURE_SUFFIX ""
+	#endif
+#else
+	#if "@materialFeatureTypeCOD7@" == "clothcharr"
+		#define MAT_FEATURE_SUFFIX "_clothcharr"
+	#else
+		#define MAT_FEATURE_SUFFIX ""
+	#endif
+#endif
+
+#if "@customString@" == "Skin"
+	#define SKIN_SUFFIX "_skin"
+	#if "@blendFunc@" != "Replace" || "@alphaTest@" != "Always"
+		#error "Only Replace Always materials support the Skin shader."
+	#endif
+#else
+	#define SKIN_SUFFIX ""
+#endif
+
+#if @noReceiveDynamicShadow@
+	#define NAME_PREFIX "l"
+#else
+	#define NAME_PREFIX "l_sm"
+#endif
+
+#if "@materialType@" == "cod7 weapon"
+	#define USE_COLOR_DETAIL_MAP 1
+#else
+	#define USE_COLOR_DETAIL_MAP 0
+#endif
+
+	#define USE_SPEC_DETAIL_MAP 0
+
+
+	#define SEETHRU_SUFFIX ""
+
+#if USE_COLOR_DETAIL_MAP
+	#define COLOR_DETAIL_SUFFIX "_clrdtl"
+#else
+	#define COLOR_DETAIL_SUFFIX ""
+#endif
+
+#if USE_SPEC_DETAIL_MAP
+	#if "@formatSpecularDetail@" == "<auto compression>"
+		#define SPECULAR_DETAIL_FORMAT	"DXT1"
+	#else
+		#define SPECULAR_DETAIL_FORMAT	"@formatSpecularDetail@"
+	#endif
+	#define SPEC_DETAIL_SUFFIX "_specdtl"
+#else
+	#define SPEC_DETAIL_SUFFIX ""
+#endif
+
+
+#if "@blendFunc@" == "Add"
+	#if TEX_SCROLL_SUFFIX != ""
+		#error "tex scroll not allowed on additive phong materials"
+	#endif
+	#if USE_DETAIL_MAP
+		#error "detail map not allowed on additive phong materials"
+	#endif
+	techniqueSet( NAME_PREFIX + "_a0c0" );
+#elif "@blendFunc@" == "Replace"
+	#if "@alphaTest@" == "Always"
+		techniqueSet( NAME_PREFIX + TEX_SCROLL_SUFFIX + SKIN_SUFFIX + "_r0" + COLOR_SUFFIX + DETAIL_SUFFIX + NORMAL_SUFFIX + SPEC_SUFFIX + SPECCORR_SUFFIX + COD7_SUFFIX + SCORCH_SUFFIX + SUBLAYERSCROLL_SUFFIX + MAT_FEATURE_SUFFIX + COLOR_DETAIL_SUFFIX + SPEC_DETAIL_SUFFIX + SEETHRU_SUFFIX + HERO_SUFFIX + OBJ_COLORS_SUFFIX );
+	#else
+		techniqueSet( NAME_PREFIX + TEX_SCROLL_SUFFIX + "_t0" + COLOR_SUFFIX + DETAIL_SUFFIX + NORMAL_SUFFIX + SPEC_SUFFIX + SPECCORR_SUFFIX + SCORCH_SUFFIX + COD7_SUFFIX + SUBLAYERSCROLL_SUFFIX + MAT_FEATURE_SUFFIX + COLOR_DETAIL_SUFFIX + SPEC_DETAIL_SUFFIX + SEETHRU_SUFFIX + HERO_SUFFIX + OBJ_COLORS_SUFFIX );
+	#endif
+#elif "@blendFunc@" == "Blend"
+	techniqueSet( NAME_PREFIX + TEX_SCROLL_SUFFIX + "_b0" +  COLOR_SUFFIX + DETAIL_SUFFIX + NORMAL_SUFFIX + SPEC_SUFFIX + SPECCORR_SUFFIX + SCORCH_SUFFIX + COD7_SUFFIX + SUBLAYERSCROLL_SUFFIX + MAT_FEATURE_SUFFIX + MARK_DIRFADE_SUFFIX + COLOR_DETAIL_SUFFIX + SPEC_DETAIL_SUFFIX + SEETHRU_SUFFIX + HERO_SUFFIX + OBJ_COLORS_SUFFIX );
+#elif "@blendFunc@" == "Multiply"
+	techniqueSet( NAME_PREFIX + TEX_SCROLL_SUFFIX + "_m0" + COLOR_SUFFIX + DETAIL_SUFFIX + NORMAL_SUFFIX + SPEC_SUFFIX + SPECCORR_SUFFIX + SCORCH_SUFFIX + COD7_SUFFIX + SUBLAYERSCROLL_SUFFIX + MAT_FEATURE_SUFFIX + MARK_DIRFADE_SUFFIX + COLOR_DETAIL_SUFFIX + SPEC_DETAIL_SUFFIX + SEETHRU_SUFFIX + HERO_SUFFIX + OBJ_COLORS_SUFFIX );
+#else
+	#error "blendFunc '@blendFunc@' with alphaTest '@alphaTest@' not supported for phong materials"
+#endif
+
+
+textureTable
+{
+	#if "$colorMap$" == ""
+		#error "colorMap may not be blank in phong materials"
+	#endif
+
+    "colorMap" = COLOR_STREAMABLE gammaMap( "@tileColor@", "@filterColor@", "$colorMap$", @nopicmipColor@ ) "@formatColor@" : "colorMap";
+
+
+	#if USE_COLOR_DETAIL_MAP
+		#if "@materialType@" == "cod7 weapon"
+			#if "$colorDetailMap$" == ""
+				"colorDetailMap" = map( "tile both", "mip standard (2x bilinear)", "texture_assets\detail_map\weapon_camo_neutral.tga", false ) "<auto compression>" : "colorMap07";
+			#else
+				"colorDetailMap" = map( "tile both", "@filterColorDetail@", "$colorDetailMap$", @nopicmipColorDetail@ ) "@formatColorDetail@" : "colorMap07";
+			#endif
+		#else
+			#if "$colorDetailMap$" == ""
+				#error "colorDetailMap may not be blank in USE_COLOR_DETAIL_MAP materials"
+			#endif
+			"colorDetailMap" = map( "tile both", "@filterColorDetail@", "$colorDetailMap$", @nopicmipColorDetail@ ) "@formatColorDetail@" : "colorMap";
+		#endif
+	#endif
+
+	#if USE_DETAIL_MAP
+		"detailMap" = DETAIL_STREAMABLE normalMap( "tile both", "@filterDetail@", "$detailMap$", @nopicmipDetail@ ) NORMAL_MAP_FORMAT : "normalMap";
+	#endif
+
+	#if NORMAL_MAP_IMAGE == "$identityNormalMap"
+		"normalMap" = map( "tile both", "nomip nearest", "$identityNormalMap", true ) "<auto compression>" : "normalMap";
+	#else
+		"normalMap" = streamable normalMap( NORMAL_MAP_TILE, NORMAL_MAP_FILTER, NORMAL_MAP_IMAGE, NORMAL_MAP_NOPICMIP ) NORMAL_MAP_FORMAT : "normalMap";
+	#endif
+
+	#if USE_SPEC_MAP
+		"specularMap" = streamable composite
+		(
+			#if "@materialType@" == "cod7 simple world" || "@materialType@" == "cod7 simple model"
+				map( "@tileSpecular@", "@filterSpecular@", "$black", @nopicmipSpecular@ ).r,
+				map( "@tileSpecular@", "@filterSpecular@", OCC_MAP, @nopicmipSpecular@ ).r,
+				map( "@tileSpecular@", "@filterSpecular@", "$black", @nopicmipSpecular@ ).r,
+				roughMap( "@tileSpecular@", "@filterSpecular@", POWER_MAP, @nopicmipSpecular@, "normalMap" ).r
+			#else
+				map( "@tileSpecular@", "@filterSpecular@", SPECCORR_MAP, @nopicmipSpecular@ ).r,
+				map( "@tileSpecular@", "@filterSpecular@", OCC_MAP, @nopicmipSpecular@ ).r,
+				map( "@tileSpecular@", "@filterSpecular@", "$black", @nopicmipSpecular@ ).r,
+				roughMap( "@tileSpecular@", "@filterSpecular@", POWER_MAP, @nopicmipSpecular@, "normalMap" ).r
+			#endif
+		) SPECULAR_FORMAT : "specularMap";
+		#if USE_SPEC_DETAIL_MAP
+			"specularDetailMap" = streamable composite
+			(
+				map( "@tileSpecular@", "@filterSpecular@", "$specDetailMap$", @nopicmipSpecular@ ).r,
+				map( "@tileSpecular@", "@filterSpecular@", "$specDetailMap$", @nopicmipSpecular@ ).g,
+				map( "@tileSpecular@", "@filterSpecular@", "$specDetailMap$", @nopicmipSpecular@ ).b
+			) SPECULAR_DETAIL_FORMAT : "specularMap";
+		#endif
+	#endif
+
+	#if "@materialFeatureTypeCOD7@" == "clothcharr"
+		"clothcharrMaskMap" = streamable map( "@tileColor@", "@filterColor@", "$colorMap00$", @nopicmipColor@ ) "@formatColor@" : "colorMap00";
+		"clothcharrColorMap" = streamable map( "@tileColor@", "@filterColor@", "$colorMap01$", @nopicmipColor@ ) "@formatColor@" : "colorMap01";
+		"clothcharrNormalMap" = streamable normalMap( NORMAL_MAP_TILE, NORMAL_MAP_FILTER, "$colorMap02$", NORMAL_MAP_NOPICMIP ) NORMAL_MAP_FORMAT : "colorMap02";
+	#endif
+
+	#if USE_SUBLAYERSCROLL
+		"subLayerBaseTexture" = streamable map( "@tileColor@", "@filterColor@", "$colorMap04$", @nopicmipColor@ ) "@formatColor@" : "colorMap04";
+		"subLayerMultiplyTexture" = streamable map( "@tileColor@", "@filterColor@", "$colorMap05$", @nopicmipColor@ ) "@formatColor@" : "colorMap05";
+	#endif
+}
+
+
+constantTable
+{
+	#if USE_COLOR_DETAIL_MAP
+		"colorDetailScale" = float4( @colorDetailScaleX@, @colorDetailScaleY@, 0, 0 );
+	#endif
+
+	#if USE_DETAIL_MAP
+		"detailScale" = float4( @detailScaleX@ * imageWidth( "$colorMap$" ) / imageWidth( "$detailMap$" ), @detailScaleY@ * imageHeight( "$colorMap$" ) / imageHeight( "$detailMap$" ), @detailScaleHeight@, 0 );
+	#endif
+
+	#if USE_SPEC_MAP
+		#if USE_SPEC_DETAIL_MAP
+			"specDetailScale" = float4( @specDetailScaleX@ * imageWidth( "$specDetailMap$" ) / imageWidth( "$specDetailMap$" ), @specDetailScaleY@ * imageHeight( "$specDetailMap$" ) / imageHeight( "$specDetailMap$" ), 0, 0 );
+		#endif
+	#endif
+
+	"dynamicFoliageSunDiffuseMinMax" = float2( @dynamicFoliageSunDiffuseMin@, @dynamicFoliageSunDiffuseMax@ );
+
+	#if "@materialFeatureTypeCOD7@" == "clothcharr"
+		"clothcharrMaskMapScale" = float1(@cg00_x@);
+		"clothcharrColorMapScale" = float1(@cg00_y@);
+		"clothcharrEmberColorAndBrightness" = float4( @cg01_x@, @cg01_y@, @cg01_z@, @cg01_w@ );
+	#endif
+
+	#if USE_SUBLAYERSCROLL
+		"subLayerBaseScroll" = float2( @uScroll00@, @vScroll00@ );
+		"subLayerMultiplyScroll" = float2( @uScroll01@, @vScroll01@ );
+	#endif
+	
+	OBJ_COLORS_CONSTANTS
+}
+
+allocReflectionProbe();
+
+refImageByKey( "colorMap" );

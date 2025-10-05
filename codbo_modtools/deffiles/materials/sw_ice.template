@@ -1,0 +1,26 @@
+#if "@blendFunc@" == "Blend" || ("@blendFunc@" == "Replace" && "@alphaTest@" != "Always")
+techniqueSet( "sw_ice" ); 
+#else
+techniqueSet( "sw_ice_noalpha" ); 
+#endif
+
+#include "commonsetup.template" 
+
+cgfxTextureTableRefImage
+{
+	"Ice_Surface_NormalSampler" = streamable normalMap( "tile both", "mip (1x trilinear)", "texture_assets\shaderworks\ice_detail.tga", 0 ) "<auto compression>" : "normalMap"; 
+	"Depth_MapSampler" = streamable map( "tile both", "mip (1x trilinear)", "texture_assets\shaderworks\ice_depth.tga", 0 ) "<auto compression>" : "colorMap"; 
+	"Diffuse_MapSampler" = streamable map( "tile both", "mip (1x trilinear)", "texture_assets\shaderworks\ice_c.tga", 0 ) "<auto compression>" : "colorMap"; 
+}
+
+cgfxConstantTable
+{
+	"EnvBlurLevel" = float4( 0, 0, 0, 0 );
+	"Reflection_Amt" = float4( 1, 0, 0, 0 );
+	"Ice_Normal_scale" = float4( 2, 0, 0, 0 );
+	"Ice_Normal_Amt" = float4( 0, 0, 0, 0 );
+	"Specular_Color" = float4( 0.713725, 0.713725, 0.713725, 0 );
+	"Parallax_Scale" = float4( 0.11, 0, 0, 0 );
+}
+allocReflectionProbe();
+

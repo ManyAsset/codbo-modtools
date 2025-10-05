@@ -1,0 +1,30 @@
+{
+	stateMap "default2d";
+
+	vertexShader 3.0 "pimp_shader_sw4_2d_anim_icon_pingpong_8a0668b3.hlsl"
+	{
+	}
+
+	pixelShader 3.0 "pimp_shader_sw4_2d_anim_icon_pingpong_8a0668b3.hlsl" 
+	{
+		EndDelay   = material.EndDelay;
+  StartDelay = material.StartDelay;
+  AnimSpeed  = material.AnimSpeed;
+  NumFrames  = material.NumFrames;
+  LastFrame  = material.LastFrame;
+  FirstFrame = material.FirstFrame;
+  ColorMap   = material.ColorMap;
+	}
+
+	vertex.position = code.position;
+	vertex.color[0]    = code.color;
+  vertex.texcoord[0] = code.texcoord[0];
+
+	declTypes
+	{
+		packed
+		debug
+		generic
+	}
+}
+

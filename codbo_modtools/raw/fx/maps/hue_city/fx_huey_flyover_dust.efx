@@ -1,0 +1,2256 @@
+iwfx 3
+
+	efFlags;
+	efPriority 55;
+	efBoundingBoxDim 0 0 0;
+	efBoundingBoxCentre 0 0 0;
+{
+	name "dust1_left";
+	editorFlags useRandColor useRandAlpha useRandSize0 useRandRotDelta useRandVel0 useBackCompatVel absVel1;
+	flags spawnRelative spawnRelativeType0 spawnRelativeType1 spawnOffsetNone runRelToEffect;
+	spawnRange 0 3500;
+	fadeInRange 0 0;
+	fadeOutRange 200 200;
+	spawnFrustumCullRadius 750;
+	spawnLooping 100 3;
+	spawnOneShot 2 0;
+	spawnDelayMsec 0 145;
+	lifeSpanMsec 2000 2000;
+	spawnOrgX 0 400;
+	spawnOrgY 0 100;
+	spawnOrgZ 0 0;
+	spawnOffsetRadius 300 0;
+	spawnOffsetHeight -25 0;
+	spawnAnglePitch 0 0;
+	spawnAngleYaw 0 0;
+	spawnAngleRoll 0 0;
+	angleVelPitch 0 0;
+	angleVelYaw 0 0;
+	angleVelRoll 0 0;
+	initialRot -360 720;
+	rotationAxis 0 0 0 1;
+	gravity 0.01 0;
+	elasticity 1 0;
+	windinfluence 0.3;
+	atlasBehavior startRandom;
+	atlasIndex 0;
+	atlasFps 0;
+	atlasLoopCount 0;
+	atlasColIndexBits 0;
+	atlasRowIndexBits 0;
+	atlasEntryCount 0;
+	atlasIndexRange 0;
+	velGraph0X 800
+	{
+		{
+			0 0.5
+			0.0261628 0.203349
+			0.119186 0.0980861
+			0.485465 0.0263158
+			1 0.0119617
+		}
+		{
+			0 0.160287
+			0.119186 0.107656
+			0.383721 0.0645933
+			1 0.007177
+		}
+	};
+	velGraph0Y 680
+	{
+		{
+			0 0
+			0.0406977 0.5
+			0.145349 0.0980861
+			1 -0.00239235
+		}
+		{
+			0 0
+			0.0668605 0.208134
+			0.203488 0.0406699
+			1 0.0119617
+		}
+	};
+	velGraph0Z 100
+	{
+		{
+			0 0.198565
+			0.0406977 0.409091
+			0.151163 0.5
+			0.229651 0.251196
+			0.409884 0.0311005
+			1 -0.126794
+		}
+		{
+			0 0.313397
+			1 -0.165072
+		}
+	};
+	velGraph1X 0
+	{
+		{
+			0 0
+			1 0
+		}
+		{
+			0 0
+			1 0
+		}
+	};
+	velGraph1Y 0
+	{
+		{
+			0 0
+			1 0
+		}
+		{
+			0 0
+			1 0
+		}
+	};
+	velGraph1Z 0
+	{
+		{
+			0 0
+			1 0
+		}
+		{
+			0 0
+			1 0
+		}
+	};
+	rotGraph 150
+	{
+		{
+			0 0.5
+			0.168605 0.407407
+			0.218023 0.180556
+			0.351744 0.0925926
+			1 0.0138889
+		}
+		{
+			0 -0.5
+			0.156977 -0.25
+			0.319767 -0.12963
+			1 -0.00462964
+		}
+	};
+	sizeGraph0 310
+	{
+		{
+			0 0.402597
+			0.0470588 0.61039
+			0.223529 0.811688
+			1 1
+		}
+		{
+			0 0.188312
+			0.05 0.305195
+			0.626471 0.538961
+			1 0.792208
+		}
+	};
+	sizeGraph1 2
+	{
+		{
+			0 1
+			1 0
+		}
+		{
+			0 1
+			1 0
+		}
+	};
+	scaleGraph 1
+	{
+		{
+			0 1
+			1 0
+		}
+		{
+			0 1
+			1 0
+		}
+	};
+	colorGraph 1
+	{
+		{
+			0 0.678431 0.627451 0.585492
+			1 0.529412 0.482353 0.447059
+		}
+		{
+			0 0.694118 0.662745 0.619608
+			1 0.733333 0.705882 0.682353
+		}
+	};
+	alphaGraph 1
+	{
+		{
+			0 0
+			0.0668605 0.511962
+			0.267442 0.411483
+			0.447674 0.205742
+			0.703488 0.0478469
+			1 0
+		}
+		{
+			0 0
+			0.22093 0.368421
+			0.627907 0.105263
+			1 0
+		}
+	};
+	lightingFrac 0.5;
+	collOffset 0 0 0;
+	collRadius 0;
+	fxOnImpact "";
+	fxOnDeath "";
+	sortOrder 3;
+	emission "";
+	emitDist 1 0;
+	emitDistVariance 0 0;
+	attachment "";
+	trailSplitDist 0;
+	trailScrollTime 0;
+	trailRepeatDist 0;
+	alphafadetimemsec 0;
+	maxwind_mag 0;
+	maxwind_life 0;
+	maxwind_interval 1;
+	billboardTopWidth 1;
+	billboardBottomWidth 1;
+	elemSpawnSound
+	{
+	};
+	cloudDensity 1024 0;
+	billboardPivot 0 0;
+	billboardSprite
+	{
+		"gfx_fxt_smk_light_z120"
+		"gfx_fxt_smk_scattered_z120"
+	};
+}
+{
+	name "dust1_right";
+	editorFlags useRandColor useRandAlpha useRandSize0 useRandRotDelta useRandVel0 useBackCompatVel absVel1;
+	flags spawnRelative spawnRelativeType0 spawnRelativeType1 spawnOffsetNone runRelToEffect;
+	spawnRange 0 3500;
+	fadeInRange 0 0;
+	fadeOutRange 200 200;
+	spawnFrustumCullRadius 750;
+	spawnLooping 80 3;
+	spawnOneShot 2 0;
+	spawnDelayMsec 0 113;
+	lifeSpanMsec 2000 2000;
+	spawnOrgX 0 400;
+	spawnOrgY -100 100;
+	spawnOrgZ 0 0;
+	spawnOffsetRadius 300 0;
+	spawnOffsetHeight -25 0;
+	spawnAnglePitch 0 0;
+	spawnAngleYaw 0 0;
+	spawnAngleRoll 0 0;
+	angleVelPitch 0 0;
+	angleVelYaw 0 0;
+	angleVelRoll 0 0;
+	initialRot -360 720;
+	rotationAxis 0 0 0 1;
+	gravity 0.01 0;
+	elasticity 1 0;
+	windinfluence 0.4;
+	atlasBehavior startRandom;
+	atlasIndex 0;
+	atlasFps 0;
+	atlasLoopCount 0;
+	atlasColIndexBits 0;
+	atlasRowIndexBits 0;
+	atlasEntryCount 0;
+	atlasIndexRange 0;
+	velGraph0X 800
+	{
+		{
+			0 0.5
+			0.0261628 0.203349
+			0.119186 0.0980861
+			0.485465 0.0263158
+			1 0.0119617
+		}
+		{
+			0 0.160287
+			0.119186 0.107656
+			0.383721 0.0645933
+			1 0.007177
+		}
+	};
+	velGraph0Y -680
+	{
+		{
+			0 0
+			0.0406977 0.5
+			0.145349 0.0980861
+			1 -0.00239235
+		}
+		{
+			0 0
+			0.0668605 0.208134
+			0.203488 0.04067
+			1 0.011962
+		}
+	};
+	velGraph0Z 100
+	{
+		{
+			0 0.198565
+			0.0406977 0.409091
+			0.151163 0.5
+			0.229651 0.251196
+			0.409884 0.0311005
+			1 -0.126794
+		}
+		{
+			0 0.313397
+			1 -0.165072
+		}
+	};
+	velGraph1X 0
+	{
+		{
+			0 0
+			1 0
+		}
+		{
+			0 0
+			1 0
+		}
+	};
+	velGraph1Y 0
+	{
+		{
+			0 0
+			1 0
+		}
+		{
+			0 0
+			1 0
+		}
+	};
+	velGraph1Z 0
+	{
+		{
+			0 0
+			1 0
+		}
+		{
+			0 0
+			1 0
+		}
+	};
+	rotGraph 150
+	{
+		{
+			0 0.5
+			0.168605 0.407407
+			0.218023 0.180556
+			0.351744 0.0925926
+			1 0.0138889
+		}
+		{
+			0 -0.5
+			0.156977 -0.25
+			0.319767 -0.12963
+			1 -0.00462964
+		}
+	};
+	sizeGraph0 310
+	{
+		{
+			0 0.402597
+			0.0470588 0.61039
+			0.223529 0.811688
+			1 1
+		}
+		{
+			0 0.188312
+			0.05 0.305195
+			0.626471 0.538961
+			1 0.792208
+		}
+	};
+	sizeGraph1 2
+	{
+		{
+			0 1
+			1 0
+		}
+		{
+			0 1
+			1 0
+		}
+	};
+	scaleGraph 1
+	{
+		{
+			0 1
+			1 0
+		}
+		{
+			0 1
+			1 0
+		}
+	};
+	colorGraph 1
+	{
+		{
+			0 0.678431 0.627451 0.585492
+			1 0.529412 0.482353 0.447059
+		}
+		{
+			0 0.694118 0.662745 0.619608
+			1 0.733333 0.705882 0.682353
+		}
+	};
+	alphaGraph 1
+	{
+		{
+			0 0
+			0.0668605 0.511962
+			0.267442 0.411483
+			0.447674 0.205742
+			0.703488 0.0478469
+			1 0
+		}
+		{
+			0 0
+			0.22093 0.368421
+			0.627907 0.105263
+			1 0
+		}
+	};
+	lightingFrac 0.5;
+	collOffset 0 0 0;
+	collRadius 0;
+	fxOnImpact "";
+	fxOnDeath "";
+	sortOrder 3;
+	emission "";
+	emitDist 1 0;
+	emitDistVariance 0 0;
+	attachment "";
+	trailSplitDist 0;
+	trailScrollTime 0;
+	trailRepeatDist 0;
+	alphafadetimemsec 0;
+	maxwind_mag 0;
+	maxwind_life 0;
+	maxwind_interval 1;
+	billboardTopWidth 1;
+	billboardBottomWidth 1;
+	elemSpawnSound
+	{
+	};
+	cloudDensity 1024 0;
+	billboardPivot 0 0;
+	billboardSprite
+	{
+		"gfx_fxt_smk_light_z120"
+		"gfx_fxt_smk_scattered_z120"
+	};
+}
+{
+	name "dust2_left";
+	editorFlags useRandColor useRandAlpha useRandSize0 useRandRotDelta useRandVel0 useBackCompatVel absVel1;
+	flags spawnRelative spawnRelativeType0 spawnRelativeType1 spawnOffsetNone runRelToEffect;
+	spawnRange 0 3500;
+	fadeInRange 0 0;
+	fadeOutRange 200 200;
+	spawnFrustumCullRadius 750;
+	spawnLooping 100 3;
+	spawnOneShot 2 1;
+	spawnDelayMsec 200 120;
+	lifeSpanMsec 2000 3000;
+	spawnOrgX 400 400;
+	spawnOrgY 0 100;
+	spawnOrgZ 0 0;
+	spawnOffsetRadius 300 0;
+	spawnOffsetHeight -25 0;
+	spawnAnglePitch 0 0;
+	spawnAngleYaw 0 0;
+	spawnAngleRoll 0 0;
+	angleVelPitch 0 0;
+	angleVelYaw 0 0;
+	angleVelRoll 0 0;
+	initialRot -360 720;
+	rotationAxis 0 0 0 1;
+	gravity 0.01 0;
+	elasticity 1 0;
+	windinfluence 0.3;
+	atlasBehavior startRandom;
+	atlasIndex 0;
+	atlasFps 0;
+	atlasLoopCount 0;
+	atlasColIndexBits 0;
+	atlasRowIndexBits 0;
+	atlasEntryCount 0;
+	atlasIndexRange 0;
+	velGraph0X 800
+	{
+		{
+			0 0.5
+			0.0261628 0.203349
+			0.119186 0.0980861
+			0.485465 0.0263158
+			1 0.0119617
+		}
+		{
+			0 0.160287
+			0.119186 0.107656
+			0.383721 0.0645933
+			1 0.007177
+		}
+	};
+	velGraph0Y 880
+	{
+		{
+			0 0
+			0.0406977 0.5
+			0.145349 0.0980861
+			1 -0.00239235
+		}
+		{
+			0 0
+			0.0319767 0.145933
+			0.177326 0.0215311
+			1 0.0119617
+		}
+	};
+	velGraph0Z 100
+	{
+		{
+			0 0.198565
+			0.0406977 0.409091
+			0.151163 0.5
+			0.229651 0.251196
+			0.409884 0.0311005
+			1 -0.126794
+		}
+		{
+			0 0.313397
+			1 -0.165072
+		}
+	};
+	velGraph1X 0
+	{
+		{
+			0 0
+			1 0
+		}
+		{
+			0 0
+			1 0
+		}
+	};
+	velGraph1Y 0
+	{
+		{
+			0 0
+			1 0
+		}
+		{
+			0 0
+			1 0
+		}
+	};
+	velGraph1Z 0
+	{
+		{
+			0 0
+			1 0
+		}
+		{
+			0 0
+			1 0
+		}
+	};
+	rotGraph 150
+	{
+		{
+			0 0.5
+			0.168605 0.407407
+			0.218023 0.180556
+			0.351744 0.0925926
+			1 0.0138889
+		}
+		{
+			0 -0.5
+			0.156977 -0.25
+			0.319767 -0.12963
+			1 -0.00462964
+		}
+	};
+	sizeGraph0 300
+	{
+		{
+			0 0.402597
+			0.0470588 0.61039
+			0.223529 0.811688
+			1 1
+		}
+		{
+			0 0.188312
+			0.05 0.305195
+			0.626471 0.538961
+			1 0.792208
+		}
+	};
+	sizeGraph1 2
+	{
+		{
+			0 1
+			1 0
+		}
+		{
+			0 1
+			1 0
+		}
+	};
+	scaleGraph 1
+	{
+		{
+			0 1
+			1 0
+		}
+		{
+			0 1
+			1 0
+		}
+	};
+	colorGraph 1
+	{
+		{
+			0 0.678431 0.627451 0.585492
+			1 0.529412 0.482353 0.447059
+		}
+		{
+			0 0.694118 0.662745 0.619608
+			1 0.733333 0.705882 0.682353
+		}
+	};
+	alphaGraph 1
+	{
+		{
+			0 0
+			0.0668605 0.511962
+			0.267442 0.411483
+			0.447674 0.205742
+			0.703488 0.0478469
+			1 0
+		}
+		{
+			0 0
+			0.22093 0.368421
+			0.627907 0.105263
+			1 0
+		}
+	};
+	lightingFrac 0.5;
+	collOffset 0 0 0;
+	collRadius 0;
+	fxOnImpact "";
+	fxOnDeath "";
+	sortOrder 3;
+	emission "";
+	emitDist 1 0;
+	emitDistVariance 0 0;
+	attachment "";
+	trailSplitDist 0;
+	trailScrollTime 0;
+	trailRepeatDist 0;
+	alphafadetimemsec 0;
+	maxwind_mag 0;
+	maxwind_life 0;
+	maxwind_interval 1;
+	billboardTopWidth 1;
+	billboardBottomWidth 1;
+	elemSpawnSound
+	{
+	};
+	cloudDensity 1024 0;
+	billboardPivot 0 0;
+	billboardSprite
+	{
+		"gfx_fxt_smk_light_z120"
+		"gfx_fxt_smk_scattered_z120"
+	};
+}
+{
+	name "dust2_right";
+	editorFlags useRandColor useRandAlpha useRandSize0 useRandRotDelta useRandVel0 useBackCompatVel absVel1;
+	flags spawnRelative spawnRelativeType0 spawnRelativeType1 spawnOffsetNone runRelToEffect;
+	spawnRange 0 3500;
+	fadeInRange 0 0;
+	fadeOutRange 200 200;
+	spawnFrustumCullRadius 750;
+	spawnLooping 80 3;
+	spawnOneShot 2 1;
+	spawnDelayMsec 200 131;
+	lifeSpanMsec 2000 3000;
+	spawnOrgX 400 400;
+	spawnOrgY -100 100;
+	spawnOrgZ 0 0;
+	spawnOffsetRadius 300 0;
+	spawnOffsetHeight -25 0;
+	spawnAnglePitch 0 0;
+	spawnAngleYaw 0 0;
+	spawnAngleRoll 0 0;
+	angleVelPitch 0 0;
+	angleVelYaw 0 0;
+	angleVelRoll 0 0;
+	initialRot -360 720;
+	rotationAxis 0 0 0 1;
+	gravity 0.01 0;
+	elasticity 1 0;
+	windinfluence 0.4;
+	atlasBehavior startRandom;
+	atlasIndex 0;
+	atlasFps 0;
+	atlasLoopCount 0;
+	atlasColIndexBits 0;
+	atlasRowIndexBits 0;
+	atlasEntryCount 0;
+	atlasIndexRange 0;
+	velGraph0X 800
+	{
+		{
+			0 0.5
+			0.0261628 0.203349
+			0.119186 0.0980861
+			0.485465 0.0263158
+			1 0.0119617
+		}
+		{
+			0 0.160287
+			0.119186 0.107656
+			0.383721 0.0645933
+			1 0.007177
+		}
+	};
+	velGraph0Y -880
+	{
+		{
+			0 0
+			0.0406977 0.5
+			0.145349 0.0980861
+			1 -0.00239235
+		}
+		{
+			0 0
+			0.0319767 0.145933
+			0.177326 0.021531
+			1 0.011962
+		}
+	};
+	velGraph0Z 100
+	{
+		{
+			0 0.198565
+			0.0406977 0.409091
+			0.151163 0.5
+			0.229651 0.251196
+			0.409884 0.0311005
+			1 -0.126794
+		}
+		{
+			0 0.313397
+			1 -0.165072
+		}
+	};
+	velGraph1X 0
+	{
+		{
+			0 0
+			1 0
+		}
+		{
+			0 0
+			1 0
+		}
+	};
+	velGraph1Y 0
+	{
+		{
+			0 0
+			1 0
+		}
+		{
+			0 0
+			1 0
+		}
+	};
+	velGraph1Z 0
+	{
+		{
+			0 0
+			1 0
+		}
+		{
+			0 0
+			1 0
+		}
+	};
+	rotGraph 150
+	{
+		{
+			0 0.5
+			0.168605 0.407407
+			0.218023 0.180556
+			0.351744 0.0925926
+			1 0.0138889
+		}
+		{
+			0 -0.5
+			0.156977 -0.25
+			0.319767 -0.12963
+			1 -0.00462964
+		}
+	};
+	sizeGraph0 300
+	{
+		{
+			0 0.402597
+			0.0470588 0.61039
+			0.223529 0.811688
+			1 1
+		}
+		{
+			0 0.188312
+			0.05 0.305195
+			0.626471 0.538961
+			1 0.792208
+		}
+	};
+	sizeGraph1 2
+	{
+		{
+			0 1
+			1 0
+		}
+		{
+			0 1
+			1 0
+		}
+	};
+	scaleGraph 1
+	{
+		{
+			0 1
+			1 0
+		}
+		{
+			0 1
+			1 0
+		}
+	};
+	colorGraph 1
+	{
+		{
+			0 0.678431 0.627451 0.585492
+			1 0.529412 0.482353 0.447059
+		}
+		{
+			0 0.694118 0.662745 0.619608
+			1 0.733333 0.705882 0.682353
+		}
+	};
+	alphaGraph 1
+	{
+		{
+			0 0
+			0.0668605 0.511962
+			0.267442 0.411483
+			0.447674 0.205742
+			0.703488 0.0478469
+			1 0
+		}
+		{
+			0 0
+			0.22093 0.368421
+			0.627907 0.105263
+			1 0
+		}
+	};
+	lightingFrac 0.5;
+	collOffset 0 0 0;
+	collRadius 0;
+	fxOnImpact "";
+	fxOnDeath "";
+	sortOrder 3;
+	emission "";
+	emitDist 1 0;
+	emitDistVariance 0 0;
+	attachment "";
+	trailSplitDist 0;
+	trailScrollTime 0;
+	trailRepeatDist 0;
+	alphafadetimemsec 0;
+	maxwind_mag 0;
+	maxwind_life 0;
+	maxwind_interval 1;
+	billboardTopWidth 1;
+	billboardBottomWidth 1;
+	elemSpawnSound
+	{
+	};
+	cloudDensity 1024 0;
+	billboardPivot 0 0;
+	billboardSprite
+	{
+		"gfx_fxt_smk_light_z120"
+		"gfx_fxt_smk_scattered_z120"
+	};
+}
+{
+	name "dust3_left";
+	editorFlags useRandColor useRandAlpha useRandSize0 useRandRotDelta useRandVel0 useBackCompatVel absVel1;
+	flags spawnRelative spawnRelativeType0 spawnRelativeType1 spawnOffsetNone runRelToEffect;
+	spawnRange 0 3500;
+	fadeInRange 0 0;
+	fadeOutRange 50 100;
+	spawnFrustumCullRadius 750;
+	spawnLooping 100 3;
+	spawnOneShot 4 0;
+	spawnDelayMsec 400 166;
+	lifeSpanMsec 3000 3000;
+	spawnOrgX 800 400;
+	spawnOrgY 0 100;
+	spawnOrgZ 0 0;
+	spawnOffsetRadius 300 0;
+	spawnOffsetHeight -25 0;
+	spawnAnglePitch 0 0;
+	spawnAngleYaw 0 0;
+	spawnAngleRoll 0 0;
+	angleVelPitch 0 0;
+	angleVelYaw 0 0;
+	angleVelRoll 0 0;
+	initialRot -360 720;
+	rotationAxis 0 0 0 1;
+	gravity 0.01 0;
+	elasticity 1 0;
+	windinfluence 0.3;
+	atlasBehavior startRandom;
+	atlasIndex 0;
+	atlasFps 0;
+	atlasLoopCount 0;
+	atlasColIndexBits 0;
+	atlasRowIndexBits 0;
+	atlasEntryCount 0;
+	atlasIndexRange 0;
+	velGraph0X 800
+	{
+		{
+			0 0.5
+			0.0261628 0.203349
+			0.119186 0.0980861
+			0.485465 0.0263158
+			1 0.0119617
+		}
+		{
+			0 0.160287
+			0.119186 0.107656
+			0.383721 0.0645933
+			1 0.007177
+		}
+	};
+	velGraph0Y 880
+	{
+		{
+			0 0
+			0.0406977 0.5
+			0.145349 0.0980861
+			1 -0.00239235
+		}
+		{
+			0 0
+			1 0
+		}
+	};
+	velGraph0Z 100
+	{
+		{
+			0 0.198565
+			0.0406977 0.409091
+			0.151163 0.5
+			0.229651 0.251196
+			0.409884 0.0311005
+			1 -0.126794
+		}
+		{
+			0 0.313397
+			1 -0.165072
+		}
+	};
+	velGraph1X 0
+	{
+		{
+			0 0
+			1 0
+		}
+		{
+			0 0
+			1 0
+		}
+	};
+	velGraph1Y 0
+	{
+		{
+			0 0
+			1 0
+		}
+		{
+			0 0
+			1 0
+		}
+	};
+	velGraph1Z 0
+	{
+		{
+			0 0
+			1 0
+		}
+		{
+			0 0
+			1 0
+		}
+	};
+	rotGraph 150
+	{
+		{
+			0 0.5
+			0.168605 0.407407
+			0.218023 0.180556
+			0.351744 0.0925926
+			1 0.0138889
+		}
+		{
+			0 -0.5
+			0.156977 -0.25
+			0.319767 -0.12963
+			1 -0.00462964
+		}
+	};
+	sizeGraph0 250
+	{
+		{
+			0 0.402597
+			0.0470588 0.61039
+			0.223529 0.811688
+			1 1
+		}
+		{
+			0 0.188312
+			0.05 0.305195
+			0.626471 0.538961
+			1 0.792208
+		}
+	};
+	sizeGraph1 2
+	{
+		{
+			0 1
+			1 0
+		}
+		{
+			0 1
+			1 0
+		}
+	};
+	scaleGraph 1
+	{
+		{
+			0 1
+			1 0
+		}
+		{
+			0 1
+			1 0
+		}
+	};
+	colorGraph 1
+	{
+		{
+			0 0.678431 0.627451 0.585492
+			1 0.529412 0.482353 0.447059
+		}
+		{
+			0 0.694118 0.662745 0.619608
+			1 0.733333 0.705882 0.682353
+		}
+	};
+	alphaGraph 1
+	{
+		{
+			0 0
+			0.0668605 0.511962
+			0.267442 0.411483
+			0.447674 0.205742
+			0.703488 0.0478469
+			1 0
+		}
+		{
+			0 0
+			0.22093 0.368421
+			0.627907 0.105263
+			1 0
+		}
+	};
+	lightingFrac 0.5;
+	collOffset 0 0 0;
+	collRadius 0;
+	fxOnImpact "";
+	fxOnDeath "";
+	sortOrder 3;
+	emission "";
+	emitDist 1 0;
+	emitDistVariance 0 0;
+	attachment "";
+	trailSplitDist 0;
+	trailScrollTime 0;
+	trailRepeatDist 0;
+	alphafadetimemsec 0;
+	maxwind_mag 0;
+	maxwind_life 0;
+	maxwind_interval 1;
+	billboardTopWidth 1;
+	billboardBottomWidth 1;
+	elemSpawnSound
+	{
+	};
+	cloudDensity 1024 0;
+	billboardPivot 0 0;
+	billboardSprite
+	{
+		"gfx_fxt_smk_light_z120"
+		"gfx_fxt_smk_puff_z120"
+		"gfx_fxt_smk_scattered_z120"
+	};
+}
+{
+	name "dust3_right";
+	editorFlags useRandColor useRandAlpha useRandSize0 useRandRotDelta useRandVel0 useBackCompatVel absVel1;
+	flags spawnRelative spawnRelativeType0 spawnRelativeType1 spawnOffsetNone runRelToEffect;
+	spawnRange 0 3500;
+	fadeInRange 0 0;
+	fadeOutRange 50 100;
+	spawnFrustumCullRadius 750;
+	spawnLooping 80 3;
+	spawnOneShot 4 0;
+	spawnDelayMsec 400 154;
+	lifeSpanMsec 3000 3000;
+	spawnOrgX 800 400;
+	spawnOrgY -100 100;
+	spawnOrgZ 0 0;
+	spawnOffsetRadius 300 0;
+	spawnOffsetHeight -25 0;
+	spawnAnglePitch 0 0;
+	spawnAngleYaw 0 0;
+	spawnAngleRoll 0 0;
+	angleVelPitch 0 0;
+	angleVelYaw 0 0;
+	angleVelRoll 0 0;
+	initialRot -360 720;
+	rotationAxis 0 0 0 1;
+	gravity 0.01 0;
+	elasticity 1 0;
+	windinfluence 0.4;
+	atlasBehavior startRandom;
+	atlasIndex 0;
+	atlasFps 0;
+	atlasLoopCount 0;
+	atlasColIndexBits 0;
+	atlasRowIndexBits 0;
+	atlasEntryCount 0;
+	atlasIndexRange 0;
+	velGraph0X 800
+	{
+		{
+			0 0.5
+			0.0261628 0.203349
+			0.119186 0.0980861
+			0.485465 0.0263158
+			1 0.0119617
+		}
+		{
+			0 0.160287
+			0.119186 0.107656
+			0.383721 0.0645933
+			1 0.007177
+		}
+	};
+	velGraph0Y -880
+	{
+		{
+			0 0
+			0.0406977 0.5
+			0.145349 0.0980861
+			1 -0.00239235
+		}
+		{
+			0 0
+			1 0
+		}
+	};
+	velGraph0Z 100
+	{
+		{
+			0 0.198565
+			0.0406977 0.409091
+			0.151163 0.5
+			0.229651 0.251196
+			0.409884 0.0311005
+			1 -0.126794
+		}
+		{
+			0 0.313397
+			1 -0.165072
+		}
+	};
+	velGraph1X 0
+	{
+		{
+			0 0
+			1 0
+		}
+		{
+			0 0
+			1 0
+		}
+	};
+	velGraph1Y 0
+	{
+		{
+			0 0
+			1 0
+		}
+		{
+			0 0
+			1 0
+		}
+	};
+	velGraph1Z 0
+	{
+		{
+			0 0
+			1 0
+		}
+		{
+			0 0
+			1 0
+		}
+	};
+	rotGraph 150
+	{
+		{
+			0 0.5
+			0.168605 0.407407
+			0.218023 0.180556
+			0.351744 0.0925926
+			1 0.0138889
+		}
+		{
+			0 -0.5
+			0.156977 -0.25
+			0.319767 -0.12963
+			1 -0.00462964
+		}
+	};
+	sizeGraph0 250
+	{
+		{
+			0 0.402597
+			0.0470588 0.61039
+			0.223529 0.811688
+			1 1
+		}
+		{
+			0 0.188312
+			0.05 0.305195
+			0.626471 0.538961
+			1 0.792208
+		}
+	};
+	sizeGraph1 2
+	{
+		{
+			0 1
+			1 0
+		}
+		{
+			0 1
+			1 0
+		}
+	};
+	scaleGraph 1
+	{
+		{
+			0 1
+			1 0
+		}
+		{
+			0 1
+			1 0
+		}
+	};
+	colorGraph 1
+	{
+		{
+			0 0.678431 0.627451 0.585492
+			1 0.529412 0.482353 0.447059
+		}
+		{
+			0 0.694118 0.662745 0.619608
+			1 0.733333 0.705882 0.682353
+		}
+	};
+	alphaGraph 1
+	{
+		{
+			0 0
+			0.0668605 0.511962
+			0.267442 0.411483
+			0.447674 0.205742
+			0.703488 0.0478469
+			1 0
+		}
+		{
+			0 0
+			0.22093 0.368421
+			0.627907 0.105263
+			1 0
+		}
+	};
+	lightingFrac 0.5;
+	collOffset 0 0 0;
+	collRadius 0;
+	fxOnImpact "";
+	fxOnDeath "";
+	sortOrder 3;
+	emission "";
+	emitDist 1 0;
+	emitDistVariance 0 0;
+	attachment "";
+	trailSplitDist 0;
+	trailScrollTime 0;
+	trailRepeatDist 0;
+	alphafadetimemsec 0;
+	maxwind_mag 0;
+	maxwind_life 0;
+	maxwind_interval 1;
+	billboardTopWidth 1;
+	billboardBottomWidth 1;
+	elemSpawnSound
+	{
+	};
+	cloudDensity 1024 0;
+	billboardPivot 0 0;
+	billboardSprite
+	{
+		"gfx_fxt_smk_light_z120"
+		"gfx_fxt_smk_puff_z120"
+		"gfx_fxt_smk_scattered_z120"
+	};
+}
+{
+	name "dust4_left";
+	editorFlags useRandColor useRandAlpha useRandSize0 useRandRotDelta useRandVel0 useBackCompatVel absVel1;
+	flags spawnRelative spawnRelativeType0 spawnRelativeType1 spawnOffsetNone runRelToEffect;
+	spawnRange 0 3500;
+	fadeInRange 0 0;
+	fadeOutRange 50 100;
+	spawnFrustumCullRadius 750;
+	spawnLooping 100 3;
+	spawnOneShot 4 0;
+	spawnDelayMsec 600 140;
+	lifeSpanMsec 3000 3000;
+	spawnOrgX 1200 400;
+	spawnOrgY 0 100;
+	spawnOrgZ 0 0;
+	spawnOffsetRadius 300 0;
+	spawnOffsetHeight -25 0;
+	spawnAnglePitch 0 0;
+	spawnAngleYaw 0 0;
+	spawnAngleRoll 0 0;
+	angleVelPitch 0 0;
+	angleVelYaw 0 0;
+	angleVelRoll 0 0;
+	initialRot -360 720;
+	rotationAxis 0 0 0 1;
+	gravity 0.01 0;
+	elasticity 1 0;
+	windinfluence 0.3;
+	atlasBehavior startRandom;
+	atlasIndex 0;
+	atlasFps 0;
+	atlasLoopCount 0;
+	atlasColIndexBits 0;
+	atlasRowIndexBits 0;
+	atlasEntryCount 0;
+	atlasIndexRange 0;
+	velGraph0X 800
+	{
+		{
+			0 0.5
+			0.0261628 0.203349
+			0.119186 0.0980861
+			0.485465 0.0263158
+			1 0.0119617
+		}
+		{
+			0 0.160287
+			0.119186 0.107656
+			0.383721 0.0645933
+			1 0.007177
+		}
+	};
+	velGraph0Y 880
+	{
+		{
+			0 0
+			0.0406977 0.5
+			0.145349 0.0980861
+			1 -0.00239235
+		}
+		{
+			0 0
+			1 0
+		}
+	};
+	velGraph0Z 100
+	{
+		{
+			0 0.198565
+			0.0406977 0.409091
+			0.151163 0.5
+			0.229651 0.251196
+			0.409884 0.0311005
+			1 -0.126794
+		}
+		{
+			0 0.313397
+			1 -0.165072
+		}
+	};
+	velGraph1X 0
+	{
+		{
+			0 0
+			1 0
+		}
+		{
+			0 0
+			1 0
+		}
+	};
+	velGraph1Y 0
+	{
+		{
+			0 0
+			1 0
+		}
+		{
+			0 0
+			1 0
+		}
+	};
+	velGraph1Z 0
+	{
+		{
+			0 0
+			1 0
+		}
+		{
+			0 0
+			1 0
+		}
+	};
+	rotGraph -270
+	{
+		{
+			0 0.5
+			0.168605 0.407407
+			0.264535 0.226852
+			0.531977 0.087963
+			1 0.0462963
+		}
+		{
+			0 0.287037
+			0.171512 0.0648148
+			1 0.0185185
+		}
+	};
+	sizeGraph0 250
+	{
+		{
+			0 0.402597
+			0.0470588 0.61039
+			0.223529 0.811688
+			1 1
+		}
+		{
+			0 0.188312
+			0.05 0.305195
+			0.626471 0.538961
+			1 0.792208
+		}
+	};
+	sizeGraph1 2
+	{
+		{
+			0 1
+			1 0
+		}
+		{
+			0 1
+			1 0
+		}
+	};
+	scaleGraph 1
+	{
+		{
+			0 1
+			1 0
+		}
+		{
+			0 1
+			1 0
+		}
+	};
+	colorGraph 1
+	{
+		{
+			0 0.678431 0.627451 0.585492
+			1 0.529412 0.482353 0.447059
+		}
+		{
+			0 0.694118 0.662745 0.619608
+			1 0.733333 0.705882 0.682353
+		}
+	};
+	alphaGraph 1
+	{
+		{
+			0 0
+			0.0668605 0.511962
+			0.267442 0.411483
+			0.447674 0.205742
+			0.703488 0.0478469
+			1 0
+		}
+		{
+			0 0
+			0.22093 0.368421
+			0.627907 0.105263
+			1 0
+		}
+	};
+	lightingFrac 0.5;
+	collOffset 0 0 0;
+	collRadius 0;
+	fxOnImpact "";
+	fxOnDeath "";
+	sortOrder 3;
+	emission "";
+	emitDist 1 0;
+	emitDistVariance 0 0;
+	attachment "";
+	trailSplitDist 0;
+	trailScrollTime 0;
+	trailRepeatDist 0;
+	alphafadetimemsec 0;
+	maxwind_mag 0;
+	maxwind_life 0;
+	maxwind_interval 1;
+	billboardTopWidth 1;
+	billboardBottomWidth 1;
+	elemSpawnSound
+	{
+	};
+	cloudDensity 1024 0;
+	billboardPivot 0 0;
+	billboardSprite
+	{
+		"gfx_fxt_smk_light_z120"
+		"gfx_fxt_smk_puff_z120"
+		"gfx_fxt_smk_scattered_z120"
+	};
+}
+{
+	name "dust4_right";
+	editorFlags useRandColor useRandAlpha useRandSize0 useRandRotDelta useRandVel0 useBackCompatVel absVel1;
+	flags spawnRelative spawnRelativeType0 spawnRelativeType1 spawnOffsetNone runRelToEffect;
+	spawnRange 0 3500;
+	fadeInRange 0 0;
+	fadeOutRange 50 100;
+	spawnFrustumCullRadius 750;
+	spawnLooping 80 3;
+	spawnOneShot 4 0;
+	spawnDelayMsec 600 171;
+	lifeSpanMsec 3000 3000;
+	spawnOrgX 1200 400;
+	spawnOrgY -100 100;
+	spawnOrgZ 0 0;
+	spawnOffsetRadius 300 0;
+	spawnOffsetHeight -25 0;
+	spawnAnglePitch 0 0;
+	spawnAngleYaw 0 0;
+	spawnAngleRoll 0 0;
+	angleVelPitch 0 0;
+	angleVelYaw 0 0;
+	angleVelRoll 0 0;
+	initialRot -360 720;
+	rotationAxis 0 0 0 1;
+	gravity 0.01 0;
+	elasticity 1 0;
+	windinfluence 0.4;
+	atlasBehavior startRandom;
+	atlasIndex 0;
+	atlasFps 0;
+	atlasLoopCount 0;
+	atlasColIndexBits 0;
+	atlasRowIndexBits 0;
+	atlasEntryCount 0;
+	atlasIndexRange 0;
+	velGraph0X 800
+	{
+		{
+			0 0.5
+			0.0261628 0.203349
+			0.119186 0.0980861
+			0.485465 0.0263158
+			1 0.0119617
+		}
+		{
+			0 0.160287
+			0.119186 0.107656
+			0.383721 0.0645933
+			1 0.007177
+		}
+	};
+	velGraph0Y -880
+	{
+		{
+			0 0
+			0.0406977 0.5
+			0.145349 0.0980861
+			1 -0.00239235
+		}
+		{
+			0 0
+			1 0
+		}
+	};
+	velGraph0Z 100
+	{
+		{
+			0 0.198565
+			0.0406977 0.409091
+			0.151163 0.5
+			0.229651 0.251196
+			0.409884 0.0311005
+			1 -0.126794
+		}
+		{
+			0 0.313397
+			1 -0.165072
+		}
+	};
+	velGraph1X 0
+	{
+		{
+			0 0
+			1 0
+		}
+		{
+			0 0
+			1 0
+		}
+	};
+	velGraph1Y 0
+	{
+		{
+			0 0
+			1 0
+		}
+		{
+			0 0
+			1 0
+		}
+	};
+	velGraph1Z 0
+	{
+		{
+			0 0
+			1 0
+		}
+		{
+			0 0
+			1 0
+		}
+	};
+	rotGraph 270
+	{
+		{
+			0 0.5
+			0.168605 0.407407
+			0.264535 0.226852
+			0.531977 0.087963
+			1 0.046296
+		}
+		{
+			0 0.314815
+			0.171512 0.064815
+			1 0.018519
+		}
+	};
+	sizeGraph0 250
+	{
+		{
+			0 0.402597
+			0.0470588 0.61039
+			0.223529 0.811688
+			1 1
+		}
+		{
+			0 0.188312
+			0.05 0.305195
+			0.626471 0.538961
+			1 0.792208
+		}
+	};
+	sizeGraph1 2
+	{
+		{
+			0 1
+			1 0
+		}
+		{
+			0 1
+			1 0
+		}
+	};
+	scaleGraph 1
+	{
+		{
+			0 1
+			1 0
+		}
+		{
+			0 1
+			1 0
+		}
+	};
+	colorGraph 1
+	{
+		{
+			0 0.678431 0.627451 0.585492
+			1 0.529412 0.482353 0.447059
+		}
+		{
+			0 0.694118 0.662745 0.619608
+			1 0.733333 0.705882 0.682353
+		}
+	};
+	alphaGraph 1
+	{
+		{
+			0 0
+			0.0668605 0.511962
+			0.267442 0.411483
+			0.447674 0.205742
+			0.703488 0.0478469
+			1 0
+		}
+		{
+			0 0
+			0.22093 0.368421
+			0.627907 0.105263
+			1 0
+		}
+	};
+	lightingFrac 0.5;
+	collOffset 0 0 0;
+	collRadius 0;
+	fxOnImpact "";
+	fxOnDeath "";
+	sortOrder 3;
+	emission "";
+	emitDist 1 0;
+	emitDistVariance 0 0;
+	attachment "";
+	trailSplitDist 0;
+	trailScrollTime 0;
+	trailRepeatDist 0;
+	alphafadetimemsec 0;
+	maxwind_mag 0;
+	maxwind_life 0;
+	maxwind_interval 1;
+	billboardTopWidth 1;
+	billboardBottomWidth 1;
+	elemSpawnSound
+	{
+	};
+	cloudDensity 1024 0;
+	billboardPivot 0 0;
+	billboardSprite
+	{
+		"gfx_fxt_smk_light_z120"
+		"gfx_fxt_smk_puff_z120"
+		"gfx_fxt_smk_scattered_z120"
+	};
+}
+{
+	name "dust5_left";
+	editorFlags useRandColor useRandAlpha useRandSize0 useRandRotDelta useRandVel0 useBackCompatVel absVel1;
+	flags spawnRelative spawnRelativeType0 spawnRelativeType1 spawnOffsetNone runRelToEffect;
+	spawnRange 0 3500;
+	fadeInRange 0 0;
+	fadeOutRange 300 150;
+	spawnFrustumCullRadius 750;
+	spawnLooping 100 3;
+	spawnOneShot 2 1;
+	spawnDelayMsec 800 182;
+	lifeSpanMsec 2000 3000;
+	spawnOrgX 1600 400;
+	spawnOrgY 0 100;
+	spawnOrgZ 0 0;
+	spawnOffsetRadius 300 0;
+	spawnOffsetHeight -25 0;
+	spawnAnglePitch 0 0;
+	spawnAngleYaw 0 0;
+	spawnAngleRoll 0 0;
+	angleVelPitch 0 0;
+	angleVelYaw 0 0;
+	angleVelRoll 0 0;
+	initialRot -360 720;
+	rotationAxis 0 0 0 1;
+	gravity 0.01 0;
+	elasticity 1 0;
+	windinfluence 0.3;
+	atlasBehavior startRandom;
+	atlasIndex 0;
+	atlasFps 0;
+	atlasLoopCount 0;
+	atlasColIndexBits 0;
+	atlasRowIndexBits 0;
+	atlasEntryCount 0;
+	atlasIndexRange 0;
+	velGraph0X 800
+	{
+		{
+			0 0.5
+			0.0261628 0.203349
+			0.119186 0.0980861
+			0.485465 0.0263158
+			1 0.0119617
+		}
+		{
+			0 0.160287
+			0.119186 0.107656
+			0.383721 0.0645933
+			1 0.007177
+		}
+	};
+	velGraph0Y 880
+	{
+		{
+			0 0
+			0.0406977 0.5
+			0.145349 0.0980861
+			1 -0.00239235
+		}
+		{
+			0 0
+			1 0
+		}
+	};
+	velGraph0Z 100
+	{
+		{
+			0 0.198565
+			0.0406977 0.409091
+			0.151163 0.5
+			0.229651 0.251196
+			0.409884 0.0311005
+			1 -0.126794
+		}
+		{
+			0 0.313397
+			1 -0.165072
+		}
+	};
+	velGraph1X 0
+	{
+		{
+			0 0
+			1 0
+		}
+		{
+			0 0
+			1 0
+		}
+	};
+	velGraph1Y 0
+	{
+		{
+			0 0
+			1 0
+		}
+		{
+			0 0
+			1 0
+		}
+	};
+	velGraph1Z 0
+	{
+		{
+			0 0
+			1 0
+		}
+		{
+			0 0
+			1 0
+		}
+	};
+	rotGraph -270
+	{
+		{
+			0 0.5
+			0.168605 0.407407
+			0.264535 0.226852
+			0.531977 0.087963
+			1 0.0462963
+		}
+		{
+			0 0.287037
+			0.171512 0.0648148
+			1 0.0185185
+		}
+	};
+	sizeGraph0 310
+	{
+		{
+			0 0.402597
+			0.0470588 0.61039
+			0.223529 0.811688
+			1 1
+		}
+		{
+			0 0.188312
+			0.05 0.305195
+			0.626471 0.538961
+			1 0.792208
+		}
+	};
+	sizeGraph1 2
+	{
+		{
+			0 1
+			1 0
+		}
+		{
+			0 1
+			1 0
+		}
+	};
+	scaleGraph 1
+	{
+		{
+			0 1
+			1 0
+		}
+		{
+			0 1
+			1 0
+		}
+	};
+	colorGraph 1
+	{
+		{
+			0 0.678431 0.627451 0.585492
+			1 0.529412 0.482353 0.447059
+		}
+		{
+			0 0.694118 0.662745 0.619608
+			1 0.733333 0.705882 0.682353
+		}
+	};
+	alphaGraph 1
+	{
+		{
+			0 0
+			0.0668605 0.511962
+			0.267442 0.411483
+			0.447674 0.205742
+			0.703488 0.0478469
+			1 0
+		}
+		{
+			0 0
+			0.22093 0.368421
+			0.627907 0.105263
+			1 0
+		}
+	};
+	lightingFrac 0.5;
+	collOffset 0 0 0;
+	collRadius 0;
+	fxOnImpact "";
+	fxOnDeath "";
+	sortOrder 3;
+	emission "";
+	emitDist 1 0;
+	emitDistVariance 0 0;
+	attachment "";
+	trailSplitDist 0;
+	trailScrollTime 0;
+	trailRepeatDist 0;
+	alphafadetimemsec 0;
+	maxwind_mag 0;
+	maxwind_life 0;
+	maxwind_interval 1;
+	billboardTopWidth 1;
+	billboardBottomWidth 1;
+	elemSpawnSound
+	{
+	};
+	cloudDensity 1024 0;
+	billboardPivot 0 0;
+	billboardSprite
+	{
+		"gfx_fxt_smk_light_z120"
+		"gfx_fxt_smk_puff_z120"
+		"gfx_fxt_smk_scattered_z120"
+	};
+}
+{
+	name "dust5_right";
+	editorFlags useRandColor useRandAlpha useRandSize0 useRandRotDelta useRandVel0 useBackCompatVel absVel1;
+	flags spawnRelative spawnRelativeType0 spawnRelativeType1 spawnOffsetNone runRelToEffect;
+	spawnRange 0 3500;
+	fadeInRange 0 0;
+	fadeOutRange 300 150;
+	spawnFrustumCullRadius 750;
+	spawnLooping 80 3;
+	spawnOneShot 2 1;
+	spawnDelayMsec 800 165;
+	lifeSpanMsec 2000 3000;
+	spawnOrgX 1600 400;
+	spawnOrgY -100 100;
+	spawnOrgZ 0 0;
+	spawnOffsetRadius 300 0;
+	spawnOffsetHeight -25 0;
+	spawnAnglePitch 0 0;
+	spawnAngleYaw 0 0;
+	spawnAngleRoll 0 0;
+	angleVelPitch 0 0;
+	angleVelYaw 0 0;
+	angleVelRoll 0 0;
+	initialRot -360 720;
+	rotationAxis 0 0 0 1;
+	gravity 0.01 0;
+	elasticity 1 0;
+	windinfluence 0.4;
+	atlasBehavior startRandom;
+	atlasIndex 0;
+	atlasFps 0;
+	atlasLoopCount 0;
+	atlasColIndexBits 0;
+	atlasRowIndexBits 0;
+	atlasEntryCount 0;
+	atlasIndexRange 0;
+	velGraph0X 800
+	{
+		{
+			0 0.5
+			0.0261628 0.203349
+			0.119186 0.0980861
+			0.485465 0.0263158
+			1 0.0119617
+		}
+		{
+			0 0.160287
+			0.119186 0.107656
+			0.383721 0.0645933
+			1 0.007177
+		}
+	};
+	velGraph0Y -880
+	{
+		{
+			0 0
+			0.0406977 0.5
+			0.145349 0.0980861
+			1 -0.00239235
+		}
+		{
+			0 0
+			1 0
+		}
+	};
+	velGraph0Z 100
+	{
+		{
+			0 0.198565
+			0.0406977 0.409091
+			0.151163 0.5
+			0.229651 0.251196
+			0.409884 0.0311005
+			1 -0.126794
+		}
+		{
+			0 0.313397
+			1 -0.165072
+		}
+	};
+	velGraph1X 0
+	{
+		{
+			0 0
+			1 0
+		}
+		{
+			0 0
+			1 0
+		}
+	};
+	velGraph1Y 0
+	{
+		{
+			0 0
+			1 0
+		}
+		{
+			0 0
+			1 0
+		}
+	};
+	velGraph1Z 0
+	{
+		{
+			0 0
+			1 0
+		}
+		{
+			0 0
+			1 0
+		}
+	};
+	rotGraph 270
+	{
+		{
+			0 0.5
+			0.168605 0.407407
+			0.264535 0.226852
+			0.531977 0.087963
+			1 0.046296
+		}
+		{
+			0 0.314815
+			0.171512 0.064815
+			1 0.018519
+		}
+	};
+	sizeGraph0 310
+	{
+		{
+			0 0.402597
+			0.0470588 0.61039
+			0.223529 0.811688
+			1 1
+		}
+		{
+			0 0.188312
+			0.05 0.305195
+			0.626471 0.538961
+			1 0.792208
+		}
+	};
+	sizeGraph1 2
+	{
+		{
+			0 1
+			1 0
+		}
+		{
+			0 1
+			1 0
+		}
+	};
+	scaleGraph 1
+	{
+		{
+			0 1
+			1 0
+		}
+		{
+			0 1
+			1 0
+		}
+	};
+	colorGraph 1
+	{
+		{
+			0 0.678431 0.627451 0.585492
+			1 0.529412 0.482353 0.447059
+		}
+		{
+			0 0.694118 0.662745 0.619608
+			1 0.733333 0.705882 0.682353
+		}
+	};
+	alphaGraph 1
+	{
+		{
+			0 0
+			0.0668605 0.511962
+			0.267442 0.411483
+			0.447674 0.205742
+			0.703488 0.0478469
+			1 0
+		}
+		{
+			0 0
+			0.22093 0.368421
+			0.627907 0.105263
+			1 0
+		}
+	};
+	lightingFrac 0.5;
+	collOffset 0 0 0;
+	collRadius 0;
+	fxOnImpact "";
+	fxOnDeath "";
+	sortOrder 3;
+	emission "";
+	emitDist 1 0;
+	emitDistVariance 0 0;
+	attachment "";
+	trailSplitDist 0;
+	trailScrollTime 0;
+	trailRepeatDist 0;
+	alphafadetimemsec 0;
+	maxwind_mag 0;
+	maxwind_life 0;
+	maxwind_interval 1;
+	billboardTopWidth 1;
+	billboardBottomWidth 1;
+	elemSpawnSound
+	{
+	};
+	cloudDensity 1024 0;
+	billboardPivot 0 0;
+	billboardSprite
+	{
+		"gfx_fxt_smk_light_z120"
+		"gfx_fxt_smk_puff_z120"
+		"gfx_fxt_smk_scattered_z120"
+	};
+}

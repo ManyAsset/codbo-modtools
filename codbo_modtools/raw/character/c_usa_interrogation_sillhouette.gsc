@@ -1,0 +1,14 @@
+
+main()
+{
+	self setModel("c_usa_interrogation_silhouette_body");
+	self.headModel = "c_usa_interrogation_silhouette_head";
+	self attach(self.headModel, "", true);
+	self.voice = "american";
+	self.skeleton = "base";
+}
+precache()
+{
+	precacheModel("c_usa_interrogation_silhouette_body");
+	precacheModel("c_usa_interrogation_silhouette_head");
+}  

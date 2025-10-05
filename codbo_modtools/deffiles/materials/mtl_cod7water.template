@@ -1,0 +1,186 @@
+#define	USE_THINFILM				("$waterThinFilm$" == "1" )
+#define USE_CUSTOM_REFLECTION_PROBE	("$waterCustomReflectionProbe$" == "1" )
+#define USE_VERTEX_GERSTNER_WAVES	("$waterVertexGerstnerWaves$" == "1" )		// material feature defines
+#define USE_OCEAN					("$waterOcean$" == "1" )					// material feature defines
+
+#if USE_OCEAN
+sort(2);
+#else
+sort(16);
+#endif
+
+//#include "sort.template"
+#include "clamp.template"
+//#include "cullface.template"
+tessSize( @tessSize@ );
+#include "textureAtlas.template"
+
+hasEditorMaterial( @hasEditorMaterial@ );
+
+#include "refblend.template"
+#include "statebits.template"
+
+allocLightmap( 1 );
+forModel( 0 );
+forWorld( 1 );
+
+//refBlend( "Opaque" );
+//alphaTest( Always );
+//blendFunc( Disable, One, Zero );
+//separateAlphaBlendFunc( Disable, One, Zero );
+//colorWrite( Enable, Enable, Enable, Disable );
+//depthTest( LessEqual );
+//depthWrite( Enable );
+
+//#include "polygonoffset.template"
+//#include "stencil.template"
+
+
+//-----------------------------------------------------------------------------------------------------------------------------
+// set required techset
+//-----------------------------------------------------------------------------------------------------------------------------
+#if USE_THINFILM
+	#define	THINFILM_SUFFIX "_tf"
+#else
+	#define	THINFILM_SUFFIX ""
+#endif
+
+#if USE_CUSTOM_REFLECTION_PROBE
+	#define	CUSTOM_REFLECTION_PROBE_SUFFIX "_cp"
+#else
+	#define	CUSTOM_REFLECTION_PROBE_SUFFIX ""
+#endif
+
+#if USE_VERTEX_GERSTNER_WAVES
+	#define	VERTEX_GERSTNER_WAVES_SUFFIX "_vg"
+#else
+	#define	VERTEX_GERSTNER_WAVES_SUFFIX ""
+#endif
+
+#if USE_OCEAN
+	#define	OCEAN_SUFFIX "_fm"
+#else
+	#define	OCEAN_SUFFIX ""
+#endif
+
+techniqueSet( "cod7water" + THINFILM_SUFFIX + CUSTOM_REFLECTION_PROBE_SUFFIX + VERTEX_GERSTNER_WAVES_SUFFIX + OCEAN_SUFFIX);
+
+//-----------------------------------------------------------------------------------------------------------------------------
+// textures
+//-----------------------------------------------------------------------------------------------------------------------------
+#if TARGET_PLATFORM == "xenon"
+	#define NORMAL_MAP_FORMAT	"DXN"
+#else
+	#define NORMAL_MAP_FORMAT	"DXT5"
+#endif
+
+// colorMap	= cod2rad RefImage
+// colorMap00	= diffuse 
+// colorMap01	= Normal Map
+// colorMap02	= Specular Roughness
+// colorMap03	= Specular Correction (wall-e)
+// colorMap04	= diffuse
+// colorMap05	= Normal Map
+// colorMap06	= Specular Roughness
+// colorMap07	= Specular Correction (wall-e)
+
+// colorMap08	= Ambient Occlusion
+// colorMap09	= Ambient Occlusion
+
+// colorMap10	= blend mask texture 
+
+textureTable
+{
+	//---------------------------------------------------------------------------------------------------------------------
+	// required textures all valid?
+	//---------------------------------------------------------------------------------------------------------------------
+	#if "$colorMap$" == ""
+		#error "refimage for cod2rad is not defined"
+	#endif		
+
+	//dummy iwi for use in cod2map lighting
+	"cod2Map" = map( "@tileColor@", "@filterColor@", "$colorMap$", @nopicmipColor@ ) "@formatColor@" : "throwMap";
+
+	#if "$colorMap00$" == ""
+		#error "normal map is not defined"
+	#endif	
+	#if "$colorMap01$" == ""
+		#error "detail normal map is not defined"
+	#endif	
+
+
+	"normalMap00" = normalMap( "@texTile00@", "@filterColor00@", "$colorMap00$", @nopicmipColor00@ ) NORMAL_MAP_FORMAT : "normalMap";
+	"normalMap01" = normalMap( "@texTile01@", "@filterColor01@", "$colorMap01$", @nopicmipColor01@ ) NORMAL_MAP_FORMAT : "normalMap";
+
+	#if USE_THINFILM
+		#if "$colorMap02$" == ""
+			#error "thin film color ramp is not defined"
+		#endif
+		"thinFilmMap" = map( "tile horizontal", "@filterColor02@", "$colorMap02$", @nopicmipColor00@ ) "Uncompressed" : "colorMap";
+	#endif
+
+	#if USE_CUSTOM_REFLECTION_PROBE
+		#if "$colorMap03$" == ""
+			#error "custom reflection cubemap is not defined"
+		#endif
+		"customReflectionMap" = cubemap( "no tile", "@filterColor03@", "$colorMap03$", @nopicmipColor03@ ) "@textureFormat03@" : "colorMap";
+	#endif
+
+	#if USE_OCEAN
+		#if "$colorMap04$" == ""
+			#error "foam map missing"
+		#endif
+		
+		#if "$colorMap05$" == ""
+			#error "foam noise map missing"
+		#endif
+		
+		"foamMap" = map( "@texTile04@", "@filterColor04@", "$colorMap04$", @nopicmipColor04@ ) "@textureFormat04@" : "colorMap";		
+		"foamNoiseMap" = map( "@texTile05@", "@filterColor05@", "$colorMap05$", @nopicmipColor05@ ) "@textureFormat05@" : "colorMap";	
+	#endif								
+
+
+
+}
+
+constantTable
+{
+	// vertex shader constants
+
+	"waterNormalPositionScale" = float4(1.0 / @waterNormalTextureScale@, 1.0 / @waterNormalTextureScale@, 1.0 / @waterDetailNormalTextureScale@, 1.0 / @waterDetailNormalTextureScale@ );	
+	"waterLoNormalScroll" = float4( sin(@waterNormalScrollAngleA@), cos(@waterNormalScrollAngleA@), sin(@waterNormalScrollAngleB@), cos(@waterNormalScrollAngleB@) );
+	"waterHiNormalScroll" = float4(	sin(@waterDetailNormalScrollAngleA@), cos(@waterDetailNormalScrollAngleA@), sin(@waterDetailNormalScrollAngleB@), cos(@waterDetailNormalScrollAngleB@) );
+	"waterNormalScrollSpeed" = float4( @waterNormalScrollSpeedA@, @waterNormalScrollSpeedB@, @waterDetailNormalScrollSpeedA@, @waterDetailNormalScrollSpeedB@ );
+	
+	#if USE_VERTEX_GERSTNER_WAVES	
+		"waterBobWeaveControl" = float4( (6.283185 / @waterBobWaveLength@), @waterBobAmount@, (6.283185 / @waterWeaveWaveLength@), @waterWeaveAmount@ );
+	#endif
+	
+	// pixel shader constants
+
+	"waterControlVar0" = float4(	(2.0 / (@waterSpecularRoughnessA@ * @waterSpecularRoughnessA@)) - 2.0,
+									(2.0 / (@waterSpecularRoughnessB@ * @waterSpecularRoughnessB@)) - 2.0, 0.0204, 0.9796 );		// specA, specB, index of refraction		
+	"waterControlVar1" = float4(	((2.0 / (@waterSpecularRoughnessA@ * @waterSpecularRoughnessA@)) / 2.0) * 0.625,
+									((2.0 / (@waterSpecularRoughnessB@ * @waterSpecularRoughnessB@)) / 2.0) * 0.375, @waterThinFilmDepth@, @waterThinFilmAmount@);
+
+	"waterColorN" = float4(@waterNearColorR@,	@waterNearColorG@,	@waterNearColorB@,	@waterOpacityAmount@);		// water color near, opacity
+	"waterColorS" = float4(@scatterColorR@,		@scatterColorG@,	@scatterColorB@,	@waterSpecularAmount@);		// scatter color, specular amount
+	"waterColorF" = float4(@waterFarColorR@,	@waterFarColorG@,	@waterFarColorB@,	1.0 / @waterFarDistance@);	// water far color, distance 0 - 1 scaler 
+	
+	"waterNormalScale" = float4( 4.0 * @waterNormalScale@, -2.0 * @waterNormalScale@, 4.0 * @waterDetailNormalScale@, -2.0 * @waterDetailNormalScale@ );  		
+		
+	#if USE_CUSTOM_REFLECTION_PROBE
+		"waterCustomReflectionProbeScale" = float4(@waterCustomReflectionProbeScaleR@, @waterCustomReflectionProbeScaleR@, @waterCustomReflectionProbeScaleR@, 1.0 );
+	#endif
+
+
+	#if USE_OCEAN
+	//"waterFoamNoiseScale" = float4(100.0, 100.0, 100.0, 1.0)
+
+		"foamLayerScale"		= float4(1.0 / @waterFoamLayer0Scale@, 1.0 / @waterFoamLayer1Scale@, 1.0 / @waterFoamLayer2Scale@, 1.0 / @waterFoamLayer3Scale@);
+		"foamLayerOffsetScale"	= float4(@waterFoamLayer0Scroll@ / @waterFoamLayer0Scale@, @waterFoamLayer1Scroll@ / @waterFoamLayer1Scale@, @waterFoamLayer2Scroll@ / @waterFoamLayer2Scale@, @waterFoamLayer3Scroll@ / @waterFoamLayer3Scale@);	
+	#endif
+}
+
+refImage( "$colorMap$" );
+allocReflectionProbe();

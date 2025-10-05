@@ -1,0 +1,18 @@
+{
+	stateMap "default";
+
+	vertexShader 3.0 "pimp_shader_radiant_20717cf.hlsl"
+	{
+	}
+
+	pixelShader 3.0 "pimp_shader_radiant_20717cf.hlsl" 
+	{
+		Diffuse_MapSampler = material.RadiantDiffuse;
+	}
+
+	vertex.position = code.position;
+	vertex.normal = code.normal;
+	vertex.texcoord[0] = code.texcoord[0];
+
+}
+

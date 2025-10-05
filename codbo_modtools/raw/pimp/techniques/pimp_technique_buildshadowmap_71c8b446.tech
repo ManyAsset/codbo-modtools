@@ -1,0 +1,19 @@
+{
+	stateMap "build_shadowmap_depth";
+
+	vertexShader 3.0 "pimp_shader_vertcolorsimple_48207768.hlsl"
+	{
+	}
+
+	pixelShader 3.0 "pimp_shader_vertcolorsimple_ff0878eb.hlsl" 
+	{
+		colorMapSampler = material.colorMap;
+	}
+
+	vertex.position = code.position;
+	vertex.texcoord[0] = code.texcoord[0];
+	vertex.normal = code.normal;
+	vertex.color[0] = code.color;
+
+}
+

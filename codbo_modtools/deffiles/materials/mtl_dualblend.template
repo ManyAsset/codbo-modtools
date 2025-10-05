@@ -1,0 +1,178 @@
+#include "sort.template"
+#include "clamp.template"
+//#include "cullface.template"
+tessSize( @tessSize@ );
+#include "textureAtlas.template"
+
+hasEditorMaterial( @hasEditorMaterial@ );
+
+#include "refblend.template"
+#include "statebits.template"
+
+allocLightmap( 1 );
+forModel( 0 );
+forWorld( 1 );
+
+//refBlend( "Opaque" );
+//alphaTest( Always );
+//blendFunc( Disable, One, Zero );
+//separateAlphaBlendFunc( Disable, One, Zero );
+//colorWrite( Enable, Enable, Enable, Disable );
+//depthTest( LessEqual );
+//depthWrite( Enable );
+
+//#include "polygonoffset.template"
+//#include "stencil.template"
+
+techniqueSet( "dualblend" );
+
+#if TARGET_PLATFORM == "xenon"
+	#define NORMAL_MAP_FORMAT	"DXN"
+#else
+	#define NORMAL_MAP_FORMAT	"DXT5"
+#endif
+
+// colorMap	= cod2rad RefImage
+// colorMap00	= diffuse 
+// colorMap01	= Normal Map
+// colorMap02	= Specular Roughness
+// colorMap03	= Specular Correction (wall-e)
+// colorMap04	= diffuse
+// colorMap05	= Normal Map
+// colorMap06	= Specular Roughness
+// colorMap07	= Specular Correction (wall-e)
+
+// colorMap08	= Ambient Occulsion
+// colorMap09	= Ambinet Occulsion
+
+textureTable
+{
+	//---------------------------------------------------------------------------------------------------------------------
+	// required textures all valid?
+	//---------------------------------------------------------------------------------------------------------------------
+	#if "$colorMap$" == ""
+		#error "ref image for cod2rad may not be blank in dual world"
+	#endif		
+	#if "$colorMap00$" == ""
+		#error "diffuse 0 may not be blank in dual world"
+	#endif
+	#if "$colorMap01$" == ""
+		#error "normal map 0 may not be blank in dual world"
+	#endif
+	#if "$colorMap02$" == ""
+		#error "specular roughness 0 may not be blank in dual world"
+	#endif
+	#if "$colorMap04$" == ""
+		#error "diffuse 1 may not be blank in dual world"
+	#endif
+	#if "$colorMap05$" == ""
+		#error "normal map 1 may not be blank in dual world"
+	#endif
+	#if "$colorMap06$" == ""
+		#error "specular roughness 1 may not be blank in dual world"
+	#endif
+
+
+	#if "$colorMap08$" != ""					// has ambinet occlusion texture 0 ?
+		#define AMB_OCC_0	"$colorMap08$"
+	#else
+		#define AMB_OCC_0	"$white"
+	#endif
+
+
+	#if "$colorMap09$" != ""					// has ambinet occlusion texture 1 ?
+		#define AMB_OCC_1	"$colorMap09$"
+	#else
+		#define AMB_OCC_1	"$white"
+	#endif
+
+
+	// refimage for cod2rad lighting
+	"colorMap" = map( "@tileColor@", "@filterColor@", "$colorMap$", @nopicmipColor@ ) "@formatColor@" : "colorMap";
+
+
+	//---------------------------------------------------------------------------------------------------------------------
+	// blend texture 0
+	//---------------------------------------------------------------------------------------------------------------------
+	// has optional spec correction map?
+	#if "$colorMap03$" == ""
+		"diffuseMap00" = streamable map( "@texTile00@", "@filterColor00@", "$colorMap00$", @nopicmipColor00@ ) "@textureFormat00@" : "colorMap00"; 
+	#else
+	// combine wall-e
+		"diffuseMap00" = composite
+		(
+			map( "@texTile00@", "@filterColor00@", "$colorMap00$", @nopicmipColor00@ ).r,
+			map( "@texTile00@", "@filterColor00@", "$colorMap00$", @nopicmipColor00@ ).g,
+			map( "@texTile00@", "@filterColor00@", "$colorMap00$", @nopicmipColor00@ ).b,
+			map( "@texTile00@", "@filterColor00@", "$colorMap03$", @nopicmipColor00@ ).r
+		) "@textureFormat00@" : "colorMap00";
+	#endif
+
+	"normalMap" = normalMap( "@texTile01@", "@filterColor01@", "$colorMap01$", @nopicmipColor01@ ) NORMAL_MAP_FORMAT : "colorMap01";
+
+	#if TARGET_PLATFORM == "xenon"		// combined specular roughness and ambient occlusion 
+		"specularMap00" = composite
+		(
+			map( "@texTile02@", "@filterColor02@", AMB_OCC_0, @nopicmipColor02@ ).r,
+			map( "@texTile02@", "@filterColor02@", AMB_OCC_0, @nopicmipColor02@ ).r,
+			map( "@texTile02@", "@filterColor02@", AMB_OCC_0, @nopicmipColor02@ ).r,
+			roughMap( "@texTile02@", "@filterColor02@", "$colorMap02$", @nopicmipColor02@, "normalMap" ).r
+		) "DXN" : "colorMap02";
+	#else
+		"specularMap00" = composite
+		(
+			map( "@texTile02@", "@filterColor02@", "$black", @nopicmipColor02@ ).r,
+			map( "@texTile02@", "@filterColor02@", AMB_OCC_0, @nopicmipColor02@ ).r,
+			map( "@texTile02@", "@filterColor02@", "$black", @nopicmipColor02@ ).r,
+			roughMap( "@texTile02@", "@filterColor02@", "$colorMap02$", @nopicmipColor02@, "normalMap" ).r
+		) "DXT5" : "colorMap02";
+	#endif
+
+	//---------------------------------------------------------------------------------------------------------------------
+	// blend texture 1
+	//---------------------------------------------------------------------------------------------------------------------
+	// has optional spec correction map?
+	#if "$colorMap07$" == ""
+		"diffuseMap01" = streamable map( "@texTile04@", "@filterColor04@", "$colorMap04$", @nopicmipColor04@ ) "@textureFormat04@" : "colorMap04"; 
+	#else
+	// combine wall-e
+		"diffuseMap01" = composite
+		(
+			map( "@texTile04@", "@filterColor04@", "$colorMap04$", @nopicmipColor04@ ).r,
+			map( "@texTile04@", "@filterColor04@", "$colorMap04$", @nopicmipColor04@ ).g,
+			map( "@texTile04@", "@filterColor04@", "$colorMap04$", @nopicmipColor04@ ).b,
+			roughMap( "@texTile04@", "@filterColor04@", "$colorMap07$", @nopicmipColor04@ ).r
+		) "@textureFormat04@" : "colorMap04";
+	#endif
+
+	"normalMap01" = normalMap( "@texTile05@", "@filterColor05@", "$colorMap05$", @nopicmipColor05@ ) NORMAL_MAP_FORMAT : "colorMap05";
+
+
+	#if TARGET_PLATFORM == "xenon"		// combined specular roughness and ambient occlusion 
+		"specularMap01" = composite
+		(
+			map( "@texTile06@", "@filterColor06@", AMB_OCC_1, @nopicmipColor06@ ).r,
+			map( "@texTile06@", "@filterColor06@", AMB_OCC_1, @nopicmipColor06@ ).r,
+			map( "@texTile06@", "@filterColor06@", AMB_OCC_1, @nopicmipColor06@ ).r,
+			roughMap( "@texTile06@", "@filterColor06@", "$colorMap06$", @nopicmipColor06@, "normalMap01" ).r
+		) "DXN" : "colorMap06";
+	#else
+		"specularMap01" = composite
+		(
+			map( "@texTile06@", "@filterColor06@", "$black", @nopicmipColor06@ ).r,
+			map( "@texTile06@", "@filterColor06@", AMB_OCC_1, @nopicmipColor06@ ).r,
+			map( "@texTile06@", "@filterColor06@", "$black", @nopicmipColor06@ ).r,
+			roughMap( "@texTile06@", "@filterColor06@", "$colorMap06$", @nopicmipColor06@, "normalMap01" ).r
+		) "DXT5" : "colorMap06";
+	#endif
+				
+
+}
+
+constantTable
+{
+	"specularBaseColor" = float4( 0.035, 0.035, 0.035, 1.0 );
+}
+
+refImage( "$colorMap$" );
+allocReflectionProbe();

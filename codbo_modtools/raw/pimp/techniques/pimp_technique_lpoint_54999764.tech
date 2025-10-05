@@ -1,0 +1,28 @@
+{
+	stateMap "additive";
+
+	vertexShader 3.0 "pimp_shader_lpoint_d179f3c3.hlsl"
+	{
+	}
+
+	pixelShader 3.0 "pimp_shader_lpoint_2786d5f9.hlsl" 
+	{
+		colorMapSampler = material.colorMap;
+		normalMapSampler = material.normalMap;
+		specularMapSampler = material.specularMap;
+		envMapParms = material.envMapParms;
+		fogColor = float4( 0, 0, 0, 0 );
+		tensionStretchMapSampler = material.tensionStretchMap;
+		tensionCompressMapSampler = material.tensionCompressMap;
+		tensionOcclusionMapSampler = material.tensionOcclusionMap;
+		tensionData1 = material.tensionData1;
+		tensionData2 = material.tensionData2;
+	}
+
+	vertex.position = code.position;
+	vertex.normal = code.normal;
+	vertex.texcoord[0] = code.texcoord[0];
+	vertex.texcoord[2] = code.tangent;
+
+}
+

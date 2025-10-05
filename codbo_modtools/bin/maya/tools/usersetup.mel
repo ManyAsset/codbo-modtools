@@ -1,0 +1,134 @@
+// scriptJob to reload references upon opening of Maya file.  Hopefully temporary
+
+	//scriptJob -permanent -event "SceneOpened" "reloadReferences()";
+
+
+// COD Startup
+	CODStartup;
+
+// Source extra stuff we want loaded on startup
+   sakCatchSourceScript("CODLibraryMenu.mel");
+
+// COD Tools Menu
+	CODToolsMenu;
+
+// Set default far clip plane on cameras to a better distance
+	optionVar  -fv "defaultCameraFarClipValue" 100000;
+
+// Set layer orders correctly
+	//reorderLayers 1; updateLayerOrderByType "Display";   // Check on this
+
+// Set new camera positions for modelers
+//    Stev - I commented this out because I think this is causing the odd
+//           grid sizing problem when people think they have "lost" their
+//           scene objects
+//
+// 	int $cameraSet = 1;
+// 
+// 	if($cameraSet == 1)
+// 	{
+// 		string $cameras[] = {"front", "side"};
+// 		string $transforms[] = {".tx",".ty",".tz",".rx",".ry",".rz"};
+// 		int $values[] = {60,0,0,90,0,90,0,-60,0,90,0,0};
+// 		int $val = 0;
+// 		for($i = 0; $i < 2; $i++)
+// 		{
+// 			for($j = 0; $j < 6; $j++)
+// 			{
+// 			  setAttr ($cameras[$i] + $transforms[$j]) $values[$val++];
+// 			}
+// 		}
+// 	}
+
+
+// Add iwCopyKeys and iwPasteKeys to the timeSlider menu
+
+	source iwCopyPasteKeys;
+
+	menuItem 
+		-parent TimeSliderMenu
+		-l "iwCopyKeys" 
+		-c "iwCopyKeys"
+		timeSlider_iwCopyKeys;
+
+	menuItem
+		-parent TimeSliderMenu
+		-l "iwPasteKeys"
+		-c "iwPasteKeys"
+		timeSlider_iwPasteKeys;
+
+	// Set the correct units
+		optionVar
+			 -sv "workingUnitLinear" "in"
+			 -sv "workingUnitLinearDefault" "in"
+			 -sv "workingUnitLinearHold" "in"
+			 -sv "workingUnitTime" "ntsc"
+			 -sv "workingUnitTimeDefault" "ntsc"
+			 -sv "workingUnitTimeHold" "ntsc";
+
+		optionVar
+			 -sv "upAxisDirection" "z";
+		
+global proc deleteUnknownNodes() {
+   string $unk[] = `ls -typ "unknown"`;
+   if (size($unk) > 0) {
+      delete $unk;
+   }
+}
+
+
+// Update the references on load to fix Maya's reference problem
+global proc reloadReferences()
+{
+	string $referenceName[] = `file -q -r`;
+
+	if(`size $referenceName` > 1)
+	{
+		progressWindow
+		  -title "Reloading references..."
+		  -isInterruptable 0;
+
+		float $ProgressAmount = 0;
+		float $ProgressAddition = 100 / (`size $referenceName`);
+
+		for($eachCharacter in $referenceName)
+		{
+			if ( `progressWindow -query -isCancelled` ) break;
+
+			string $name = `file -q -rfn $eachCharacter`; 
+			int $isLoaded = `file -q -dr $eachCharacter`;
+
+			if(!$isLoaded)
+			{
+				file -lr $name;
+			}
+
+			progressWindow -edit
+				-progress $ProgressAmount
+				-status ("Referencing in: "+$ProgressAmount+"%");
+		}
+		progressWindow -endProgress;
+	}
+}
+
+string $getUserScriptDirectory = `internalVar -userScriptDir`;
+int $checkFile = `fopen ($getUserScriptDirectory + "IW_usersetup.mel") "r"`;
+
+	if(!$checkFile)
+	{
+		string $myScriptDir = (`internalVar -userScriptDir` + "IW_usersetup.mel");
+		$fileId = `fopen $myScriptDir "w"`;
+		fprint $fileId "global proc IW_usersetup()\n";
+		fprint $fileId "{\n";
+		fprint $fileId "// Please add your own preferences here between the open and close braces\n\n\n\n";
+		fprint $fileId "}";
+		fclose $fileId;
+		warning "Created a personal IW_usersetup.mel file in your scripts directory.";
+	}
+	else
+	{
+		IW_usersetup();
+	}
+
+scriptJob -pro -e "SceneOpened" "deleteUnknownNodes";
+scriptJob -pro -e "SceneImported" "deleteUnknownNodes";
